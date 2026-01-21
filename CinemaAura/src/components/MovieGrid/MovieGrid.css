@@ -1,0 +1,13 @@
+.movie-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 36px;
+    max-width: 1080px;
+    justify-items: center;
+}
+
+@media (max-width: 1050px) {
+    .movie-grid {
+        grid-template-columns: 1fr;
+    }
+}

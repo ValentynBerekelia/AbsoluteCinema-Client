@@ -3,6 +3,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import { HERO_MOVIES } from '../../data/movies';
 import './Hero.css'
+import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 
 export const Hero = () => {
     const [currentIndex, setCurrentIndex] = useState(0);
@@ -36,7 +37,7 @@ export const Hero = () => {
                 <h1 className='hero-title'>{movie.title}</h1>
                 <div className='hero-schedule'>
                     {movie.schedule.map((time, index) => (
-                        <button key={index} className='time-badge'>{time}</button>
+                        <TimeBadge key={index} time={time}/>
                     ))}
                 </div>
                 <button className='book-now-btn'>Book your tickets now</button>

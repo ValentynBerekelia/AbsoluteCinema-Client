@@ -69,21 +69,6 @@
     margin-bottom: 20px;
 }
 
-.time-badge {
-    background-color: #dedede;
-    padding: 8px 12px;
-    gap: 8px;
-    border: 1px solid #aaaaaa;
-    font-size: 24px;
-    font-weight: 400;
-    transition: 0.3s;
-}
-
-.time-badge:hover {
-    background-color: #ffffff;
-    transform: scale(1.05);
-}
-
 .book-now-btn {
     padding: 12px 36px;
     gap: 8px;

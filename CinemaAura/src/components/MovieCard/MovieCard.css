@@ -1,0 +1,87 @@
+.movie-card {
+    display: flex;
+    flex-direction: column;
+    width: 524px;
+    background-color: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+    padding: 12px 16px;
+    gap: 12px;
+}
+
+.movie-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-weight: 700;
+}
+
+.movie-title {
+    font-size: 32px;
+    color: #333333;
+}
+
+.movie-age-format {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.movie-age-format span {
+    background-color: #e8e8e8;
+    padding: 12px;
+    font-size: 24px;
+    border-radius: 12px;
+}
+
+.movie-card-content {
+    display: flex;
+    justify-content: space-between;
+}
+
+
+.movie-card-poster img {
+    width: 240px;
+    height: 360px;
+    object-fit: cover;
+}
+
+.movie-card-right {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    text-align: center;
+    padding-left: 10px;
+    color: #333333;
+}
+
+.movie-card-schedule {
+    display: flex;
+    justify-content: center;
+    flex-wrap: wrap;
+    gap: 8px;
+    padding-top: 12px;
+}
+
+.movie-card-description {
+    display: flex;
+    flex-direction: column;
+    text-align: left;
+    font-size: 20px;
+    gap: 8px;
+}
+
+.movie-card-description p {
+    margin: 0;
+}
+
+.movie-card-description p span {
+    font-weight: 700;
+}
+
+.movie-card-right a {
+    text-decoration: none;
+    font-weight: 700;
+    font-size: 20px;
+    color: #333333;
+}
