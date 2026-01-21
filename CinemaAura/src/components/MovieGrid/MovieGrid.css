@@ -4,6 +4,13 @@
     gap: 36px;
     max-width: 1080px;
     justify-items: center;
+    justify-content: center;
+    margin: 0 auto;
+}
+
+.movie-grid .movie-card:last-child:nth-child(odd) {
+    grid-column: 1 / span 2;
+    justify-self: center;
 }
 
 @media (max-width: 1050px) {

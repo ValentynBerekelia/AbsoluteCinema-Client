@@ -1,0 +1,48 @@
+.home-page {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+}
+
+.home-container {
+    max-width: 1080px;
+    margin: 0 auto;
+    display: flex;
+    flex-direction: column;
+    color: #333333;
+}
+
+.movie-section {
+    display: flex;
+    flex-direction: column;
+}
+
+.section-header {
+    display: block;
+}
+
+.section-title {
+    font-weight: 700;
+    font-size: 64px;
+    padding: 52px 8px;
+    text-align: center;
+    width: 100%;
+}
+
+.weekly-schedule-btn {
+    position: relative;
+    background-color: #dedede;
+    padding: 12px 24px;
+    border: 1px solid #a7a7a7;
+    margin-bottom: 12px;
+    font-size: 20px;
+    right: 0px;
+    cursor: pointer;
+    transition: 0.3s;
+    float: right;
+}
+
+.weekly-schedule-btn:hover {
+    background-color: #ffffff;
+}
