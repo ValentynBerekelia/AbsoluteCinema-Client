@@ -16,5 +16,9 @@
 @media (max-width: 1050px) {
     .movie-grid {
         grid-template-columns: 1fr;
+        padding: 0 20px;
+    }
+    .movie-grid .movie-card:last-child:nth-child(odd) {
+        grid-column: auto;
     }
 }

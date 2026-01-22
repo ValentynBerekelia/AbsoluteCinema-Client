@@ -46,3 +46,72 @@
 .weekly-schedule-btn:hover {
     background-color: #ffffff;
 }
+
+.promotion-group {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 46px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+.promotion-info {
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    gap: 60px;
+}
+
+.promotion-form {
+    flex: 1.5;
+    display: flex;
+    flex-direction: column;
+    max-width: 745px;
+}
+
+.promotion-textarea {
+    font-family: 'Inter', sans-serif;
+    width: 100%;
+    height: 469px;
+    padding: 16px;
+    background-color: #f7f7f7;
+    border: 4px solid #aaaaaa;
+    border-radius: 16px;
+    font-size: 18px;
+    resize: none;
+    outline: none;
+    transition: 0.3s;
+}
+
+.promotion-textarea:focus {
+    background-color: #ffffff;
+}
+
+.promotion-submit-btn {
+    align-self: flex-end;
+    padding: 10px 30px;
+    background-color: #dedede;
+    border: 1px solid #a7a7a7;
+    border-radius: 2px;
+    font-size: 20px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.promotion-submit-btn:hover {
+    background-color: #ffffff;
+}
+
+.promotion-text {
+    font-size: 20px;
+    line-height: 1.4;
+}
+.promotion-text span {
+    font-weight: 700;
+}
+
+.promotion-text-or {
+    font-size: 32px;
+}

@@ -24,6 +24,24 @@ export const Home = () => {
                     <h1 className='section-title'>Coming soon...</h1>
                     <MovieGrid movies={HERO_MOVIES}/>
                 </section>
+                <section className='promotion-section'>
+                    <h1 className='section-title'>Want to place an advertisement with us?</h1>
+                    <div className='promotion-group'>
+                        <div className='promotion-info'>
+                            <p className='promotion-text'><span>Please send an offer<br/>to our email:<br/></span>
+                                absolute.cinema@gmail.com
+                            </p>
+                            <p className='promotion-text-or'>or</p>
+                        </div>
+                        <form className='promotion-form'>
+                            <textarea
+                                className='promotion-textarea'
+                                placeholder='Enter your message here...'
+                            ></textarea>
+                            <button type="submit" className='promotion-submit-btn'>Send message</button>
+                        </form>
+                    </div>
+                </section>
             </div>
         </main>
     );
