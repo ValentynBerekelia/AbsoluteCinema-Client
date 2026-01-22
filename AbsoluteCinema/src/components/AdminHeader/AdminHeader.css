@@ -1,0 +1,37 @@
+.admin-header {
+    background-color: #ffffff;
+    height: 80px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 20 80px;
+    border-bottom: 1px solid #9a9a9a;
+    color: #333333;
+}
+
+.admin-na {
+    width: 240px;
+    height: 100%;
+}
+
+.admin-header-logo {
+    font-size: 32px;
+}
+
+.admin-user-profile {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.admin-name {
+    font-size: 24px;
+}
+
+.admin-logout-btn {
+    color: #757575;
+    font-size: 36px;
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}

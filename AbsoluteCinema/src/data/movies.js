@@ -7,7 +7,12 @@ export const HERO_MOVIES = [
         id: "1",
         title: "Inception",
         image: inceptionImg,
-        schedule: ["11:00", "14:30", "19:00", "21:00"],
+        sessions: [
+            { date: "2026-01-22", time: "11:00" },
+            { date: "2026-01-22", time: "14:30" },
+            { date: "2026-01-23", time: "19:00" },
+            { date: "2026-01-23", time: "21:00" }
+        ],
         genre: "Sci-Fi",
         duration: 148,
         director: "Christopher Nolan",
@@ -19,7 +24,13 @@ export const HERO_MOVIES = [
         id: "2",
         title: "Interstellar",
         image: interstellarImg,
-        schedule: ["09:00", "12:00", "15:00", "18:00", "21:00"],
+        sessions: [
+            { date: "2026-01-22", time: "09:00" },
+            { date: "2026-01-22", time: "12:00" },
+            { date: "2026-01-22", time: "15:00" },
+            { date: "2026-01-23", time: "18:00" },
+            { date: "2026-01-23", time: "21:00" }
+        ],
         genre: "Adventure, Drama",
         duration: 169,
         director: "Christopher Nolan",
@@ -31,7 +42,11 @@ export const HERO_MOVIES = [
         id: "3",
         title: "Matrix",
         image: matrixImg,
-        schedule: ["12:00", "15:00", "21:00"],
+        sessions: [
+            { date: "2026-01-22", time: "12:00" },
+            { date: "2026-01-22", time: "15:00" },
+            { date: "2026-01-23", time: "21:00" }
+        ],
         genre: "Action, Sci-Fi",
         duration: 136,
         director: "Lana Wachowski",

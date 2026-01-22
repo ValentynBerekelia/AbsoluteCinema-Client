@@ -36,8 +36,8 @@ export const Hero = () => {
             <div className='hero-content' key={movie.id}>
                 <h1 className='hero-title'>{movie.title}</h1>
                 <div className='hero-schedule'>
-                    {movie.schedule.map((time, index) => (
-                        <TimeBadge key={index} time={time}/>
+                    {movie.sessions.map((session, index) => (
+                        <TimeBadge key={index} time={session.time}/>
                     ))}
                 </div>
                 <button className='book-now-btn'>Book your tickets now</button>

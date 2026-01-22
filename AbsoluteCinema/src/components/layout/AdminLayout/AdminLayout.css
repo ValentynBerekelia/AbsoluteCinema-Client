@@ -1,0 +1,13 @@
+.admin-main-wrapper {
+    display: flex;
+    flex-direction: column;
+    min-height: calc(100vh - 160px);
+    padding: 48px 48px 60px 48px;
+    gap: 24px;
+}
+
+.admin-main-wrapper-row {
+    display: flex;
+    justify-content: flex-start;
+    gap: 24px;
+}

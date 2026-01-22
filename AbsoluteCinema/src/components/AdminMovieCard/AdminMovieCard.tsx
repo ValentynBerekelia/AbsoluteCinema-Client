@@ -1,0 +1,2 @@
+import './AdminMovieCard.css'
+

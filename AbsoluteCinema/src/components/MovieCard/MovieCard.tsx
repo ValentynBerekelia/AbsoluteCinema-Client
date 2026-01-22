@@ -22,8 +22,8 @@ export const MovieCard = ({movie}: MovieCardProps) => {
                 </div>
                 <div className='movie-card-right'>
                     <div className='movie-card-schedule'>
-                        {movie.schedule.map((time, index) => (
-                            <TimeBadge key={index} time={time}/>
+                        {movie.sessions.map((session, index) => (
+                            <TimeBadge key={index} time={session.time}/>
                         ))}
                     </div>
                     <div className='movie-card-description'>
