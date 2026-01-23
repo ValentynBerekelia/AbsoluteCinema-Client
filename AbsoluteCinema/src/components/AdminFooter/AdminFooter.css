@@ -1,0 +1,43 @@
+.admin-footer {
+    width: 100%;
+    background-color: #f5f5f5;
+    border-top: 1px solid #9a9a9a;
+    padding: 30px 60px;
+    margin-top: auto;
+}
+
+.admin-footer-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.admin-footer-left p {
+    font-size: 16px;
+    color: #333;
+    margin: 4px 0;
+    line-height: 1.4;
+}
+
+.admin-footer-right {
+    text-align: left;
+}
+
+.admin-footer-right h3 {
+    font-size: 18px;
+    font-weight: 700;
+    margin-bottom: 10px;
+}
+
+.support-details p {
+    font-size: 16px;
+    margin: 2px 0;
+    color: #444;
+}
+
+.support-details span {
+    color: #000;
+    font-weight: 500;
+}

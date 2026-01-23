@@ -1,0 +1,6 @@
+.admin-cards-list {
+    display: flex;
+    flex-direction: column;
+    gap: 50px;
+    padding: 20px;
+}

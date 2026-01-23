@@ -8,6 +8,6 @@
 
 .admin-main-wrapper-row {
     display: flex;
-    justify-content: flex-start;
+    justify-content: center;
     gap: 24px;
 }

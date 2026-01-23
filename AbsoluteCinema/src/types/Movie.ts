@@ -24,4 +24,5 @@ export interface MovieAdminCardInfo {
     ageLimit: number;
     Sessions: Session[];
     Halls: string[];
+    poster: string;
 };
