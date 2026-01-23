@@ -23,7 +23,7 @@ export const MovieCard = ({movie}: MovieCardProps) => {
                 <div className='movie-card-right'>
                     <div className='movie-card-schedule'>
                         {movie.sessions.map((session, index) => (
-                            <TimeBadge key={index} time={session.time}/>
+                            <TimeBadge key={index} session={session}/>
                         ))}
                     </div>
                     <div className='movie-card-description'>

@@ -22,13 +22,13 @@ export const Home = () => {
                 </section>
                 <section className='movie-section'>
                     <h1 className='section-title'>Coming soon...</h1>
-                    <MovieGrid movies={HERO_MOVIES}/>
+                    <MovieGrid movies={HERO_MOVIES} />
                 </section>
                 <section className='promotion-section'>
                     <h1 className='section-title'>Want to place an advertisement with us?</h1>
                     <div className='promotion-group'>
                         <div className='promotion-info'>
-                            <p className='promotion-text'><span>Please send an offer<br/>to our email:<br/></span>
+                            <p className='promotion-text'><span>Please send an offer<br />to our email:<br /></span>
                                 absolute.cinema@gmail.com
                             </p>
                             <p className='promotion-text-or'>or</p>
@@ -38,7 +38,11 @@ export const Home = () => {
                                 className='promotion-textarea'
                                 placeholder='Enter your message here...'
                             ></textarea>
-                            <button type="submit" className='promotion-submit-btn'>Send message</button>
+                            <div className="promotion-form-footer">
+                                <button type="submit" className="promotion-submit-btn">
+                                    Send message
+                                </button>
+                            </div>
                         </form>
                     </div>
                 </section>
