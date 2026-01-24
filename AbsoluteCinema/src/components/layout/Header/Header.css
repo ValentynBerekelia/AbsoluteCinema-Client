@@ -1,0 +1,134 @@
+.header {
+    width: 100%;
+    background-color: #ffffff;
+    border-bottom: 1px solid #9A9A9A;
+    color: #333333;
+    z-index: 100;
+}
+
+.header-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 0 5%;
+    height: 80px;
+    margin: 0 auto;
+}
+
+.logo {
+    font-size: clamp(20px, 4vw, 32px);
+    display: flex;
+    align-items: center;
+    white-space: nowrap;
+}
+
+.nav-list {
+    display: flex;
+    list-style: none;
+    gap: clamp(10px, 2vw, 30px);
+    margin: 0;
+    padding: 0;
+}
+
+.nav-list a {
+    text-decoration: none;
+    color: #333333;
+    transition: 0.2s;
+    font-size: clamp(14px, 1.5vw, 20px);
+}
+
+.nav-list a:hover {
+    color: #000000;
+    text-decoration: underline solid;
+}
+
+.mobile-only {
+    display: none;
+}
+
+.login-btn {
+    background-color: #dedede;
+    border: 1px solid #aaaaaa;
+    width: 120px;
+    height: 40px;
+    padding: 8px;
+    gap: 8px;
+    font-size: 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.login-btn:hover {
+    background-color: #d0d0d0;
+}
+
+.burger-menu {
+    display: none;
+    flex-direction: column;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+}
+
+.burger-menu span {
+    width: 25px;
+    height: 3px;
+    background-color: #333333;
+}
+
+@media (max-width: 850px) {
+    .nav {
+        display: block;
+        position: absolute;
+        top: 80px;
+        left: -100%;
+        width: 100%;
+        height: calc(100vh - 80px);
+        background-color: #ffffff;
+        transition: 0.3s ease-in-out;
+        z-index: 100;
+    }
+
+    .mobile-only {
+        width: 100%;
+        display: flex;
+        justify-content: center;
+    }
+
+    .nav.active {
+        left: 0;
+    }
+
+    .nav-list {
+        flex-direction: column;
+        align-items: center;
+        padding-top: 50px;
+        gap: 40px;
+    }
+
+    .nav-list a {
+        font-size: 24px;
+    }
+
+    .burger-menu {
+        display: flex;
+    }
+
+    .burger-menu.open span:nth-child(1) {
+        transform: translateY(8px) rotate(45deg);
+    }
+    
+    .burger-menu.open span:nth-child(2) {
+        opacity: 0;
+    }
+
+    .burger-menu.open span:nth-child(3) {
+        transform: translateY(-8px) rotate(-45deg);
+    }
+
+    .header-actions .login-btn {
+        display: none;
+    }
+}

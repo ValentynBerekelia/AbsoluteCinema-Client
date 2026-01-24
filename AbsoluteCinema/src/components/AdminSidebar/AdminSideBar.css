@@ -1,0 +1,25 @@
+.admin-sidebar {
+    width: 300px;
+    margin-top: 65px;
+}
+
+.admin-nav {
+    display: flex;
+    flex-direction: column;
+}
+
+.admin-nav-btn {
+    width: 100%;
+    background-color: #f1f1f1;
+    border: 1px solid #b3b3b3;
+    color: #333333;
+    font-weight: 700;
+    font-size: 32px;
+    padding: 12px;
+    cursor: pointer;
+    transition: 0.3s;
+}
+
+.admin-nav-btn:hover {
+    background-color: #e2e2e2;
+}
