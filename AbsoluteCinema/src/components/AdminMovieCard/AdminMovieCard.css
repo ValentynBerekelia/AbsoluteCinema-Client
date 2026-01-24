@@ -1,0 +1,120 @@
+.admin-movie-container {
+    margin-bottom: 40px;
+    width: 100%;
+    background-color: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+    color: #333;
+}
+
+.admin-movie-header-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-top: 12px;
+    margin-left: 20px;
+    padding-right: 24px;
+}
+
+.admin-movie-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.admin-halls-group {
+    display: flex;
+    gap: 8px;
+    justify-content: center;
+    align-items: center;
+}
+
+.admin-hall-badge {
+    background-color: #e8e8e8;
+    padding: 8px 12px;
+    border-radius: 16px;
+    margin-left: 10px;
+    font-size: 16px;
+}
+
+.admin-movie-main-content {
+    display: flex;
+    gap: 30px;
+    padding: 25px;
+}
+
+.admin-left-column {
+    flex: 0 0 308px;
+}
+
+.admin-poster-img {
+    width: 100%;
+    max-height: 462px;
+    border: 2px solid #777;
+    margin-bottom: 20px;
+}
+
+.status-box, .detail-box {
+    background-color: #e0e0e0;
+    border: 1px solid #bbb;
+    padding: 3px 10px;
+    min-width: 70px;
+    display: inline-block;
+    text-align: center;
+}
+
+.admin-right-column {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+}
+
+.details-grid {
+    margin-top: 12px;
+    margin-bottom: 12px;
+}
+
+.detail-entry {
+    margin-bottom: 12px;
+    font-size: 18px;
+}
+
+.sessions-by-date-group {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.date-block {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.session-date-header {
+    font-size: 14px;
+    font-weight: 700;
+    color: #555;
+}
+
+.sessions-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.admin-action-btn {
+    margin-top: auto;
+    width: 100%;
+    padding: 15px;
+    background-color: #dedede;
+    border: 1px solid #aaaaaa;
+    font-size: 24px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.admin-action-btn:hover {
+    background-color: #fff;
+}
