@@ -49,6 +49,7 @@
 .movie-card-right {
     display: flex;
     flex-direction: column;
+    flex: 1;
     gap: 24px;
     text-align: center;
     padding-left: 10px;
@@ -84,4 +85,5 @@
     font-weight: 700;
     font-size: 20px;
     color: #333333;
+    padding-bottom: 24px;
 }

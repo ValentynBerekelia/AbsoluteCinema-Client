@@ -1,9 +1,9 @@
 import { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
-import { HERO_MOVIES } from '../../data/movies';
 import './Hero.css'
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
+import { HERO_MOVIES } from '../../data/heroMovies';
 
 export const Hero = () => {
     const [currentIndex, setCurrentIndex] = useState(0);

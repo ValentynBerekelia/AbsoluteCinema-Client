@@ -16,7 +16,9 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
-body, html, #root {
+body,
+html,
+#root {
   margin: 0;
   padding: 0;
   width: 100%;
@@ -30,4 +32,3 @@ body, html, #root {
   margin: 0;
   padding: 0;
 }
-

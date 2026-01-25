@@ -3,7 +3,7 @@ export interface Session {
     time: string;
 }
 
-export interface Movie {
+export interface MovieCardInfo {
     id: string;
     title: string;
     image: string;
@@ -25,4 +25,11 @@ export interface MovieAdminCardInfo {
     Sessions: Session[];
     Halls: string[];
     poster: string;
+};
+
+export interface HeroBannerInfo {
+    id: string;
+    image: string;
+    title: string;
+    session: Session[];
 };
