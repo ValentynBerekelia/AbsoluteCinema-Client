@@ -1,9 +1,9 @@
-import { Movie } from '../../types/Movie';
+import { MovieCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import './MovieCard.css';
 
 interface MovieCardProps {
-    movie: Movie
+    movie: MovieCardInfo
 }
 
 export const MovieCard = ({movie}: MovieCardProps) => {

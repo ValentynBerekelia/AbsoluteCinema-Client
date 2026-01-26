@@ -5,13 +5,13 @@ import { faFacebook, faInstagram, faTelegram, faTwitter } from '@fortawesome/fre
 
 export const Footer = () => {
     return (
-        <footer className='footer'>
+        <footer className='footer' id='about-us'>
             <div className='footer-container'>
                 <div className='footer-column'>
                     <h3 className='footer-logo'>AbsoluteCinema</h3>
-                    <p className='footer-info'>...</p>
-                    <p className='footer-info'>...</p>
-                    <p className='footer-info'>...</p>
+                    <p className='footer-info'>Limbo City, 4 Dreamers Blvd, 5th Floor, 010101</p>
+                    <p className='footer-info'>Customer support hours: 10:00 AM to 8:00 PM</p>
+                    <p className='footer-info'>© 2026 AbsoluteCinema. All rights reserved.</p>
                 </div>
                 <div className='footer-column'>
                     <h3>Contact Us</h3>

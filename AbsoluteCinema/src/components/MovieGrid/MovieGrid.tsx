@@ -1,9 +1,9 @@
 import './MovieGrid.css'
 import { MovieCard } from '../MovieCard/MovieCard'
-import { Movie } from '../../types/Movie';
+import { MovieCardInfo } from '../../types/Movie';
 
 interface MovieGridProps {
-    movies: Movie[];
+    movies: MovieCardInfo[];
 }
 
 export const MovieGrid = ({movies} : MovieGridProps) => {
