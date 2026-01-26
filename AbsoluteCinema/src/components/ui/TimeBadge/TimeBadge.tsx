@@ -1,15 +1,3 @@
-<<<<<<< HEAD
-import './TimeBadge.css'
-
-interface TimeBadgeProps {
-    time: string;
-    onclick?: () => void;
-}
-
-export const TimeBadge = ({ time, onclick}: TimeBadgeProps) => {
-    return (
-        <button className='time-badge' onClick={onclick}>{time}</button>
-=======
 import { Session } from '../../../types/Movie';
 import './TimeBadge.css'
 
@@ -42,6 +30,5 @@ export const TimeBadge = ({ session, showPastDisabled=true, onclick}: TimeBadgeP
             >
                 {session.time}
         </button>
->>>>>>> 834622b22331f6651be5c585bed5baa69c9beb5a
     );
 };
