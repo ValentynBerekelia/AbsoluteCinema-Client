@@ -4,12 +4,10 @@ import { ADMIN_MOVIES_DATA } from "../../data/adminMovies";
 
 export const AdminMainPage = () => {
     return (
-        <div className="admin-main-content">
-            <div className="admin-cards-list">
-                {ADMIN_MOVIES_DATA.map(movie => (
-                    <AdminMovieCard key={movie.id} movie={movie} />
-                ))}
-            </div>
+        <div className="admin-cards-list">
+            {ADMIN_MOVIES_DATA.map(movie => (
+                <AdminMovieCard key={movie.id} movie={movie} />
+            ))}
         </div>
     );
 };
