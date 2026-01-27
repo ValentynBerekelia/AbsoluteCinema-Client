@@ -1,3 +1,4 @@
+import { Link } from 'react-router-dom';
 import { MovieCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import './MovieCard.css';
@@ -32,7 +33,7 @@ export const MovieCard = ({movie}: MovieCardProps) => {
                         <p><span>Director(s):</span> {movie.director}</p>
                         <p><span>Starring:</span> {movie.starring}</p>
                     </div>
-                    <a href="#" className='see-more'>See more details...</a>
+                    <Link to={`/movie/${movie.id}`} className='see-more'>See more details...</Link>
                 </div>
             </div>
         </div>

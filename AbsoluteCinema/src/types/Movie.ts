@@ -1,7 +1,6 @@
-export interface Session {
-    date: string;
-    time: string;
-}
+import { Genre } from "./Genre";
+import { Media } from "./Media";
+import { Session } from "./Session";
 
 export interface MovieCardInfo {
     id: string;
@@ -22,7 +21,7 @@ export interface MovieAdminCardInfo {
     duration : string; //cause in entity we have TimeSpan
     format: string;
     ageLimit: number;
-    Sessions: Session[];
+    sessions: Session[];
     Halls: string[];
     poster: string;
 };
@@ -31,5 +30,27 @@ export interface HeroBannerInfo {
     id: string;
     image: string;
     title: string;
-    session: Session[];
+    sessions: Session[];
+};
+
+export interface MovieDetails {
+    id: string;
+    title: string;
+    description: string;
+    rate: number;
+    duration: number;
+    ageLimit: number;
+    country: string;
+    studio: string;
+    language:string;
+    directors: string[];
+    starring: string[];
+    medias: Media[];
+    genres: Genre[];
+};
+
+export interface MovieRecommendation {
+    id: string;
+    title: string;
+    poster: string;
 };
