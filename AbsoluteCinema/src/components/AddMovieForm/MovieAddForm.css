@@ -1,0 +1,120 @@
+.movie-add-container {
+    background: #f5f5f5;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    padding: 20px;
+    width: 100%;
+    max-width: 900px;
+    font-family: 'Inter', sans-serif;
+}
+
+.movie-add-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.title-input-field {
+    font-size: 24px;
+    font-weight: bold;
+    background: transparent;
+    border: 1px solid #ccc;
+    padding: 4px 8px;
+    color: #333;
+    width: 60%;
+}
+
+.hall-dropdown {
+    background: #e0e0e0;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-weight: bold;
+}
+
+.hall-dropdown select {
+    background: transparent;
+    border: none;
+    font-weight: bold;
+    cursor: pointer;
+}
+
+.movie-add-body {
+    display: flex;
+    gap: 30px;
+}
+
+.poster-upload-section {
+    flex: 0 0 240px;
+}
+
+.poster-skeleton {
+    width: 100%;
+    aspect-ratio: 2 / 3;
+    border: 2px solid #ccc;
+    background: #eee;
+    position: relative;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+
+.skeleton-x {
+    font-size: 80px;
+    color: #ccc;
+    font-weight: 100;
+}
+
+.upload-bottom-bar {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 50px;
+    background: #d9d9d9;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    cursor: pointer;
+}
+
+.form-fields-section {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.form-group {
+    display: flex;
+    align-items: center;
+}
+
+.form-group label {
+    flex: 0 0 100px;
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.form-group input, .form-group textarea {
+    flex: 1;
+    padding: 6px 10px;
+    border: 1px solid #ccc;
+    background: #fff;
+    font-size: 14px;
+}
+
+.save-details-button {
+    margin-top: 15px;
+    padding: 12px;
+    background: #d9d9d9;
+    border: 1px solid #999;
+    font-weight: bold;
+    font-size: 18px;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.save-details-button:hover {
+    background: #ccc;
+}
