@@ -4,6 +4,7 @@ import { MainLayout } from './components/layout/MainLayout'
 import { Home } from './pages/Home/Home'
 import { AdminLayout } from './components/layout/AdminLayout/AdminLayout'
 import { AdminMainPage } from './pages/Admin/AdminMainPage'
+import { AdminAddMovie } from './pages/Admin/AdminAddMovie'
 
 function App() {
 
@@ -25,7 +26,15 @@ function App() {
           </AdminLayout>
         }
       />
-    </Routes>
+             <Route
+         path="/admin/movies"
+         element={
+           <AdminLayout>
+             <AdminAddMovie />
+           </AdminLayout>
+         }
+       />
+     </Routes>
   )
 }
 
