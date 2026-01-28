@@ -1,0 +1,173 @@
+.stills-section {
+    width: 100%;
+    max-width: 1280px;
+    margin: 40px auto;
+}
+
+.stills-title {
+    padding: 0 96px;
+    color:#333;
+    font-size: 48px;
+    font-weight: 400;
+}
+
+.stills-carousel-container {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 20px;
+}
+
+.stills-track {
+    display: flex;
+    gap: 24px;
+    flex: 1;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.still-card {
+    flex: 1 1 calc((100% - 48px) / 3);
+    min-width: 280px;
+    max-width: calc((100% - 48px) / 3);
+    height: 300px;
+    border-radius: 12px;
+    overflow: hidden;
+    background-color: #eee;
+    transition: transform 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94),
+        opacity 0.7s ease-out,
+        filter 0.3s ease;
+}
+
+.still-card:hover {
+    transform: scale(1.02);
+    filter: brightness(1.05);
+}
+
+.still-card.slide-left {
+    animation: slideLeft 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.still-card.slide-right {
+    animation: slideRight 0.7s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+}
+
+.still-card img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0.5;
+    }
+
+    to {
+        opacity: 1;
+    }
+}
+
+@keyframes slideLeft {
+    0% {
+        transform: translateX(120%);
+        opacity: 0;
+    }
+
+    60% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+@keyframes slideRight {
+    0% {
+        transform: translateX(-120%);
+        opacity: 0;
+    }
+
+    60% {
+        opacity: 0.8;
+    }
+
+    100% {
+        transform: translateX(0);
+        opacity: 1;
+    }
+}
+
+.carousel-btn {
+    background: none;
+    border: none;
+    font-size: 32px;
+    color: #b3b3b3;
+    cursor: pointer;
+    padding: 10px;
+    transition: color 0.2s;
+}
+
+.carousel-btn:hover {
+    color: #333;
+}
+
+/* Tablet and smaller screens - 2 images */
+@media (max-width: 1024px) {
+    .stills-section {
+        margin: 30px auto;
+    }
+
+    .stills-title {
+        padding: 0 60px;
+        font-size: 36px;
+    }
+
+    .stills-track {
+        gap: 20px;
+    }
+
+    .still-card {
+        width: calc((100% - 20px) / 2);
+        min-width: 250px;
+        height: 250px;
+    }
+
+    .carousel-btn {
+        font-size: 28px;
+    }
+}
+
+/* Mobile screens - 1 image */
+@media (max-width: 640px) {
+    .stills-section {
+        margin: 20px auto;
+    }
+
+    .stills-title {
+        padding: 0 40px;
+        font-size: 28px;
+    }
+
+    .stills-carousel-container {
+        gap: 12px;
+    }
+
+    .stills-track {
+        gap: 0;
+    }
+
+    .still-card {
+        width: 100%;
+        min-width: 280px;
+        height: 220px;
+    }
+
+    .carousel-btn {
+        font-size: 24px;
+        padding: 8px;
+    }
+}

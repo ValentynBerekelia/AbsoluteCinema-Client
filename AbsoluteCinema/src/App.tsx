@@ -3,7 +3,9 @@ import './App.css'
 import { MainLayout } from './components/layout/MainLayout'
 import { Home } from './pages/Home/Home'
 import { AdminLayout } from './components/layout/AdminLayout/AdminLayout'
-import { AdminMainPage } from './pages/Admin/AdminMainPage'
+import { AddMoviePage } from './pages/Admin/Movies/AddMovie/AddMoviePage'
+import { AdminMainPage } from './pages/Admin/MainPage/AdminMainPage'
+import { MovieDetailsPage } from './pages/MovieDetails/MovieDetailsPage'
 
 function App() {
 
@@ -13,7 +15,7 @@ function App() {
         path='/'
         element={
           <MainLayout>
-            <Home/>
+            <Home />
           </MainLayout>
         }
       />
@@ -21,10 +23,34 @@ function App() {
         path='/admin'
         element={
           <AdminLayout>
+            <AdminMainPage />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path='/admin/movies'
+        element={
+          <AdminLayout>
             <AdminMainPage/>
           </AdminLayout>
         }
       />
+      <Route
+        path='/admin/movies/add'
+        element={
+          <AdminLayout>
+            <AddMoviePage/>
+          </AdminLayout>
+        }
+      />
+        path='/movie/:id'
+        element={
+          <MainLayout>
+            <MovieDetailsPage/>
+          </MainLayout>
+        }
+      >
+      </Route>
     </Routes>
   )
 }
