@@ -1,3 +1,4 @@
+import { useNavigate } from 'react-router-dom';
 import { MovieAdminCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import './AdminMovieCard.css';
@@ -7,6 +8,8 @@ interface AdminMovieCardProps {
 }
 
 export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
+    const navigate = useNavigate();
+    
     const groupedSessions = movie.Sessions.reduce((acc, session) => {
         const date = session.date;
         if (!acc[date]) {
@@ -80,7 +83,9 @@ export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
                         </div>
                     </div>
 
-                    <button className='admin-action-btn'>Edit details</button>
+                    <button className='admin-action-btn' onClick={() => navigate(`/admin/movies/${movie.id}/edit`)}>
+                        Edit details
+                    </button>
                 </div>
             </div>
         </div>

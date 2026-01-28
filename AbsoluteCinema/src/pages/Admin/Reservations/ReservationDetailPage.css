@@ -1,0 +1,110 @@
+.reservation-detail-page {
+    padding: 0;
+}
+
+.page-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.page-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.back-btn {
+    padding: 8px 16px;
+    background: #dedede;
+    border: 1px solid #aaaaaa;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: #fff;
+}
+
+.reservation-info {
+    background: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+    padding: 32px;
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.info-section {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.info-section h3 {
+    margin: 0 0 16px 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.info-item {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 12px 0;
+    border-bottom: 1px solid #dedede;
+}
+
+.info-item:last-child {
+    border-bottom: none;
+}
+
+.info-item label {
+    min-width: 150px;
+    color: #666;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.info-item span {
+    color: #333;
+    font-size: 16px;
+}
+
+.status-badge {
+    display: inline-block;
+    padding: 4px 12px;
+    border-radius: 4px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.status-confirmed {
+    background: #c8e6c9;
+    color: #2e7d32;
+}
+
+.status-pending {
+    background: #fff9c4;
+    color: #f57f17;
+}
+
+.status-cancelled {
+    background: #ffcdd2;
+    color: #c62828;
+}
+
+.loading-state {
+    padding: 32px;
+    text-align: center;
+    color: #333;
+    font-size: 18px;
+}

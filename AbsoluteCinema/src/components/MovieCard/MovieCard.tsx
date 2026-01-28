@@ -1,5 +1,6 @@
 import { MovieCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
+import { useNavigate } from 'react-router-dom';
 import './MovieCard.css';
 
 interface MovieCardProps {
@@ -7,6 +8,11 @@ interface MovieCardProps {
 }
 
 export const MovieCard = ({movie}: MovieCardProps) => {
+    const navigate = useNavigate();
+
+    const handleSeeMore = () => {
+        navigate(`/movie/${movie.id}`);
+    };
     return (
         <div className='movie-card'>
             <div className='movie-card-header'>
@@ -32,7 +38,7 @@ export const MovieCard = ({movie}: MovieCardProps) => {
                         <p><span>Director(s):</span> {movie.director}</p>
                         <p><span>Starring:</span> {movie.starring}</p>
                     </div>
-                    <a href="#" className='see-more'>See more details...</a>
+                    <a onClick={handleSeeMore} className='see-more'>See more details...</a>
                 </div>
             </div>
         </div>

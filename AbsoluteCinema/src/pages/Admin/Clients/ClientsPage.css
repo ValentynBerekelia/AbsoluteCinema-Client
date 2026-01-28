@@ -1,0 +1,137 @@
+.clients-page {
+    padding: 0;
+}
+
+.loading-state,
+.no-data {
+    padding: 60px 20px;
+    text-align: center;
+    background: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+    margin: 20px 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.error-message {
+    padding: 16px 20px;
+    background: #fff3cd;
+    color: #856404;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.clients-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.clients-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.clients-stats {
+    display: flex;
+    gap: 20px;
+}
+
+.stat-item {
+    padding: 10px 20px;
+    background: #e8e8e8;
+    border: 1px solid #bbb;
+    color: #333;
+    border-radius: 4px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.clients-table-wrapper {
+    background: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.clients-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.clients-table thead {
+    background: #e0e0e0;
+    border-bottom: 2px solid #9a9a9a;
+}
+
+.clients-table th {
+    padding: 16px 20px;
+    text-align: left;
+    font-weight: 700;
+    color: #333;
+    font-size: 18px;
+}
+
+.clients-table td {
+    padding: 16px 20px;
+    border-bottom: 1px solid #b3b3b3;
+    color: #333;
+    font-size: 16px;
+}
+
+.clients-table tbody tr:hover {
+    background: #e8e8e8;
+}
+
+.bookings-badge {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #e8e8e8;
+    border: 1px solid #bbb;
+    color: #333;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.action-buttons {
+    display: flex;
+    gap: 10px;
+}
+
+.view-btn,
+.edit-btn {
+    padding: 8px 16px;
+    border: 1px solid #aaaaaa;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.view-btn {
+    background: #dedede;
+    color: #333;
+}
+
+.view-btn:hover {
+    background: #fff;
+}
+
+.edit-btn {
+    background: #dedede;
+    color: #333;
+}
+
+.edit-btn:hover {
+    background: #fff;
+}

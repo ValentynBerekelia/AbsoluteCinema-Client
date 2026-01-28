@@ -1,0 +1,400 @@
+.add-movie-page {
+    padding: 0;
+}
+
+.add-movie-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.add-movie-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.add-movie-form {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+}
+
+.form-section {
+    background: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+    padding: 32px;
+}
+
+.form-section h3 {
+    margin: 0 0 24px 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.form-columns {
+    display: grid;
+    grid-template-columns: 308px 1fr;
+    gap: 30px;
+}
+
+/* Poster Upload */
+.poster-upload {
+    width: 100%;
+}
+
+.poster-upload-label {
+    display: block;
+    width: 100%;
+    height: 462px;
+    border: 2px solid #777;
+    border-radius: 4px;
+    cursor: pointer;
+    overflow: hidden;
+}
+
+.poster-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    background: #e8e8e8;
+    color: #666;
+    font-size: 18px;
+    font-weight: 600;
+}
+
+.upload-icon {
+    font-size: 48px;
+    margin-bottom: 12px;
+}
+
+.poster-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.poster-input {
+    display: none;
+}
+
+/* Form Groups */
+.form-right {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.form-group {
+    display: flex;
+    flex-direction: column;
+}
+
+.form-group label {
+    margin-bottom: 8px;
+    font-weight: 700;
+    color: #333;
+    font-size: 16px;
+}
+
+.form-input {
+    padding: 12px 16px;
+    border: 1px solid #b3b3b3;
+    border-radius: 4px;
+    font-size: 16px;
+    background: #fff;
+    color: #333;
+}
+
+.form-input:focus {
+    outline: none;
+    border-color: #777;
+}
+
+.form-textarea {
+    resize: vertical;
+    min-height: 80px;
+    font-family: inherit;
+}
+
+.form-row-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+}
+
+.save-details-btn {
+    padding: 12px 24px;
+    background: #dedede;
+    border: 1px solid #aaaaaa;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    transition: 0.2s;
+    align-self: flex-start;
+}
+
+.save-details-btn:hover {
+    background: #fff;
+}
+
+/* Sessions Section */
+.sessions-section {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.session-card {
+    background: #fff;
+    border: 1px solid #b3b3b3;
+    border-radius: 4px;
+    padding: 24px;
+}
+
+.session-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.session-header h4 {
+    margin: 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.remove-session-btn {
+    padding: 4px 12px;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.remove-session-btn:hover {
+    background: #f5c6cb;
+}
+
+.session-dates {
+    display: grid;
+    grid-template-columns: 1fr 1fr auto;
+    gap: 16px;
+    margin-bottom: 20px;
+}
+
+.time-input {
+    width: 120px;
+}
+
+.hall-selector {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+.hall-selector label {
+    font-weight: 700;
+    color: #333;
+    font-size: 16px;
+    min-width: 60px;
+}
+
+.hall-select {
+    min-width: 200px;
+    padding: 8px 12px;
+    border: 1px solid #b3b3b3;
+    border-radius: 4px;
+    background: #fff;
+    color: #333;
+    font-size: 14px;
+}
+
+/* Seats Grid */
+.seats-grid {
+    display: grid;
+    grid-template-columns: repeat(10, 1fr);
+    gap: 2px;
+    margin-bottom: 24px;
+    padding: 12px;
+    background: transparent;
+    border-radius: 0px;
+    max-width: 280px;
+}
+
+.seat-placeholder {
+    width: 28px;
+    height: 28px;
+    background: #b3b3b3;
+    border-radius: 2px;
+}
+
+/* Ticket Prices */
+.ticket-prices h5 {
+    margin: 0 0 16px 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.prices-row {
+    display: grid;
+    grid-template-columns: 1fr 1fr 1fr;
+    gap: 20px;
+    margin-bottom: 20px;
+}
+
+.checkbox-group {
+    display: flex;
+    flex-direction: row;
+    align-items: center;
+    gap: 8px;
+}
+
+.checkbox-group input[type="checkbox"] {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.checkbox-group label {
+    margin: 0;
+    font-weight: 600;
+}
+
+.price-input {
+    flex: 1;
+}
+
+.save-session-btn {
+    width: 100%;
+    padding: 12px 24px;
+    background: #dedede;
+    border: 1px solid #aaaaaa;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.save-session-btn:hover {
+    background: #fff;
+}
+
+.add-session-btn {
+    width: 100%;
+    padding: 16px;
+    background: #f1f1f1;
+    border: 2px dashed #9a9a9a;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 32px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.add-session-btn:hover {
+    background: #e8e8e8;
+}
+
+/* Form Actions */
+.form-actions {
+    display: flex;
+    gap: 16px;
+    padding: 24px 32px;
+    background: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+}
+
+.submit-btn {
+    padding: 14px 32px;
+    background: #dedede;
+    border: 1px solid #aaaaaa;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background: #fff;
+}
+
+.submit-btn:disabled {
+    background: #e8e8e8;
+    border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.cancel-btn {
+    padding: 14px 32px;
+    background: #f8d7da;
+    border: 1px solid #f5c6cb;
+    color: #721c24;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 18px;
+    font-weight: 700;
+    transition: 0.2s;
+}
+
+.cancel-btn:hover:not(:disabled) {
+    background: #f5c6cb;
+}
+
+.cancel-btn:disabled {
+    background: #e8e8e8;
+    border-color: #ccc;
+    cursor: not-allowed;
+    opacity: 0.6;
+}
+
+.error-message {
+    padding: 16px 20px;
+    background: #fff3cd;
+    color: #856404;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.back-btn {
+    padding: 10px 20px;
+    background: #dedede;
+    border: 1px solid #aaaaaa;
+    color: #333;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.back-btn:hover {
+    background: #fff;
+}

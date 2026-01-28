@@ -86,4 +86,10 @@
     font-size: 20px;
     color: #333333;
     padding-bottom: 24px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.movie-card-right a:hover {
+    color: #9a9a9a;
 }

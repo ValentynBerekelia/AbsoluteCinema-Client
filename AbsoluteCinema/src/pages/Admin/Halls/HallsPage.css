@@ -1,0 +1,164 @@
+.halls-page {
+    padding: 0;
+}
+
+.loading-state,
+.no-data {
+    padding: 60px 20px;
+    text-align: center;
+    background: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+    margin: 20px 0;
+    color: #333;
+    font-size: 18px;
+    font-weight: 500;
+}
+
+.error-message {
+    padding: 16px 20px;
+    background: #fff3cd;
+    color: #856404;
+    border: 2px solid #ffc107;
+    border-radius: 8px;
+    margin-bottom: 20px;
+    font-size: 16px;
+    font-weight: 600;
+}
+
+.halls-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 32px;
+}
+
+.halls-header h2 {
+    margin: 0;
+    color: #333;
+    font-size: 32px;
+    font-weight: 700;
+}
+
+.add-hall-btn {
+    padding: 12px 24px;
+    background-color: #dedede;
+    border: 1px solid #aaaaaa;
+    color: #333;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: 0.2s;
+}
+
+.add-hall-btn:hover {
+    background-color: #fff;
+}
+
+.halls-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+    gap: 24px;
+}
+
+.hall-card {
+    background: #f1f1f1;
+    border: 2px solid #9a9a9a;
+    border-radius: 8px;
+    padding: 24px;
+}
+
+.hall-card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #b3b3b3;
+}
+
+.hall-card-header h3 {
+    margin: 0;
+    color: #333;
+    font-size: 24px;
+    font-weight: 700;
+}
+
+.hall-type-badge {
+    padding: 6px 14px;
+    background: #e8e8e8;
+    border: 1px solid #bbb;
+    color: #333;
+    border-radius: 16px;
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.hall-info {
+    margin-bottom: 20px;
+}
+
+.info-item {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 12px;
+}
+
+.info-label {
+    color: #555;
+    font-size: 16px;
+    font-weight: 500;
+}
+
+.info-value {
+    color: #333;
+    font-size: 16px;
+    font-weight: 700;
+}
+
+.status-active {
+    display: inline-block;
+    padding: 6px 14px;
+    background: #d4edda;
+    color: #155724;
+    border: 1px solid #c3e6cb;
+    border-radius: 16px;
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.hall-actions {
+    display: flex;
+    gap: 12px;
+}
+
+.edit-hall-btn,
+.view-schedule-btn {
+    flex: 1;
+    padding: 10px 16px;
+    border: 1px solid #aaaaaa;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    font-weight: 600;
+    transition: 0.2s;
+}
+
+.edit-hall-btn {
+    background: #dedede;
+    color: #333;
+}
+
+.edit-hall-btn:hover {
+    background: #fff;
+}
+
+.view-schedule-btn {
+    background: #dedede;
+    color: #333;
+}
+
+.view-schedule-btn:hover {
+    background: #fff;
+}
