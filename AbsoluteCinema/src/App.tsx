@@ -31,7 +31,7 @@ function App() {
         path='/admin/movies'
         element={
           <AdminLayout>
-            <AdminMainPage/>
+            <AdminMainPage />
           </AdminLayout>
         }
       />
@@ -39,18 +39,18 @@ function App() {
         path='/admin/movies/add'
         element={
           <AdminLayout>
-            <AddMoviePage/>
+            <AddMoviePage />
           </AdminLayout>
         }
       />
+      <Route
         path='/movie/:id'
         element={
           <MainLayout>
-            <MovieDetailsPage/>
+            <MovieDetailsPage />
           </MainLayout>
         }
-      >
-      </Route>
+      />
     </Routes>
   )
 }

@@ -5,7 +5,6 @@ import './AddMoviePage.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieAddForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
 import { createMovie } from '../../../../api/movies';
-import { minutesToTimeSpan } from '../../../../utils/durationConverter';
 
 interface SessionFormData {
     id: string;

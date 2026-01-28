@@ -1,3 +1,4 @@
+import { defaultMoviesQueryParams, MoviesQueryParameters } from '@/types/MoviesQueryParameters';
 import { CreateMovieRequest } from '../types/CreateMovieRequest';
 import axiosInstance from './axiosInstance';
 
@@ -26,10 +27,5 @@ export const getMovies = async (params?: MoviesQueryParameters) => {
 export const getMovieById = async (id: string) => {
   const response = await axiosInstance.get(`/movie/${id}`);
   console.log(response);
-  return response.data;
-};
-
-export const deleteMovie = async (id: string | number) => {
-  const response = await axiosInstance.delete(`/movies/${id}`);
   return response.data;
 };
