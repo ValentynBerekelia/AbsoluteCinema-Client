@@ -1,6 +1,7 @@
 import { Genre } from "./Genre";
 import { Media } from "./Media";
 import { Session } from "./Session";
+import {convertIsoToDateTime} from "@/utils/convertToDataAndTime";
 
 export interface MovieCardInfo {
     id: string;
