@@ -12,7 +12,7 @@ export const ADMIN_MOVIES_DATA: MovieAdminCardInfo[] = [
         ageLimit: 16,
         poster: inceptionImg,
         Halls: ["Grand Hall", "Blue Room"],
-        Sessions: [
+        sessions: [
             { date: "2026-01-23", time: "11:00" },
             { date: "2026-01-23", time: "14:30" },
             { date: "2026-01-24", time: "19:00" }
@@ -26,7 +26,7 @@ export const ADMIN_MOVIES_DATA: MovieAdminCardInfo[] = [
         ageLimit: 12,
         poster: interstellarImg,
         Halls: ["IMAX Premium"],
-        Sessions: [
+        sessions: [
             { date: "2026-01-23", time: "12:00" },
             { date: "2026-01-23", time: "15:00" },
             { date: "2026-01-23", time: "18:00" },
@@ -41,7 +41,7 @@ export const ADMIN_MOVIES_DATA: MovieAdminCardInfo[] = [
         ageLimit: 16,
         poster: matrixImg,
         Halls: ["Hall 3", "Retro Cinema"],
-        Sessions: [
+        sessions: [
             { date: "2026-01-23", time: "12:00" },
             { date: "2026-01-23", time: "15:00" }
         ]
