@@ -1,21 +1,19 @@
 import React, { useState, ChangeEvent } from 'react';
+import { MovieFormData } from '../../types/CreateMovieRequest';
+import { MultiSelectField } from '../MultiSelectField/MultiSelectField';
 import './MovieAddForm.css';
-import { CreateMovieRequest } from '../../types/CreateMovieRequest';
 
-export const MovieAddForm = () => {
+interface Props {
+    formData: MovieFormData;
+    setFormData: React.Dispatch<React.SetStateAction<MovieFormData>>;
+}
+
+const GENRES_LIST = ['Action', 'Sci-Fi', 'Drama', 'Comedy', 'Thriller', 'Horror'];
+const DIRECTORS_LIST = ['Christopher Nolan', 'James Cameron', 'Quentin Tarantino', 'Denis Villeneuve'];
+const ACTORS_LIST = ['Leonardo DiCaprio', 'Cillian Murphy', 'Tom Hardy', 'Anne Hathaway'];
+
+export const MovieAddForm = ({ formData, setFormData }: Props) => {
     const [posterPreview, setPosterPreview] = useState<string | null>(null);
-
-    const [formData, setFormData] = useState<CreateMovieRequest>({
-        movieName: 'Add Movie Title',
-        description: '',
-        rate: 0,
-        ageLimit: 0,
-        duration: { ticks: 0 },
-        country: '',
-        studio: '',
-        language: '',
-        genres: []
-    });
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
@@ -26,6 +24,7 @@ export const MovieAddForm = () => {
         const file = e.target.files?.[0];
         if (file) {
             setPosterPreview(URL.createObjectURL(file));
+            setFormData(prev => ({ ...prev, poster: file }));
         }
     };
 
@@ -56,44 +55,49 @@ export const MovieAddForm = () => {
                 </div>
 
                 <div className="form-fields-section">
-                    <div className="form-group">
-                        <label>Rate</label>
-                        <input name="rate" type="number" step="0.1" onChange={handleInputChange} />
+                    <div className="form-group-multi">
+                        <div className="form-group">
+                            <label>Rate</label>
+                            <input name="rate" type="number" step="0.1" value={formData.rate} onChange={handleInputChange} />
+                        </div>
+                        <div className="form-group">
+                            <label>Age limit</label>
+                            <input name="ageLimit" type="number" value={formData.ageLimit} onChange={handleInputChange} />
+                        </div>
                     </div>
-                    <div className="form-group">
-                        <label>Age limit</label>
-                        <input name="ageLimit" type="number" onChange={handleInputChange} />
-                    </div>
-                    <div className="form-group">
-                        <label>Duration</label>
-                        <input name="duration" type="number" placeholder="Minutes" />
-                    </div>
-                    <div className="form-group">
-                        <label>Language</label>
-                        <input name="language" type="text" onChange={handleInputChange} />
+
+                    <div className="form-group-multi">
+                        <div className="form-group">
+                            <label>Duration</label>
+                            <input
+                                type="number"
+                                placeholder="Min"
+                                onChange={(e) => setFormData(p => ({ ...p, duration: { ticks: Number(e.target.value) * 600000000 } }))}
+                            />
+                        </div>
+                        <div className="form-group">
+                            <label>Language</label>
+                            <input name="language" type="text" value={formData.language} onChange={handleInputChange} />
+                        </div>
                     </div>
                     <div className="form-group-multi">
                         <div className="form-group">
                             <label>Country</label>
-                            <input name="country" type="text" onChange={handleInputChange} />
+                            <input name="country" type="text" value={formData.country} onChange={handleInputChange} />
                         </div>
                         <div className="form-group">
                             <label>Studio</label>
-                            <input name="studio" type="text" onChange={handleInputChange} />
+                            <input name="studio" type="text" value={formData.studio} onChange={handleInputChange} />
                         </div>
                     </div>
+                    <MultiSelectField label="Genres" options={GENRES_LIST} selectedValues={formData.genres} onChange={(vals) => setFormData(p => ({ ...p, genres: vals }))} placeholder="Select Genres" />
+                    <MultiSelectField label="Directors" options={DIRECTORS_LIST} selectedValues={formData.directors || []} onChange={(vals) => setFormData(p => ({ ...p, directors: vals }))} placeholder="Select Directors" />
+                    <MultiSelectField label="Starring" options={ACTORS_LIST} selectedValues={formData.starring || []} onChange={(vals) => setFormData(p => ({ ...p, starring: vals }))} placeholder="Select Actors" />
 
                     <div className="form-group description-row">
                         <label>Description</label>
-                        <textarea
-                            name="description"
-                            value={formData.description}
-                            onChange={handleInputChange}
-                            placeholder="Add movie description here..."
-                        />
+                        <textarea name="description" value={formData.description} onChange={handleInputChange} placeholder="Description..." />
                     </div>
-
-                    <button className="save-details-button">Save details</button>
                 </div>
             </div>
         </div>

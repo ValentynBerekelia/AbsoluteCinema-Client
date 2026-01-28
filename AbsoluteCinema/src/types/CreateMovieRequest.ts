@@ -10,3 +10,9 @@ export interface CreateMovieRequest {
     language: string;
     genres: string[];
 }
+
+export interface MovieFormData extends CreateMovieRequest {
+    directors: string[];
+    starring: string[];
+    poster: File | null;
+}

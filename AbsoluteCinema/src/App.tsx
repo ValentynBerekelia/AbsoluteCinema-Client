@@ -3,8 +3,8 @@ import './App.css'
 import { MainLayout } from './components/layout/MainLayout'
 import { Home } from './pages/Home/Home'
 import { AdminLayout } from './components/layout/AdminLayout/AdminLayout'
+import { AddMoviePage } from './pages/Admin/Movies/AddMovie/AddMoviePage'
 import { AdminMainPage } from './pages/Admin/MainPage/AdminMainPage'
-import { AdminAddMovie } from './pages/Admin/AddMovie/AdminAddMovie'
 
 function App() {
 
@@ -22,15 +22,23 @@ function App() {
         path='/admin'
         element={
           <AdminLayout>
-            <AdminMainPage />
+            <AdminMainPage/>
           </AdminLayout>
         }
       />
       <Route
-        path="/admin/movies"
+        path='/admin/movies'
         element={
           <AdminLayout>
-            <AdminAddMovie />
+            <AdminMainPage/>
+          </AdminLayout>
+        }
+      />
+      <Route
+        path='/admin/movies/add'
+        element={
+          <AdminLayout>
+            <AddMoviePage/>
           </AdminLayout>
         }
       />
