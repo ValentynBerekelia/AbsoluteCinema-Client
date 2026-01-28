@@ -30,8 +30,6 @@ export const MovieCard = ({movie}: MovieCardProps) => {
                     <div className='movie-card-description'>
                         <p><span>Genre:</span> {movie.genre || "Genre not specified"}</p>
                         <p><span>Duration:</span> {movie.duration} min</p>
-                        <p><span>Director(s):</span> {movie.director}</p>
-                        <p><span>Starring:</span> {movie.starring}</p>
                     </div>
                     <Link to={`/movie/${movie.id}`} className='see-more'>See more details...</Link>
                 </div>
