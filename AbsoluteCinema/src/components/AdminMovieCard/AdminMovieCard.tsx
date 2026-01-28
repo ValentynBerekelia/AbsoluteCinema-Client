@@ -7,14 +7,14 @@ interface AdminMovieCardProps {
 }
 
 export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
-    const groupedSessions = movie.Sessions.reduce((acc, session) => {
+    const groupedSessions = movie.sessions.reduce((acc, session) => {
         const date = session.date;
         if (!acc[date]) {
             acc[date] = [];
         }
         acc[date].push(session);
         return acc;
-    }, {} as Record<string, typeof movie.Sessions>);
+    }, {} as Record<string, typeof movie.sessions>);
 
     return (
         <div className='admin-movie-container'>
