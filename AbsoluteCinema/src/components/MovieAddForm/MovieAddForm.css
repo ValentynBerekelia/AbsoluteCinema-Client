@@ -57,6 +57,13 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    overflow: hidden;
+}
+
+.poster-img-preview {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
 }
 
 .skeleton-x {
@@ -65,7 +72,7 @@
     font-weight: 100;
 }
 
-.upload-bottom-bar {
+.upload-icon-box {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -76,6 +83,10 @@
     justify-content: center;
     align-items: center;
     cursor: pointer;
+}
+
+.arrow-down {
+    font-size: 24px;
 }
 
 .form-fields-section {
@@ -90,18 +101,35 @@
     align-items: center;
 }
 
+.form-group-multi {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
 .form-group label {
     flex: 0 0 100px;
     font-weight: bold;
     font-size: 14px;
 }
 
-.form-group input, .form-group textarea {
+.form-group input, 
+.form-group textarea {
     flex: 1;
     padding: 6px 10px;
     border: 1px solid #ccc;
     background: #fff;
     font-size: 14px;
+}
+
+.description-row {
+    align-items: flex-start;
+    margin-top: 10px;
+}
+
+.description-row textarea {
+    height: 80px;
+    resize: none;
 }
 
 .save-details-button {
@@ -113,6 +141,7 @@
     font-size: 18px;
     cursor: pointer;
     border-radius: 4px;
+    transition: background 0.2s;
 }
 
 .save-details-button:hover {
