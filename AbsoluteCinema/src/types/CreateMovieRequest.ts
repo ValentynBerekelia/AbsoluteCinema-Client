@@ -4,7 +4,7 @@ export interface CreateMovieRequest {
     description: string;
     rate: number;
     ageLimit: number;
-    duration: { ticks: number; };
+    duration: string;
     country: string;
     studio: string;
     language: string;

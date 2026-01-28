@@ -5,6 +5,7 @@ import './AddMoviePage.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieAddForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
 import { createMovie } from '../../../../api/movies';
+import { minutesToTimeSpan } from '../../../../utils/durationConverter';
 
 interface SessionFormData {
     id: string;
@@ -27,7 +28,7 @@ export const AddMoviePage = () => {
         description: '',
         rate: 0,
         ageLimit: 0,
-        duration: { ticks: 0 },
+        duration: '',
         country: '',
         studio: '',
         language: '',
@@ -100,12 +101,13 @@ export const AddMoviePage = () => {
         setError(null);
 
         try {
+
             const moviePayload: CreateMovieRequest = {
                 movieName: formData.movieName,
                 description: formData.description,
                 rate: formData.rate,
                 ageLimit: formData.ageLimit,
-                duration: { ticks: Number(formData.duration.ticks) },
+                duration: formData.duration,
                 country: formData.country,
                 studio: formData.studio,
                 language: formData.language,
