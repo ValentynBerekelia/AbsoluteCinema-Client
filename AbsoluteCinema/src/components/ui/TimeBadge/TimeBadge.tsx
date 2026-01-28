@@ -1,4 +1,4 @@
-import { Session } from '../../../types/Movie';
+import { Session } from "../../../types/Session";
 import './TimeBadge.css'
 
 interface TimeBadgeProps {

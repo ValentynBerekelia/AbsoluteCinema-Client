@@ -5,6 +5,7 @@ import { Home } from './pages/Home/Home'
 import { AdminLayout } from './components/layout/AdminLayout/AdminLayout'
 import { AddMoviePage } from './pages/Admin/Movies/AddMovie/AddMoviePage'
 import { AdminMainPage } from './pages/Admin/MainPage/AdminMainPage'
+import { MovieDetailsPage } from './pages/MovieDetails/MovieDetailsPage'
 
 function App() {
 
@@ -22,7 +23,7 @@ function App() {
         path='/admin'
         element={
           <AdminLayout>
-            <AdminMainPage/>
+            <AdminMainPage />
           </AdminLayout>
         }
       />
@@ -42,6 +43,14 @@ function App() {
           </AdminLayout>
         }
       />
+        path='/movie/:id'
+        element={
+          <MainLayout>
+            <MovieDetailsPage/>
+          </MainLayout>
+        }
+      >
+      </Route>
     </Routes>
   )
 }
