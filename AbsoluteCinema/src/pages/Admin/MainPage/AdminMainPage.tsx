@@ -1,6 +1,6 @@
-import { AdminHeader } from "../../components/AdminHeader/AdminHeader";
-import { AdminMovieCard } from "../../components/AdminMovieCard/AdminMovieCard";
-import { ADMIN_MOVIES_DATA } from "../../data/adminMovies";
+import { AdminHeader } from "../../../components/layout/AdminHeader/AdminHeader";
+import { AdminMovieCard } from "../../../components/AdminMovieCard/AdminMovieCard";
+import { ADMIN_MOVIES_DATA } from "../../../data/adminMovies";
 
 export const AdminMainPage = () => {
     return (
