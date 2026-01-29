@@ -26,6 +26,6 @@ export const getMovies = async (params?: MoviesQueryParameters) => {
 
 export const getMovieById = async (id: string) => {
   const response = await axiosInstance.get(`/movie/${id}`);
-  console.log(response);
+  console.log("HH", response);
   return response.data;
 };

@@ -2,6 +2,8 @@ import { Genre } from "./Genre";
 import { Media } from "./Media";
 import { Session } from "./Session";
 import {convertIsoToDateTime} from "@/utils/convertToDataAndTime";
+import inceptionImg from "@/assets/posters/Inception3-2.jpg";
+import inceptionBannerImg from "@/assets/banners/Inception.jpg";
 
 export interface MovieCardInfo {
     id: string;
@@ -48,6 +50,47 @@ export interface MovieDetails {
     starring: string[];
     medias: Media[];
     genres: Genre[];
+};
+
+export const mapMovieDetailsFromApi = async (
+    data: any
+): Promise<MovieDetails> => {
+
+    let movieId = data.movieId;
+    if (typeof movieId === 'object' && movieId?.id) {
+        movieId = movieId.id;
+    }
+
+    const movieDetails: MovieDetails = {
+        id: String(movieId),
+        title: data.title,
+        description: data.description,
+        rate: data.rate,
+        duration: data.duration,
+        ageLimit: data.ageLimit,
+        country: data.country,
+        studio: data.studio,
+        language: data.language,
+        genres: data.genres,
+        directors: data.persons,
+        starring: data.persons,
+
+        medias: [
+            { id: 'poster', type: 'Poster', url: data.posterUrl },
+            {
+                id: 'video',
+                type: 'Video',
+                url: data.trailerUrls?.[0] ?? ''
+            },
+            ...(data.imageUrls?.map((u: string, index: number) => ({
+                id: `still-${index}`,
+                type: 'Still',
+                url: u
+            })) ?? []),
+        ],
+    };
+
+    return movieDetails;
 };
 
 export interface MovieRecommendation {
