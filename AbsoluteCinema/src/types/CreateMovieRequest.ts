@@ -1,14 +1,18 @@
 
 export interface CreateMovieRequest {
-    movieName: string;
+    name?: string;
+    movieName?: string; // for backwards compatibility
     description: string;
     rate: number;
     ageLimit: number;
-    duration: string;
+    durationSeconds?: number; // API uses durationSeconds
+    duration?: string; // for backwards compatibility
     country: string;
     studio: string;
     language: string;
-    genres: string[];
+    genres?: string[];
+    genreIds?: string[]; // API uses genreIds
+    personIds?: string[]; // API uses personIds
 }
 
 export interface MovieFormData extends CreateMovieRequest {

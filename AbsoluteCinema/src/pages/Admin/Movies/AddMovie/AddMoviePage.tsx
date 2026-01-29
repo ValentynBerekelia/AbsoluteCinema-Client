@@ -1,33 +1,45 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { movieService } from '../../../api/movieService';
 import './AddMoviePage.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieAddForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
-import { createMovie } from '../../../../api/movies';
+import { createMovie, createSession } from '../../../../api/movies';
+// import { getSeatTypes } from '../../../../api/seatTypeService';
+import { SeatType } from '../../../../types/SeatType';
 
-interface SessionFormData {
+// Mock seat types
+const MOCK_SEAT_TYPES: SeatType[] = [
+    { id: '1', name: 'Comfort' },
+    { id: '2', name: 'Vip' },
+    { id: '3', name: 'Standart' },
+    { id: '4', name: 'Disabled' },
+    { id: '5', name: 'Broken' }
+];
+
+interface SessionRangeFormData {
     id: string;
     dateFrom: string;
     dateTo: string;
     time: string;
     hall: string;
-    averagePrice: string;
-    first3RowPrice: string;
-    vipPrice: string;
+    seatTypePrices: { [seatTypeId: string]: string };
+    seats: { [seatIndex: number]: string }; // seat index -> seat type id
 }
 
 export const AddMoviePage = () => {
     const navigate = useNavigate();
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [seatTypes, setSeatTypes] = useState<SeatType[]>([]);
+    const [loadingSeatTypes, setLoadingSeatTypes] = useState(true);
+    const [selectedSeatType, setSelectedSeatType] = useState<string>('');
 
     const [formData, setFormData] = useState<MovieFormData>({
         movieName: 'Add Movie Title',
         description: '',
         rate: 0,
         ageLimit: 0,
-        duration: '',
+        durationSeconds: 0,
         country: '',
         studio: '',
         language: '',
@@ -37,55 +49,107 @@ export const AddMoviePage = () => {
         poster: null as File | null
     });
 
-    const [sessions, setSessions] = useState<SessionFormData[]>([
+    const [sessions, setSessions] = useState<SessionRangeFormData[]>([
         {
             id: '1',
             dateFrom: '',
             dateTo: '',
             time: '11:00',
             hall: '',
-            averagePrice: '',
-            first3RowPrice: '',
-            vipPrice: ''
+            seatTypePrices: {},
+            seats: {}
         }
     ]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
+    // Load seat types on component mount
+    useEffect(() => {
+        // const loadSeatTypes = async () => {
+        //     try {
+        //         const types = await getSeatTypes();
+        //         setSeatTypes(types);
+                
+        //         // Initialize seatTypePrices for existing sessions
+        //         setSessions(prev => prev.map(session => ({
+        //             ...session,
+        //             seatTypePrices: types.reduce((acc, type) => {
+        //                 acc[type.id] = session.seatTypePrices[type.id] || '';
+        //                 return acc;
+        //             }, {} as { [key: string]: string })
+        //         })));
+        //     } catch (err) {
+        //         console.error('Failed to load seat types:', err);
+        //         setError('Failed to load seat types');
+        //     } finally {
+        //         setLoadingSeatTypes(false);
+        //     }
+        // };
+        
+        // loadSeatTypes();
+        
+        // Use mock data instead
+        setSeatTypes(MOCK_SEAT_TYPES);
+        setSessions(prev => prev.map(session => ({
+            ...session,
+            seatTypePrices: MOCK_SEAT_TYPES.reduce((acc, type) => {
+                acc[type.id] = session.seatTypePrices[type.id] || '';
+                return acc;
+            }, {} as { [key: string]: string }),
+            seats: session.seats || {}
+        })));
+        setLoadingSeatTypes(false);
+    }, []);
 
-    const handlePosterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setFormData(prev => ({
-                ...prev,
-                poster: file
-            }));
-        }
-    };
-
-    const handleSessionChange = (id: string, field: keyof SessionFormData, value: string) => {
+    const handleSessionChange = (id: string, field: keyof Omit<SessionRangeFormData, 'seatTypePrices'>, value: string) => {
         setSessions(prev => prev.map(session =>
             session.id === id ? { ...session, [field]: value } : session
         ));
     };
 
+    const handleSeatTypePriceChange = (sessionId: string, seatTypeId: string, price: string) => {
+        setSessions(prev => prev.map(session =>
+            session.id === sessionId 
+                ? { ...session, seatTypePrices: { ...session.seatTypePrices, [seatTypeId]: price } }
+                : session
+        ));
+    };
+
     const addSession = () => {
-        const newSession: SessionFormData = {
+        const newSession: SessionRangeFormData = {
             id: Date.now().toString(),
             dateFrom: '',
             dateTo: '',
             time: '11:00',
             hall: '',
-            averagePrice: '',
-            first3RowPrice: '',
-            vipPrice: ''
+            seatTypePrices: seatTypes.reduce((acc, type) => {
+                acc[type.id] = '';
+                return acc;
+            }, {} as { [key: string]: string }),
+            seats: {}
         };
         setSessions(prev => [...prev, newSession]);
+    };
+
+    const handleSeatClick = (sessionId: string, seatIndex: number) => {
+        if (!selectedSeatType) {
+            alert('Please select a seat type from the legend first');
+            return;
+        }
+        setSessions(prev => prev.map(session =>
+            session.id === sessionId
+                ? { ...session, seats: { ...session.seats, [seatIndex]: selectedSeatType } }
+                : session
+        ));
+    };
+
+    const getSeatColor = (seatTypeId: string) => {
+        switch(seatTypeId) {
+            case '1': return '#90EE90'; // Comfort - light green
+            case '2': return '#FFD700'; // Vip - gold
+            case '3': return '#87CEEB'; // Standart - sky blue
+            case '4': return '#FFA500'; // Disabled - orange
+            case '5': return '#FF6B6B'; // Broken - red
+            default: return '#ffffff';
+        }
     };
 
     const removeSession = (id: string) => {
@@ -94,32 +158,90 @@ export const AddMoviePage = () => {
         }
     };
 
+    // Helper function to generate array of dates between dateFrom and dateTo
+    const generateDateRange = (dateFrom: string, dateTo: string): string[] => {
+        const dates: string[] = [];
+        const start = new Date(dateFrom);
+        const end = new Date(dateTo);
+        
+        if (start > end) {
+            return [dateFrom]; // якщо dateFrom більше dateTo, повертаємо тільки dateFrom
+        }
+        
+        const current = new Date(start);
+        while (current <= end) {
+            dates.push(current.toISOString().split('T')[0]);
+            current.setDate(current.getDate() + 1);
+        }
+        
+        return dates;
+    };
+
+    // Helper function to convert date + time to ISO datetime
+    const createDateTime = (date: string, time: string): string => {
+        if (!date || !time) {
+            throw new Error('Date and time are required');
+        }
+        return `${date}T${time}:00`;
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
         setError(null);
 
         try {
-
+            // Create movie first
             const moviePayload: CreateMovieRequest = {
-                movieName: formData.movieName,
+                name: formData.movieName,
                 description: formData.description,
                 rate: formData.rate,
                 ageLimit: formData.ageLimit,
-                duration: formData.duration,
+                durationSeconds: formData.durationSeconds,
                 country: formData.country,
                 studio: formData.studio,
                 language: formData.language,
-                genres: formData.genres
+                genreIds: []
             };
 
-            const result = await createMovie(moviePayload);
-            console.log('Movie created with ID:', result.id);
+            const movieResult = await createMovie(moviePayload);
+            const movieId = movieResult.id;
+            console.log('Movie created with ID:', movieId);
 
-            // Переходимо на список фільмів
+            // Create sessions for the movie
+            for (const sessionRange of sessions) {
+                if (sessionRange.dateFrom && sessionRange.dateTo && sessionRange.time && sessionRange.hall) {
+                    try {
+                        // Генеруємо масив дат між dateFrom і dateTo
+                        const dates = generateDateRange(sessionRange.dateFrom, sessionRange.dateTo);
+                        
+                        // Prepare seat type prices
+                        const seatTypePrices = Object.entries(sessionRange.seatTypePrices)
+                            .filter(([_, price]) => price && parseFloat(price) > 0)
+                            .map(([seatTypeId, price]) => ({
+                                seatTypeId,
+                                price: parseFloat(price)
+                            }));
+                        
+                        // Створюємо окремий сеанс для кожної дати
+                        for (const date of dates) {
+                            const startDateTime = createDateTime(date, sessionRange.time);
+                            await createSession({
+                                movieId: movieId,
+                                hallId: sessionRange.hall,
+                                startDateTime: startDateTime,
+                                seatTypePrices: seatTypePrices.length > 0 ? seatTypePrices : undefined
+                            });
+                        }
+                    } catch (sessionError) {
+                        console.error('Failed to create sessions:', sessionError);
+                    }
+                }
+            }
+
             navigate('/admin/movies');
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to create movie');
+            setError(err.response?.data?.error || err.message || 'Failed to create movie');
         } finally {
             setSaving(false);
         }
@@ -158,102 +280,121 @@ export const AddMoviePage = () => {
                                 )}
                             </div>
 
-                            <div className="session-dates">
-                                <div className="form-group">
-                                    <label>From [date range]</label>
-                                    <input
-                                        type="date"
-                                        value={session.dateFrom}
-                                        onChange={(e) => handleSessionChange(session.id, 'dateFrom', e.target.value)}
-                                        className="form-input"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>to [date range]</label>
-                                    <input
-                                        type="date"
-                                        value={session.dateTo}
-                                        onChange={(e) => handleSessionChange(session.id, 'dateTo', e.target.value)}
-                                        className="form-input"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Time</label>
-                                    <input
-                                        type="time"
-                                        value={session.time}
-                                        onChange={(e) => handleSessionChange(session.id, 'time', e.target.value)}
-                                        className="form-input time-input"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="hall-selector">
-                                <label>Hall:</label>
-                                <select
-                                    value={session.hall}
-                                    onChange={(e) => handleSessionChange(session.id, 'hall', e.target.value)}
-                                    className="form-input hall-select"
-                                >
-                                    <option value="">HallName</option>
-                                    <option value="Grand Hall">Grand Hall</option>
-                                    <option value="Blue Room">Blue Room</option>
-                                    <option value="IMAX Premium">IMAX Premium</option>
-                                    <option value="Hall 3">Hall 3</option>
-                                    <option value="Retro Cinema">Retro Cinema</option>
-                                </select>
-                            </div>
-
-                            <div className="seats-grid">
-                                {Array.from({ length: 60 }).map((_, i) => (
-                                    <div key={i} className="seat-placeholder"></div>
-                                ))}
-                            </div>
-
-                            <div className="ticket-prices">
-                                <h5>Ticket prices</h5>
-                                <div className="prices-row">
+                            <div className="session-details">
+                                <div className="session-date-range">
                                     <div className="form-group">
-                                        <label>Average:</label>
+                                        <label>From [date range]</label>
                                         <input
-                                            type="number"
-                                            value={session.averagePrice}
-                                            onChange={(e) => handleSessionChange(session.id, 'averagePrice', e.target.value)}
-                                            className="form-input price-input"
-                                            placeholder="Add Text"
-                                            step="0.01"
+                                            type="date"
+                                            value={session.dateFrom}
+                                            onChange={(e) => handleSessionChange(session.id, 'dateFrom', e.target.value)}
+                                            className="form-input"
                                         />
                                     </div>
-                                    <div className="form-group checkbox-group">
-                                        <input type="checkbox" id={`first3-${session.id}`} />
-                                        <label htmlFor={`first3-${session.id}`}>First 3 row:</label>
+                                    <div className="form-group">
+                                        <label>to [date range]</label>
                                         <input
-                                            type="number"
-                                            value={session.first3RowPrice}
-                                            onChange={(e) => handleSessionChange(session.id, 'first3RowPrice', e.target.value)}
-                                            className="form-input price-input"
-                                            placeholder="Add Text"
-                                            step="0.01"
+                                            type="date"
+                                            value={session.dateTo}
+                                            onChange={(e) => handleSessionChange(session.id, 'dateTo', e.target.value)}
+                                            className="form-input"
                                         />
                                     </div>
-                                    <div className="form-group checkbox-group">
-                                        <input type="checkbox" id={`vip-${session.id}`} />
-                                        <label htmlFor={`vip-${session.id}`}>VIP:</label>
+                                    <div className="form-group">
+                                        <label>Time</label>
                                         <input
-                                            type="number"
-                                            value={session.vipPrice}
-                                            onChange={(e) => handleSessionChange(session.id, 'vipPrice', e.target.value)}
-                                            className="form-input price-input"
-                                            placeholder="Add Text"
-                                            step="0.01"
+                                            type="time"
+                                            value={session.time}
+                                            onChange={(e) => handleSessionChange(session.id, 'time', e.target.value)}
+                                            className="form-input time-input"
                                         />
                                     </div>
                                 </div>
-                            </div>
 
-                            <button type="button" className="save-session-btn">
-                                Save sessions and price
-                            </button>
+                                <div className="hall-selector">
+                                    <label>Hall:</label>
+                                    <select
+                                        value={session.hall}
+                                        onChange={(e) => handleSessionChange(session.id, 'hall', e.target.value)}
+                                        className="form-input hall-select"
+                                    >
+                                        <option value="">Select Hall</option>
+                                        <option value="aaaaaaaa-aaaa-aaaa-aaaa-aaaaaaaaaaaa">Grand Hall</option>
+                                        <option value="bbbbbbbb-bbbb-bbbb-bbbb-bbbbbbbbbbbb">Blue Room</option>
+                                        <option value="cccccccc-cccc-cccc-cccc-cccccccccccc">IMAX Premium</option>
+                                        <option value="dddddddd-dddd-dddd-dddd-dddddddddddd">Hall 3</option>
+                                        <option value="eeeeeeee-eeee-eeee-eeee-eeeeeeeeeeee">Retro Cinema</option>
+                                    </select>
+                                </div>
+
+                                <div className="seat-legend">
+                                    <span style={{ marginRight: '10px', fontWeight: 600 }}>Select type:</span>
+                                    {seatTypes.map(type => (
+                                        <button
+                                            key={type.id}
+                                            type="button"
+                                            className={`legend-button ${selectedSeatType === type.id ? 'active' : ''}`}
+                                            onClick={() => setSelectedSeatType(type.id)}
+                                            style={{
+                                                backgroundColor: selectedSeatType === type.id ? getSeatColor(type.id) : 'white',
+                                                borderColor: getSeatColor(type.id)
+                                            }}
+                                        >
+                                            <span className="legend-label">{type.name.charAt(0)}</span>
+                                            <span className="legend-text">{type.name}</span>
+                                        </button>
+                                    ))}
+                                </div>
+
+                                <div className="seats-grid">
+                                    {Array.from({ length: 60 }).map((_, i) => {
+                                        const seatTypeId = session.seats[i];
+                                        const seatType = seatTypes.find(t => t.id === seatTypeId);
+                                        return (
+                                            <div
+                                                key={i}
+                                                className="seat-item"
+                                                onClick={() => handleSeatClick(session.id, i)}
+                                                style={{
+                                                    backgroundColor: seatTypeId ? getSeatColor(seatTypeId) : '#ffffff',
+                                                    cursor: 'pointer'
+                                                }}
+                                                title={seatType ? `Seat ${i + 1}: ${seatType.name}` : `Seat ${i + 1}: Empty`}
+                                            >
+                                                {seatType ? seatType.name.charAt(0) : '-'}
+                                            </div>
+                                        );
+                                    })}
+                                </div>
+
+                                <div className="ticket-prices">
+                                    <h5>Ticket prices</h5>
+                                    {loadingSeatTypes ? (
+                                        <div>Loading seat types...</div>
+                                    ) : (
+                                        <div className="prices-row">
+                                            {seatTypes.map((seatType) => (
+                                                <div className="form-group" key={seatType.id}>
+                                                    <label>{seatType.name}:</label>
+                                                    <input
+                                                        type="number"
+                                                        value={session.seatTypePrices[seatType.id] || ''}
+                                                        onChange={(e) => handleSeatTypePriceChange(session.id, seatType.id, e.target.value)}
+                                                        className="form-input price-input"
+                                                        placeholder="Price"
+                                                        step="0.01"
+                                                        min="0"
+                                                    />
+                                                </div>
+                                            ))}
+                                        </div>
+                                    )}
+                                </div>
+
+                                <button type="button" className="save-session-btn">
+                                    Save Session Range
+                                </button>
+                            </div>
                         </div>
                     ))}
 

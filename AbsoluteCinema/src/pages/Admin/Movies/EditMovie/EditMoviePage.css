@@ -1,19 +1,19 @@
-/* AddMoviePage.css */
-.add-movie-page {
+/* EditMoviePage.css */
+.edit-movie-page {
     padding: 40px;
     max-width: 1280px;
     margin: 0 auto;
     font-family: 'Inter', sans-serif;
 }
 
-.add-movie-header {
+.edit-movie-header {
     display: flex;
     justify-content: space-between;
     align-items: center;
     margin-bottom: 30px;
 }
 
-.add-movie-header h2 {
+.edit-movie-header h2 {
     margin: 0;
     font-size: 32px;
     color: #333;
@@ -36,7 +36,7 @@
     background: #e0e0e0;
 }
 
-.add-movie-form {
+.edit-movie-form {
     width: 100%;
     display: flex;
     flex-direction: column;
@@ -69,13 +69,6 @@
     font-size: 18px;
     color: #333;
     font-weight: 600;
-}
-
-.form-section {
-    background: #fff;
-    border: 1px solid #ddd;
-    border-radius: 8px;
-    padding: 30px;
 }
 
 .session-card {
@@ -124,12 +117,6 @@
 .session-details {
     display: flex;
     flex-direction: column;
-    gap: 20px;
-}
-
-.session-date-range {
-    display: grid;
-    grid-template-columns: 1fr 1fr 1fr;
     gap: 20px;
 }
 
@@ -411,6 +398,17 @@
     border-color: #999;
 }
 
+.no-sessions {
+    text-align: center;
+    padding: 40px 20px;
+    color: #999;
+}
+
+.no-sessions p {
+    margin: 0 0 20px 0;
+    font-size: 14px;
+}
+
 .form-actions {
     display: flex;
     gap: 20px;
@@ -418,6 +416,44 @@
     padding-top: 20px;
     border-top: 1px solid #eee;
     padding-bottom: 50px;
+}
+
+/* Section-specific Actions */
+.form-section-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 1rem;
+    padding-top: 1rem;
+    margin-top: 1rem;
+    border-top: 1px solid #eee;
+}
+
+.save-details-btn,
+.save-sessions-btn {
+    padding: 12px 30px;
+    font-size: 14px;
+    background: linear-gradient(135deg, #4a90e2, #357abd);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-weight: 600;
+}
+
+.save-details-btn:hover,
+.save-sessions-btn:hover {
+    background: linear-gradient(135deg, #357abd, #2868a8);
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(74, 144, 226, 0.3);
+}
+
+.save-details-btn:disabled,
+.save-sessions-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+    transform: none;
+    box-shadow: none;
 }
 
 .submit-btn {
@@ -464,12 +500,8 @@
 }
 
 @media (max-width: 768px) {
-    .add-movie-page {
+    .edit-movie-page {
         padding: 20px;
-    }
-
-    .session-date-range {
-        grid-template-columns: 1fr;
     }
 
     .session-date-time {
