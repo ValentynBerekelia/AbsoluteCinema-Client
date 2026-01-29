@@ -14,7 +14,7 @@ export const Home = () => {
     const [error, setError] = useState<string | null>(null);
     const [queryParams, setQueryParams] = useState<MoviesQueryParameters>({
         pageNumber: 1,
-        pageSize: 3,
+        pageSize: 5,
         sortColumn: 'rate',
         sortOrder: SortOrder.Asc
     });

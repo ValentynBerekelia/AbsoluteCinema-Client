@@ -22,7 +22,7 @@ export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
                 <h2 className='admin-movie-title'>{movie.title}</h2>
                 <div className='admin-halls-group'>
                     <span className='halls-label'>Hall(s):</span>
-                    {movie.Halls.map((hall, idx) => (
+                    {movie.halls.map((hall, idx) => (
                         <span key={idx} className='admin-hall-badge'>{hall}</span>
                     ))}
                 </div>
