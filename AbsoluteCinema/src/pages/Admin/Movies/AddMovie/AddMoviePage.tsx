@@ -116,7 +116,8 @@ export const AddMoviePage = () => {
             };
 
             const movieResult = await createMovie(moviePayload as any);
-            const newMovieId = movieResult.id;
+            const newMovieId = movieResult.movieId.id ?? movieResult.id;
+            console.log(movieResult);
 
             for (const sessionCard of sessions) {
                 if (!sessionCard.hall) continue;
