@@ -49,68 +49,6 @@
     margin-bottom: 24px;
 }
 
-/* Сітка місць */
-.seats-grid {
-    display: grid;
-    
-    justify-content: center; 
-    align-content: center;
-    
-    width: 100%;
-    
-    gap: 6px;
-    margin: 20px auto;
-    padding: 20px;
-    background: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 4px;
-    overflow-x: auto;
-}
-
-.seat-placeholder {
-    width: 24px;
-    height: 24px;
-    background: #d1d1d1; /* Дефолтний сірий */
-    border-radius: 3px;
-    transition: background 0.2s;
-}
-
-/* Кольори для різних типів місць */
-.seat-placeholder.average { background: #b3b3b3; }
-.seat-placeholder.first-rows { background: #5da9e9; } /* Блакитний для перших рядів */
-.seat-placeholder.vip { background: #f4c542; }      /* Золотий для VIP */
-.seat-placeholder.comfort {background: #1ec146;}   /*Комфорт */
-
-/* Ticket Prices */
-.ticket-prices {
-    background: #fafafa;
-    padding: 16px;
-    border-radius: 4px;
-    margin-bottom: 20px;
-}
-
-.prices-row {
-    display: grid;
-    grid-template-columns: 1fr 1.5fr 1.5fr;
-    gap: 25px;
-    align-items: flex-end;
-}
-
-.checkbox-group {
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    background: #fff;
-    padding: 8px;
-    border: 1px solid #e0e0e0;
-    border-radius: 4px;
-}
-
-.checkbox-group label {
-    font-size: 14px;
-    white-space: nowrap;
-}
-
 /* Кнопки */
 .save-session-btn {
     width: 100%;

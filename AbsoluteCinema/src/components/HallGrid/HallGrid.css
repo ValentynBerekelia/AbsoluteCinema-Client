@@ -1,0 +1,32 @@
+.seats-grid {
+    display: grid;
+    gap: 6px;
+    justify-content: center;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fdfdfd;
+    border: 1px solid #eee;
+    border-radius: 8px;
+    width: fit-content;
+}
+
+.seat-placeholder {
+    width: 28px;
+    height: 28px;
+    border-radius: 4px;
+    transition: all 0.3s ease;
+}
+
+.seat-placeholder.standard { background: #d1d1d1; }
+.seat-placeholder.vip { background: #f4c542; }
+.seat-placeholder.comfort { background: #2ecc71; }
+
+.seat-placeholder.empty {
+    background: #f0f0f0;
+    opacity: 0.5;
+}
+
+.seat-placeholder.dimmed {
+    opacity: 0.2;
+    filter: grayscale(80%);
+}

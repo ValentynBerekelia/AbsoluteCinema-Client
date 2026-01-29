@@ -1,7 +1,8 @@
 import React from 'react';
 import './SessionManager.css'
 import { Hall, SeatType } from '@/types/hall';
-import { getMaxSeatsInRow } from '@/utils/getMaxSeatsInRow';
+import { HallGrid } from '../HallGrid/HallGrid';
+import { TicketPriceManager } from '../TicketPriceManager/TicketPriceManager';
 
 export interface SessionFormData {
     id: string;
@@ -9,9 +10,8 @@ export interface SessionFormData {
     dateTo: string;
     time: string;
     hall: string;
-    averagePrice: string;
-    first3RowPrice: string;
-    vipPrice: string;
+    seatPrices: Record<string, string>;
+    enabledTypes: Record<string, boolean>;
 }
 
 interface SessionManagerProps {
@@ -20,12 +20,13 @@ interface SessionManagerProps {
     seatTypes: SeatType[];
     onAddSession: () => void;
     onRemoveSession: (id: string) => void;
-    onSessionChange: (id: string, field: keyof SessionFormData, value: string) => void;
+    onSessionChange: (id: string, field: keyof SessionFormData, value: any) => void;
 }
 
 export const SessionManager: React.FC<SessionManagerProps> = ({
     sessions,
     halls,
+    seatTypes,
     onAddSession,
     onRemoveSession,
     onSessionChange,
@@ -36,19 +37,13 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
             {sessions.map((session, index) => {
                 const selectedHall = halls.find(h => h.id === session.hall);
-                const maxColumns = selectedHall ? getMaxSeatsInRow(selectedHall.seats) : 10;
+
                 return (
                     <div key={session.id} className="session-card">
                         <div className="session-header">
                             <h4>Session {index + 1}</h4>
                             {sessions.length > 1 && (
-                                <button
-                                    type="button"
-                                    onClick={() => onRemoveSession(session.id)}
-                                    className="remove-session-btn"
-                                >
-                                    ✕
-                                </button>
+                                <button type="button" onClick={() => onRemoveSession(session.id)} className="remove-session-btn">✕</button>
                             )}
                         </div>
 
@@ -96,82 +91,31 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             </select>
                         </div>
 
-                        {/* Візуалізація сітки місць */}
-                        <div 
-                            className="seats-grid"
-                            style={{
-                                gridTemplateColumns: `repeat(${maxColumns}, 28px)`
+                        <HallGrid
+                            seats={selectedHall?.seats || []}
+                            enabledTypes={session.enabledTypes}
+                        />
+
+                        <TicketPriceManager
+                            sessionId={session.id}
+                            seatTypes={seatTypes}
+                            enabledTypes={session.enabledTypes}
+                            seatPrices={session.seatPrices}
+                            onPriceChange={(typeId, field, value) => {
+                                const subField = field === 'enabled' ? 'enabledTypes' : 'seatPrices';
+                                onSessionChange(session.id, subField, {
+                                    ...session[subField],
+                                    [typeId]: value
+                                });
                             }}
-                        >
-                            {selectedHall ? (
-                                selectedHall.seats.map((seat, i) => (
-                                    <div
-                                        key={i}
-                                        className={`seat-placeholder ${seat.seatTypeId === '981d38ca-47b5-446b-bc9f-9bee14c1464b' ? 'vip' :
-                                            seat.seatTypeId === '5b34194d-93a3-4ec1-b3d5-c3155e94ef30' ? 'comfort' : ''
-                                            }`}
-                                        style={{ gridColumn: seat.number, gridRow: seat.row }}
-                                        title={`Row: ${seat.row}, Num: ${seat.number}`}
-                                    ></div>
-                                ))
-                            ) : (
-                                Array.from({ length: 60 }).map((_, i) => (
-                                    <div key={i} className='seat-placeholder-empty'></div>
-                                ))
-                            )}
-                        </div>
+                        />
 
-                        <div className="ticket-prices">
-                            <h5>Ticket prices</h5>
-                            <div className="prices-row">
-                                <div className="form-group">
-                                    <label>Average:</label>
-                                    <input
-                                        type="number"
-                                        value={session.averagePrice}
-                                        onChange={(e) => onSessionChange(session.id, 'averagePrice', e.target.value)}
-                                        className="form-input price-input"
-                                        placeholder="Price"
-                                        step="0.01"
-                                    />
-                                </div>
-                                <div className="form-group checkbox-group">
-                                    <input type="checkbox" id={`first3-${session.id}`} />
-                                    <label htmlFor={`first3-${session.id}`}>First 3 row:</label>
-                                    <input
-                                        type="number"
-                                        value={session.first3RowPrice}
-                                        onChange={(e) => onSessionChange(session.id, 'first3RowPrice', e.target.value)}
-                                        className="form-input price-input"
-                                        placeholder="Price"
-                                        step="0.01"
-                                    />
-                                </div>
-                                <div className="form-group checkbox-group">
-                                    <input type="checkbox" id={`vip-${session.id}`} />
-                                    <label htmlFor={`vip-${session.id}`}>VIP:</label>
-                                    <input
-                                        type="number"
-                                        value={session.vipPrice}
-                                        onChange={(e) => onSessionChange(session.id, 'vipPrice', e.target.value)}
-                                        className="form-input price-input"
-                                        placeholder="Price"
-                                        step="0.01"
-                                    />
-                                </div>
-                            </div>
-                        </div>
-
-                        <button type="button" className="save-session-btn">
-                            Save sessions and price
-                        </button>
+                        <button type="button" className="save-session-btn">Save sessions and price</button>
                     </div>
                 );
             })}
 
-            <button type="button" onClick={onAddSession} className="add-session-btn">
-                +
-            </button>
+            <button type="button" onClick={onAddSession} className="add-session-btn">+</button>
         </div>
     );
 };

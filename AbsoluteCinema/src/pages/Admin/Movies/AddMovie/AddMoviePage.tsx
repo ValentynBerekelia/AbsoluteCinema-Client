@@ -7,6 +7,8 @@ import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovie
 import { createMovie } from '../../../../api/movies';
 import { SessionManager } from '@/components/SessionManager/SessionManager';
 import { MOCK_HALLS, MOCK_SEAT_TYPES } from '@/data/hallsData';
+import { getDatesInRange } from '@/utils/getDatesInRange';
+import { createSession } from '@/api';
 
 interface SessionFormData {
     id: string;
@@ -14,9 +16,8 @@ interface SessionFormData {
     dateTo: string;
     time: string;
     hall: string;
-    averagePrice: string;
-    first3RowPrice: string;
-    vipPrice: string;
+    seatPrices: Record<string, string>;
+    enabledTypes: Record<string, boolean>;
 }
 
 export const AddMoviePage = () => {
@@ -47,9 +48,8 @@ export const AddMoviePage = () => {
             dateTo: '',
             time: '11:00',
             hall: '',
-            averagePrice: '',
-            first3RowPrice: '',
-            vipPrice: ''
+            seatPrices: {},
+            enabledTypes: {},
         }
     ]);
 
@@ -84,9 +84,8 @@ export const AddMoviePage = () => {
             dateTo: '',
             time: '11:00',
             hall: '',
-            averagePrice: '',
-            first3RowPrice: '',
-            vipPrice: ''
+            seatPrices: {},
+            enabledTypes: {},
         };
         setSessions(prev => [...prev, newSession]);
     };
@@ -107,8 +106,8 @@ export const AddMoviePage = () => {
             const moviePayload: CreateMovieRequest = {
                 movieName: formData.movieName,
                 description: formData.description,
-                rate: formData.rate,
-                ageLimit: formData.ageLimit,
+                rate: Number(formData.rate),
+                ageLimit: Number(formData.ageLimit),
                 duration: formData.duration,
                 country: formData.country,
                 studio: formData.studio,
@@ -116,10 +115,32 @@ export const AddMoviePage = () => {
                 genres: formData.genres
             };
 
-            const result = await createMovie(moviePayload);
-            console.log('Movie created with ID:', result.id);
+            const movieResult = await createMovie(moviePayload as any);
+            const newMovieId = movieResult.id;
 
-            // Переходимо на список фільмів
+            for (const sessionCard of sessions) {
+                if (!sessionCard.hall) continue;
+
+                const dates = getDatesInRange(sessionCard.dateFrom, sessionCard.dateTo);
+
+                const prices = Object.keys(sessionCard.enabledTypes)
+                    .filter(typeId => sessionCard.seatPrices[typeId])
+                    .map(typeId => ({
+                        seatTypeId: typeId,
+                        price: Number(sessionCard.seatPrices[typeId] || 0)
+                    }));
+
+                const sessionRequests = dates.map(date => ({
+                    movieId: newMovieId,
+                    hallId: sessionCard.hall,
+                    format: 2,
+                    startTime: `${date}T${sessionCard.time}:00.000Z`,
+                    prices: prices,
+                }));
+
+                await Promise.all(sessionRequests.map(req => createSession(req)));
+            }
+
             navigate('/admin/movies');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to create movie');
