@@ -5,6 +5,8 @@ import './AddMoviePage.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieAddForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
 import { createMovie } from '../../../../api/movies';
+import { SessionManager } from '@/components/SessionManager/SessionManager';
+import { MOCK_HALLS, MOCK_SEAT_TYPES } from '@/data/hallsData';
 
 interface SessionFormData {
     id: string;
@@ -18,6 +20,7 @@ interface SessionFormData {
 }
 
 export const AddMoviePage = () => {
+    const AVAILABLE_HALLS = MOCK_HALLS;
     const navigate = useNavigate();
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -140,127 +143,14 @@ export const AddMoviePage = () => {
                 <MovieAddForm formData={formData} setFormData={setFormData} />
 
                 {/* Sessions Section */}
-                <div className="form-section sessions-section">
-                    <h3>Sessions & Pricing</h3>
-
-                    {sessions.map((session, index) => (
-                        <div key={session.id} className="session-card">
-                            <div className="session-header">
-                                <h4>Session {index + 1}</h4>
-                                {sessions.length > 1 && (
-                                    <button
-                                        type="button"
-                                        onClick={() => removeSession(session.id)}
-                                        className="remove-session-btn"
-                                    >
-                                        ✕
-                                    </button>
-                                )}
-                            </div>
-
-                            <div className="session-dates">
-                                <div className="form-group">
-                                    <label>From [date range]</label>
-                                    <input
-                                        type="date"
-                                        value={session.dateFrom}
-                                        onChange={(e) => handleSessionChange(session.id, 'dateFrom', e.target.value)}
-                                        className="form-input"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>to [date range]</label>
-                                    <input
-                                        type="date"
-                                        value={session.dateTo}
-                                        onChange={(e) => handleSessionChange(session.id, 'dateTo', e.target.value)}
-                                        className="form-input"
-                                    />
-                                </div>
-                                <div className="form-group">
-                                    <label>Time</label>
-                                    <input
-                                        type="time"
-                                        value={session.time}
-                                        onChange={(e) => handleSessionChange(session.id, 'time', e.target.value)}
-                                        className="form-input time-input"
-                                    />
-                                </div>
-                            </div>
-
-                            <div className="hall-selector">
-                                <label>Hall:</label>
-                                <select
-                                    value={session.hall}
-                                    onChange={(e) => handleSessionChange(session.id, 'hall', e.target.value)}
-                                    className="form-input hall-select"
-                                >
-                                    <option value="">HallName</option>
-                                    <option value="Grand Hall">Grand Hall</option>
-                                    <option value="Blue Room">Blue Room</option>
-                                    <option value="IMAX Premium">IMAX Premium</option>
-                                    <option value="Hall 3">Hall 3</option>
-                                    <option value="Retro Cinema">Retro Cinema</option>
-                                </select>
-                            </div>
-
-                            <div className="seats-grid">
-                                {Array.from({ length: 60 }).map((_, i) => (
-                                    <div key={i} className="seat-placeholder"></div>
-                                ))}
-                            </div>
-
-                            <div className="ticket-prices">
-                                <h5>Ticket prices</h5>
-                                <div className="prices-row">
-                                    <div className="form-group">
-                                        <label>Average:</label>
-                                        <input
-                                            type="number"
-                                            value={session.averagePrice}
-                                            onChange={(e) => handleSessionChange(session.id, 'averagePrice', e.target.value)}
-                                            className="form-input price-input"
-                                            placeholder="Add Text"
-                                            step="0.01"
-                                        />
-                                    </div>
-                                    <div className="form-group checkbox-group">
-                                        <input type="checkbox" id={`first3-${session.id}`} />
-                                        <label htmlFor={`first3-${session.id}`}>First 3 row:</label>
-                                        <input
-                                            type="number"
-                                            value={session.first3RowPrice}
-                                            onChange={(e) => handleSessionChange(session.id, 'first3RowPrice', e.target.value)}
-                                            className="form-input price-input"
-                                            placeholder="Add Text"
-                                            step="0.01"
-                                        />
-                                    </div>
-                                    <div className="form-group checkbox-group">
-                                        <input type="checkbox" id={`vip-${session.id}`} />
-                                        <label htmlFor={`vip-${session.id}`}>VIP:</label>
-                                        <input
-                                            type="number"
-                                            value={session.vipPrice}
-                                            onChange={(e) => handleSessionChange(session.id, 'vipPrice', e.target.value)}
-                                            className="form-input price-input"
-                                            placeholder="Add Text"
-                                            step="0.01"
-                                        />
-                                    </div>
-                                </div>
-                            </div>
-
-                            <button type="button" className="save-session-btn">
-                                Save sessions and price
-                            </button>
-                        </div>
-                    ))}
-
-                    <button type="button" onClick={addSession} className="add-session-btn">
-                        +
-                    </button>
-                </div>
+                <SessionManager
+                    sessions={sessions}
+                    halls={AVAILABLE_HALLS}
+                    seatTypes={MOCK_SEAT_TYPES}
+                    onAddSession={addSession}
+                    onRemoveSession={removeSession}
+                    onSessionChange={handleSessionChange}
+                />
 
                 {/* Submit */}
                 <div className="form-actions">
