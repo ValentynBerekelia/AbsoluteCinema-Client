@@ -15,4 +15,5 @@ export interface MovieFormData extends CreateMovieRequest {
     directors: string[];
     starring: string[];
     poster: File | null;
+    posterUrl?: string | null;
 }
