@@ -23,7 +23,7 @@ export interface MovieAdminCardInfo {
     format: string;
     ageLimit: number;
     sessions: Session[];
-    Halls: string[];
+    halls: string[];
     poster: string;
 };
 
@@ -82,6 +82,27 @@ export const mapMovieFromApi = (data: any): any[] => {
         };
     });
 };
+
+export const mapMoviesForAdmin = (data: any): MovieAdminCardInfo[] => {
+    const movies = Array.isArray(data)
+        ? data
+        : data.movies ?? [data];
+    
+    return movies.map((movie: any) => {
+        const movieId = typeof movie.id === 'object' ? movie.id.id : movie.id;
+
+        return {
+            id: String(movieId),
+            title: movie.name ?? '',
+            duration: movie.duration,
+            format: '3D',
+            ageLimit: movie.ageLimit ?? 0,
+            sessions: movie.sessionTimes?.map(convertIsoToDateTime) ?? [],
+            halls: [],
+            poster: movie.posterUrl ?? ''
+        }
+    });
+}
 
 const parseDuration = (durationStr: string): number => {
     const [h, m, s] = durationStr.split(':').map(Number);
