@@ -1,13 +1,14 @@
 import React from 'react';
-import { Seat } from '../../types/hall';
+import { Seat, SeatType } from '../../types/hall';
 import './HallGrid.css';
 
 interface HallGridProps {
     seats: Seat[];
+    seatTypes: SeatType[];
     enabledTypes?: Record<string, boolean>;
 }
 
-export const HallGrid: React.FC<HallGridProps> = ({ seats, enabledTypes }) => {
+export const HallGrid: React.FC<HallGridProps> = ({ seats, seatTypes, enabledTypes }) => {
     if (!seats || seats.length === 0) {
         return (
             <div className="seats-grid placeholder">
@@ -20,6 +21,11 @@ export const HallGrid: React.FC<HallGridProps> = ({ seats, enabledTypes }) => {
 
     const maxColumns = Math.max(...seats.map(s => s.number));
 
+    const getSeatClassByName = (typeId: string): string => {
+        const typeName = seatTypes.find(t => t.id === typeId)?.name.toLowerCase() || 'standard';
+        
+        return typeName;
+    };
     return (
         <div 
             className="seats-grid" 
@@ -31,7 +37,7 @@ export const HallGrid: React.FC<HallGridProps> = ({ seats, enabledTypes }) => {
                 return (
                     <div 
                         key={i} 
-                        className={`seat-placeholder ${getSeatClass(seat.seatTypeId)} ${!isActive ? 'dimmed' : ''}`}
+                        className={`seat-placeholder ${getSeatClassByName(seat.seatTypeId)} ${!isActive ? 'dimmed' : ''}`}
                         style={{ 
                             gridColumn: seat.number, 
                             gridRow: seat.row 
@@ -42,12 +48,4 @@ export const HallGrid: React.FC<HallGridProps> = ({ seats, enabledTypes }) => {
             })}
         </div>
     );
-};
-
-const getSeatClass = (typeId: string): string => {
-    switch (typeId) {
-        case '981d38ca-47b5-446b-bc9f-9bee14c1464b': return 'vip';      // Золотий
-        case '5b34194d-93a3-4ec1-b3d5-c3155e94ef30': return 'comfort';  // Зелений
-        default: return 'standard';                                     // Сірий
-    }
 };

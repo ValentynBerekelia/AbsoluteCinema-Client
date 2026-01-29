@@ -94,6 +94,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                         <HallGrid
                             seats={selectedHall?.seats || []}
                             enabledTypes={session.enabledTypes}
+                            seatTypes={seatTypes}
                         />
 
                         <TicketPriceManager
