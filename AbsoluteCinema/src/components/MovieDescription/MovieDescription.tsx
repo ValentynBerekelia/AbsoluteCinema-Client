@@ -27,6 +27,8 @@ export const MovieDescription = ({ movie }: Props) => {
                         <div className="info-item"><span>Country:</span> {movie.country}</div>
                         <div className="info-item"><span>Studio:</span> {movie.studio}</div>
                         <div className="info-item"><span>Language:</span> {movie.language}</div>
+                        <div className="info-item"><span>Directors:</span> {movie.directors.join(', ')}</div>
+                        <div className="info-item"><span>Starring:</span> {movie.starring.join(', ')}</div>
                     </div>
                 </div>
             </div>
