@@ -125,11 +125,16 @@ export const AddMoviePage = () => {
                 const dates = getDatesInRange(sessionCard.dateFrom, sessionCard.dateTo);
 
                 const prices = Object.keys(sessionCard.enabledTypes)
-                    .filter(typeId => sessionCard.seatPrices[typeId])
+                    .filter(typeId => sessionCard.enabledTypes[typeId] && sessionCard.seatPrices[typeId])
                     .map(typeId => ({
                         seatTypeId: typeId,
                         price: Number(sessionCard.seatPrices[typeId] || 0)
                     }));
+
+                if (prices.length === 0) {
+                    console.warn('No prices configured for session, skipping...');
+                    continue;
+                }
 
                 const sessionRequests = dates.map(date => ({
                     movieId: newMovieId,
@@ -139,7 +144,13 @@ export const AddMoviePage = () => {
                     prices: prices,
                 }));
 
-                await Promise.all(sessionRequests.map(req => createSession(req)));
+                try {
+                    await Promise.all(sessionRequests.map(req => createSession(req)));
+                } catch (sessionError: any) {
+                    console.error('Session creation failed:', sessionError);
+                    setError(`Session creation failed: ${sessionError.response?.data?.detail || sessionError.message}`);
+                    throw sessionError;
+                }
             }
 
             navigate('/admin/movies');
