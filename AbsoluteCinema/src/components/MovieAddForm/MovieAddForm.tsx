@@ -1,4 +1,4 @@
-import React, { useState, ChangeEvent } from 'react';
+import React, { useEffect, useState, ChangeEvent } from 'react';
 import { MovieFormData } from '../../types/CreateMovieRequest';
 import { MultiSelectField } from '../MultiSelectField/MultiSelectField';
 import './MovieAddForm.css';
@@ -16,6 +16,21 @@ const ACTORS_LIST = ['Leonardo DiCaprio', 'Cillian Murphy', 'Tom Hardy', 'Anne H
 export const MovieAddForm = ({ formData, setFormData }: Props) => {
     const [posterPreview, setPosterPreview] = useState<string | null>(null);
 
+    useEffect(() => {
+        if (formData.poster instanceof File) {
+            const objectUrl = URL.createObjectURL(formData.poster);
+            setPosterPreview(objectUrl);
+            return () => URL.revokeObjectURL(objectUrl);
+        }
+
+        if (formData.posterUrl) {
+            setPosterPreview(formData.posterUrl);
+            return;
+        }
+
+        setPosterPreview(null);
+    }, [formData.poster, formData.posterUrl]);
+
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
         const { name, value } = e.target;
         setFormData(prev => ({ ...prev, [name]: value }));
@@ -24,8 +39,7 @@ export const MovieAddForm = ({ formData, setFormData }: Props) => {
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setPosterPreview(URL.createObjectURL(file));
-            setFormData(prev => ({ ...prev, poster: file }));
+            setFormData(prev => ({ ...prev, poster: file, posterUrl: null }));
         }
     };
 
