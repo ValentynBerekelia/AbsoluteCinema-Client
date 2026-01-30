@@ -29,3 +29,8 @@ export const getMovieById = async (id: string) => {
   console.log("HH", response);
   return response.data;
 };
+
+export const getMovieFeatures = async () => {
+  const response = await axiosInstance.get('/movies/features', {});
+  return response.data;
+}

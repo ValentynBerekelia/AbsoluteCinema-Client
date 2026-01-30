@@ -147,6 +147,26 @@ export const mapMoviesForAdmin = (data: any): MovieAdminCardInfo[] => {
     });
 }
 
+export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
+    const movies = data.movies ?? (Array.isArray(data) ? data : []);
+
+    return movies.map((m: any) => {
+        const id = typeof m.movieId === 'object' ? m.movieId.id : m.movieId;
+
+        return {
+            id: String(id),
+            title: m.name,
+            image: m.bannerUrl,
+            sessions: m.todaySessions?.map((s: any) => {
+                const dateTime = convertIsoToDateTime(s.startDateTime);
+                const date = dateTime.date;
+                const time = dateTime.time;
+                return { date, time };
+            }) ?? []
+        };
+    });
+};
+
 const parseDuration = (durationStr: string): number => {
     const [h, m, s] = durationStr.split(':').map(Number);
     return h * 60 + m + s / 60;

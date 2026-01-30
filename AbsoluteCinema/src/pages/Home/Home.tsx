@@ -2,14 +2,16 @@ import { useEffect, useState } from 'react';
 import { Hero } from '@/components/Hero/Hero';
 import { MovieGrid } from '@/components/MovieGrid/MovieGrid';
 import { PromotionForm } from '@/components/PromotionForm/PromotionForm';
-import { getMovies } from '@/api/movies';
+import { getMovieFeatures, getMovies } from '@/api/movies';
 import { MOVIES } from '@/data/movies';
 import { MoviesQueryParameters, SortOrder } from '@/types/MoviesQueryParameters';
 import './Home.css'
-import {mapMovieFromApi} from "@/types/Movie";
+import {mapHeroBannersFromApi, mapMovieFromApi} from "@/types/Movie";
+import { HERO_MOVIES } from '@/data/heroMovies';
 
 export const Home = () => {
     const [movies, setMovies] = useState(MOVIES);
+    const [heroMovies, setHeroMovies]  = useState(HERO_MOVIES);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [queryParams, setQueryParams] = useState<MoviesQueryParameters>({
@@ -37,11 +39,29 @@ export const Home = () => {
         };
 
         fetchMovies();
+
+        const fetchMoviesFeatures = async () => {
+            try {
+                setLoading(true);
+                const data = await getMovieFeatures();
+                const mappedBanners = mapHeroBannersFromApi(data);
+                setHeroMovies(mappedBanners);
+                setError(null);
+            } catch (error) {
+                console.error('Failed to fetch featured movies', error);
+                setError('Failed to load featured movies');
+                setHeroMovies(HERO_MOVIES);
+            } finally {
+                setLoading(false);
+            }
+        }
+
+        fetchMoviesFeatures();
     }, [queryParams]);
     
     return (
         <main className='home-page'>
-            <Hero />
+            <Hero movies={heroMovies}/>
 
             <div className='home-container'>
                 <section className='movie-section'>

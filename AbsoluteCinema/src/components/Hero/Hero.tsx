@@ -4,23 +4,28 @@ import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import './Hero.css'
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import { HERO_MOVIES } from '../../data/heroMovies';
+import { HeroBannerInfo } from '@/types/Movie';
 
-export const Hero = () => {
+interface HeroProps {
+    movies: HeroBannerInfo[]
+}
+
+export const Hero : React.FC<HeroProps> = ({movies}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const movie = HERO_MOVIES[currentIndex];
+    const movie = movies[currentIndex];
 
     const nextSlide = () => {
-        setCurrentIndex((currentIndex + 1) % HERO_MOVIES.length);
+        setCurrentIndex((currentIndex + 1) % movies.length);
     };
 
     const prevSlide = () => {
-        setCurrentIndex((HERO_MOVIES.length + currentIndex - 1) % HERO_MOVIES.length);
+        setCurrentIndex((movies.length + currentIndex - 1) % HERO_MOVIES.length);
     };
 
     return (
         <section className="hero">
             <div className="hero-layers">
-                {HERO_MOVIES.map((m, index) => (
+                {movies.map((m, index) => (
                     <div
                         key={m.id}
                         className={`hero-bg ${index === currentIndex ? 'active' : ''}`}
@@ -44,7 +49,7 @@ export const Hero = () => {
                 </div>
                 <button className='book-now-btn'>Book your tickets now</button>
                 <div className='slider-dots'>
-                    {HERO_MOVIES.map((_, index) => (
+                    {movies.map((_, index) => (
                         <span
                             key={index}
                             className={`dot ${index === currentIndex ? 'active' : ''}`}
