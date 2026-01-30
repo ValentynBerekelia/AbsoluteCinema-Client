@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 // import { movieService } from '../../../api/movieService';
 import './AddMoviePage.css';
@@ -8,7 +8,8 @@ import { createMovie } from '../../../../api/movies';
 import { SessionManager } from '@/components/SessionManager/SessionManager';
 import { MOCK_HALLS, MOCK_SEAT_TYPES } from '@/data/hallsData';
 import { getDatesInRange } from '@/utils/getDatesInRange';
-import { createSession } from '@/api';
+import { createSession, getHallById, getHalls } from '@/api';
+import { Hall, mapHallDetailsFromApi, mapHallsListFromApi, SeatType } from '@/types/hall';
 
 interface SessionFormData {
     id: string;
@@ -21,7 +22,9 @@ interface SessionFormData {
 }
 
 export const AddMoviePage = () => {
-    const AVAILABLE_HALLS = MOCK_HALLS;
+    const [halls, setHalls] = useState<Hall[]>([]);
+    const [seatTypes, setSeatTypes] = useState<SeatType[]>([]);
+    const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
     const navigate = useNavigate();
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -53,14 +56,6 @@ export const AddMoviePage = () => {
         }
     ]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     const handlePosterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -69,12 +64,6 @@ export const AddMoviePage = () => {
                 poster: file
             }));
         }
-    };
-
-    const handleSessionChange = (id: string, field: keyof SessionFormData, value: string) => {
-        setSessions(prev => prev.map(session =>
-            session.id === id ? { ...session, [field]: value } : session
-        ));
     };
 
     const addSession = () => {
@@ -96,13 +85,62 @@ export const AddMoviePage = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchHalls = async () => {
+            try {
+                const data = await getHalls();
+                setHalls(mapHallsListFromApi(data));
+            } catch (err) {
+                console.error('Failed to fetch halls:', err);
+                setError('Failed to load halls');
+            }
+        };
+        fetchHalls();
+    }, []);
+
+    const loadHallDetails = async (hallId: string, sessionId: string) => {
+        try {
+            const data = await getHallById(hallId);
+            const { seats, availableSeatTypes } = mapHallDetailsFromApi(data);
+
+            setHalls(prev => prev.map(h =>
+                h.id === hallId ? { ...h, seats, availableSeatTypes } : h
+            ));
+            const defaultEnabled = availableSeatTypes.reduce((acc: Record<string, boolean>, type: SeatType) => {
+                acc[type.id] = true;
+                return acc;
+            }, {} as Record<string, boolean>);
+
+            handleSessionChange(sessionId, 'enabledTypes', defaultEnabled);
+
+        } catch (err) {
+            console.error('Failed to load hall details:', err);
+        } finally {
+            setLoadingHalls(prev => ({ ...prev, [hallId]: false }));
+        }
+    };
+
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        const { name, value } = e.target;
+        setFormData(prev => ({ ...prev, [name]: value }));
+    };
+
+    const handleSessionChange = (id: string, field: keyof SessionFormData, value: any) => {
+        setSessions(prev => prev.map(session =>
+            session.id === id ? { ...session, [field]: value } : session
+        ));
+
+        if (field === 'hall' && value) {
+            loadHallDetails(value, id);
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
         setError(null);
 
         try {
-
             const moviePayload: CreateMovieRequest = {
                 movieName: formData.movieName,
                 description: formData.description,
@@ -116,8 +154,7 @@ export const AddMoviePage = () => {
             };
 
             const movieResult = await createMovie(moviePayload as any);
-            const newMovieId = movieResult.movieId.id ?? movieResult.id;
-            console.log(movieResult);
+            const newMovieId = movieResult.movieId?.id ?? movieResult.id;
 
             for (const sessionCard of sessions) {
                 if (!sessionCard.hall) continue;
@@ -131,10 +168,7 @@ export const AddMoviePage = () => {
                         price: Number(sessionCard.seatPrices[typeId] || 0)
                     }));
 
-                if (prices.length === 0) {
-                    console.warn('No prices configured for session, skipping...');
-                    continue;
-                }
+                if (prices.length === 0) continue;
 
                 const sessionRequests = dates.map(date => ({
                     movieId: newMovieId,
@@ -144,13 +178,7 @@ export const AddMoviePage = () => {
                     prices: prices,
                 }));
 
-                try {
-                    await Promise.all(sessionRequests.map(req => createSession(req)));
-                } catch (sessionError: any) {
-                    console.error('Session creation failed:', sessionError);
-                    setError(`Session creation failed: ${sessionError.response?.data?.detail || sessionError.message}`);
-                    throw sessionError;
-                }
+                await Promise.all(sessionRequests.map(req => createSession(req)));
             }
 
             navigate('/admin/movies');
@@ -178,8 +206,9 @@ export const AddMoviePage = () => {
                 {/* Sessions Section */}
                 <SessionManager
                     sessions={sessions}
-                    halls={AVAILABLE_HALLS}
-                    seatTypes={MOCK_SEAT_TYPES}
+                    halls={halls}
+                    seatTypes={seatTypes}
+                    loadingHalls={loadingHalls}
                     onAddSession={addSession}
                     onRemoveSession={removeSession}
                     onSessionChange={handleSessionChange}

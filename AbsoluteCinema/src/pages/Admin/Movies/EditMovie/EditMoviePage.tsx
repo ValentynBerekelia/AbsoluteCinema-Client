@@ -94,6 +94,7 @@ export const EditMoviePage = () => {
     const AVAILABLE_SEAT_TYPES = seatTypes.length > 0 ? seatTypes : MOCK_SEAT_TYPES;
     const navigate = useNavigate();
     const { movieId } = useParams<{ movieId: string }>();
+    const safeMovieId = movieId ?? '';
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [expandedSessionId, setExpandedSessionId] = useState<string | null>(null);
@@ -626,7 +627,7 @@ export const EditMoviePage = () => {
             if (isNewSession) {
                 // Create new session - use CreateSessionCommand format
                 const createPayload = {
-                    movieId: movieId,
+                    movieId: safeMovieId,
                     hallId: session.hall,
                     format: 1, // MovieFormat.Standard = 1
                     startTime: `${session.date}T${session.time}:00Z`, // Add Z for UTC
