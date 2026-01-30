@@ -1,9 +1,10 @@
 import { Genre } from "./Genre";
 import { Media } from "./Media";
 import { Session } from "./Session";
-import {convertIsoToDateTime} from "@/utils/convertToDataAndTime";
+import { convertIsoToDateTime } from "@/utils/convertToDataAndTime";
 import inceptionImg from "@/assets/posters/Inception3-2.jpg";
 import inceptionBannerImg from "@/assets/banners/Inception.jpg";
+import { mapSessionsFromApi } from "@/utils/mapSessionFromApi";
 
 export interface MovieCardInfo {
     id: string;
@@ -21,7 +22,7 @@ export interface MovieCardInfo {
 export interface MovieAdminCardInfo {
     id: string;
     title: string;
-    duration : string; //cause in entity we have TimeSpan
+    duration: string; //cause in entity we have TimeSpan
     format: string;
     ageLimit: number;
     sessions: Session[];
@@ -45,7 +46,7 @@ export interface MovieDetails {
     ageLimit: number;
     country: string;
     studio: string;
-    language:string;
+    language: string;
     directors: string[];
     starring: string[];
     medias: Media[];
@@ -104,8 +105,18 @@ export const mapMovieFromApi = (data: any): any[] => {
         ? data
         : data.movies ?? [data];
 
+
+
     return movies.map((movie: any) => {
         let movieId = movie.id;
+        const directors = movie.persons
+            ?.filter((p: any) => p.personRole === 1)
+            .map((p: any) => p.name)
+            .join(', ') ?? '';
+        const starring = movie.persons
+            ?.filter((p: any) => p.personRole === 2)
+            .map((p: any) => p.name)
+            .join(', ') ?? '';
 
         if (typeof movieId === 'object' && movieId !== null && movieId.id) {
             movieId = movieId.id;
@@ -117,11 +128,11 @@ export const mapMovieFromApi = (data: any): any[] => {
             image: movie.posterUrl ?? '',
             genre: movie.genres?.join(', ') ?? '',
             duration: parseDuration(movie.duration),
-            director: '',
-            starring: '',
+            director: directors,
+            starring: starring,
             ageLimit: movie.ageLimit,
             format: '3D',
-            sessions: movie.sessionTimes?.map(convertIsoToDateTime) ?? []
+            sessions: mapSessionsFromApi(movie.sessions),
         };
     });
 };
@@ -130,7 +141,7 @@ export const mapMoviesForAdmin = (data: any): MovieAdminCardInfo[] => {
     const movies = Array.isArray(data)
         ? data
         : data.movies ?? [data];
-    
+
     return movies.map((movie: any) => {
         const movieId = typeof movie.id === 'object' ? movie.id.id : movie.id;
 
@@ -140,7 +151,7 @@ export const mapMoviesForAdmin = (data: any): MovieAdminCardInfo[] => {
             duration: movie.duration,
             format: '3D',
             ageLimit: movie.ageLimit ?? 0,
-            sessions: movie.sessionTimes?.map(convertIsoToDateTime) ?? [],
+            sessions: mapSessionsFromApi(movie.sessions),
             halls: [],
             poster: movie.posterUrl ?? ''
         }
@@ -157,12 +168,7 @@ export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
             id: String(id),
             title: m.name,
             image: m.bannerUrl,
-            sessions: m.todaySessions?.map((s: any) => {
-                const dateTime = convertIsoToDateTime(s.startDateTime);
-                const date = dateTime.date;
-                const time = dateTime.time;
-                return { date, time };
-            }) ?? []
+            sessions: mapSessionsFromApi(m.todaySessions ?? m.sessions)
         };
     });
 };
