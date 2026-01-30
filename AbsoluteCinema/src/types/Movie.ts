@@ -168,7 +168,7 @@ export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
             id: String(id),
             title: m.name,
             image: m.bannerUrl,
-            sessions: mapSessionsFromApi(m.todaySessions || m.sessions)
+            sessions: mapSessionsFromApi(m.todaySessions ?? m.sessions)
         };
     });
 };
