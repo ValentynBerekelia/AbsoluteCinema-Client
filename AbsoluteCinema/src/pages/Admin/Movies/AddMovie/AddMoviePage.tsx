@@ -1,12 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-// import { movieService } from '../../../api/movieService';
-import './AddMoviePage.css';
-import { MovieAddForm } from '../../../../components/MovieAddForm/MovieAddForm';
+import './AddMoviePage.module.css';
+import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
 import { createMovie } from '../../../../api/movies';
 import { SessionManager } from '@/components/SessionManager/SessionManager';
-import { MOCK_HALLS, MOCK_SEAT_TYPES } from '@/data/hallsData';
 import { getDatesInRange } from '@/utils/getDatesInRange';
 import { createSession, getHallById, getHalls } from '@/api';
 import { Hall, mapHallDetailsFromApi, mapHallsListFromApi, SeatType } from '@/types/hall';

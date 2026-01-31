@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import { MovieFormData } from '../../types/CreateMovieRequest';
 import { MultiSelectField } from '../MultiSelectField/MultiSelectField';
-import './MovieAddForm.css';
+import './MovieForm.css';
 import { minutesToTimeSpan } from '../../utils/durationConverter';
 
 interface Props {
