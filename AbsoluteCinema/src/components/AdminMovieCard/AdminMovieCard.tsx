@@ -9,7 +9,7 @@ interface AdminMovieCardProps {
 
 export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
     const navigate = useNavigate();
-
+    
     const groupedSessions = movie.sessions.reduce((acc, session) => {
         const date = session.date;
         if (!acc[date]) {
@@ -18,10 +18,6 @@ export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
         acc[date].push(session);
         return acc;
     }, {} as Record<string, typeof movie.sessions>);
-
-    const sortedDates = Object.keys(groupedSessions).sort((a, b) => {
-        return new Date(a).getTime() - new Date(b).getTime();
-    });
 
     return (
         <div className='admin-movie-container'>
@@ -70,28 +66,24 @@ export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
                     <div className='admin-sessions-section'>
                         <h3>Sessions</h3>
                         <div className='sessions-by-date-group'>
-                            {sortedDates.length > 0 ? (
-                                sortedDates.map((date) => (
-                                    <div key={date} className='date-block'>
-                                        <span className='session-date-header'>{date}</span>
-                                        <div className='sessions-row'>
-                                            {groupedSessions[date].map((session, idx) => (
-                                                <TimeBadge
-                                                    key={`${date}-${idx}`}
-                                                    session={session}
-                                                    showPastDisabled={false}
-                                                />
-                                            ))}
-                                        </div>
+                            {Object.entries(groupedSessions).map(([date, sessions]) => (
+                                <div key={date} className='date-block'>
+                                    <span className='session-date-header'>{date}</span>
+                                    <div className='sessions-row'>
+                                        {sessions.map((session, idx) => (
+                                            <TimeBadge
+                                                key={idx}
+                                                session={session}
+                                                showPastDisabled={false}
+                                            />
+                                        ))}
                                     </div>
-                                ))
-                            ) : (
-                                <p className="no-sessions">No sessions scheduled</p>
-                            )}
+                                </div>
+                            ))}
                         </div>
                     </div>
 
-                    <button
+                    <button 
                         className='admin-action-btn'
                         onClick={() => navigate(`/admin/movies/edit/${movie.id}`)}
                     >

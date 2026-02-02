@@ -1,14 +1,13 @@
-import { formatToMinutes } from '@/utils/dataTimeConverters';
 import { MovieDetails } from '../../types/Movie';
+import { formatToMinutes } from '../../utils/timeFormat';
 import './MovieDescription.css';
-import { MediaType } from '@/types/Media';
 
 interface Props {
     movie: MovieDetails;
 }
 
 export const MovieDescription = ({ movie }: Props) => {
-    const posterUrl = movie.medias.find(m => m.type === MediaType.PosterImage)?.url;
+    const posterUrl = movie.medias.find(m => m.type === "Poster")?.url;
 
     return (
         <section className="movie-description-section">

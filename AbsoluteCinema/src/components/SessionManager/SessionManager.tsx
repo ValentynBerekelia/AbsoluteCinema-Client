@@ -18,7 +18,6 @@ interface SessionManagerProps {
     sessions: SessionFormData[];
     halls: Hall[];
     seatTypes: SeatType[];
-    loadingHalls: Record<string, boolean>
     onAddSession: () => void;
     onRemoveSession: (id: string) => void;
     onSessionChange: (id: string, field: keyof SessionFormData, value: any) => void;
@@ -28,7 +27,6 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
     sessions,
     halls,
     seatTypes,
-    loadingHalls,
     onAddSession,
     onRemoveSession,
     onSessionChange,
@@ -39,10 +37,6 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
 
             {sessions.map((session, index) => {
                 const selectedHall = halls.find(h => h.id === session.hall);
-                const isLoading = session.hall ? loadingHalls[session.hall] : false;
-
-                const hasData = selectedHall && selectedHall.seats && selectedHall.seats.length > 0;
-                const hallSeatTypes = selectedHall?.availableSeatTypes ?? [];
 
                 return (
                     <div key={session.id} className="session-card">
@@ -97,28 +91,15 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             </select>
                         </div>
 
-                        <div className="hall-status-container">
-                            {isLoading ? (
-                                <div className="hall-loader">
-                                    <div className="spinner"></div>
-                                    <span>Loading schemas {selectedHall?.name}...</span>
-                                </div>
-                            ) : hasData ? (
-                                <HallGrid
-                                    seats={selectedHall.seats}
-                                    seatTypes={selectedHall.availableSeatTypes ?? []}
-                                    enabledTypes={session.enabledTypes}
-                                />
-                            ) : session.hall ? (
-                                <div className="hall-error">Error while loading data</div>
-                            ) : (
-                                <div className="hall-placeholder">Choose the hall to watch schema </div>
-                            )}
-                        </div>
+                        <HallGrid
+                            seats={selectedHall?.seats || []}
+                            enabledTypes={session.enabledTypes}
+                            seatTypes={seatTypes}
+                        />
 
                         <TicketPriceManager
                             sessionId={session.id}
-                            seatTypes={hallSeatTypes}
+                            seatTypes={seatTypes}
                             enabledTypes={session.enabledTypes}
                             seatPrices={session.seatPrices}
                             onPriceChange={(typeId, field, value) => {
