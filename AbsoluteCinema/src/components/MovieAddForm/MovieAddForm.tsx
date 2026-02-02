@@ -1,7 +1,7 @@
 import React, { useEffect, useState, ChangeEvent } from 'react';
 import { MovieFormData } from '../../types/CreateMovieRequest';
 import { MultiSelectField } from '../MultiSelectField/MultiSelectField';
-import './MovieForm.css';
+import './MovieAddForm.css';
 import { minutesToTimeSpan } from '../../utils/durationConverter';
 
 interface Props {
@@ -86,10 +86,12 @@ export const MovieAddForm = ({ formData, setFormData }: Props) => {
                             <label>Duration</label>
                             <input
                                 type="number"
-                                placeholder="Minutes"
-                                name="duration"
-                                value={formData.duration}
-                                onChange={handleInputChange}
+                                placeholder="Min"
+                                onChange={(e) =>{
+                                    const mins = Number(e.target.value);
+                                    const timeSpan = minutesToTimeSpan(mins);
+                                    setFormData(p => ({...p, duration: timeSpan}));
+                                }}
                             />
                         </div>
                         <div className="form-group">
