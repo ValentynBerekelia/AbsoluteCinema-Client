@@ -1,0 +1,54 @@
+:root {
+    --primary-color: #1a1a1a;
+    --secondary-color: #4a4a4a;
+    --bg-light: #f8f9fa;
+    --bg-card: #ffffff;
+    --border-color: #dee2e6;
+    --text-main: #212529;
+    --text-muted: #6c757d;
+    --accent-gray: #e9ecef;
+    --danger: #dc3545;
+    --success: #198754;
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --radius: 6px;
+}
+
+.form-row {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.text-input {
+    flex: 1;
+    min-width: 220px;
+    padding: 10px 12px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    font-size: 14px;
+    background: white;
+}
+
+.primary-btn {
+    padding: 10px 18px;
+    border-radius: var(--radius);
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    border: 1px solid transparent;
+    background: var(--primary-color);
+    color: white;
+    border-color: var(--primary-color);
+}
+
+.primary-btn:hover:not(:disabled) {
+    background: var(--secondary-color);
+    border-color: var(--secondary-color);
+}
+
+.primary-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}

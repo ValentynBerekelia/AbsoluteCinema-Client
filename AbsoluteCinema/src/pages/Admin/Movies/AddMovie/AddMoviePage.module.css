@@ -1,0 +1,153 @@
+/* AddMoviePage.css */
+
+/* Основні змінні залишаємо для глобальної синхронізації */
+:root {
+    --primary-color: #1a1a1a;
+    --secondary-color: #4a4a4a;
+    --bg-light: #f8f9fa;
+    --bg-card: #ffffff;
+    --border-color: #dee2e6;
+    --text-main: #212529;
+    --text-muted: #6c757d;
+    --accent-gray: #e9ecef;
+    --danger: #dc3545;
+    --success: #198754;
+    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --radius: 6px;
+}
+
+.add-movie-page {
+    padding: 40px 20px;
+    max-width: 1200px;
+    margin: 0 auto;
+    font-family: 'Inter', -apple-system, sans-serif;
+    background: var(--bg-light);
+    color: var(--text-main);
+    min-height: 100vh;
+}
+
+/* Header & Back Button */
+.add-movie-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 30px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid var(--border-color);
+}
+
+.add-movie-header h2 {
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.back-btn {
+    padding: 10px 20px;
+    background: white;
+    color: var(--text-main);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 600;
+    transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.back-btn:hover {
+    background: var(--accent-gray);
+    border-color: #adb5bd;
+}
+
+/* Error Message */
+.error-message {
+    padding: 16px 20px;
+    margin-bottom: 30px;
+    background: #fff3cd;
+    border-left: 5px solid var(--danger);
+    color: #c62828;
+    border-radius: var(--radius);
+    font-weight: 500;
+}
+
+/* Main Form Wrapper */
+.add-movie-form {
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 30px;
+}
+
+/* Final Action Buttons at the bottom */
+.form-actions {
+    display: flex;
+    justify-content: flex-end;
+    gap: 15px;
+    margin-top: 20px;
+    padding: 30px;
+    background: var(--bg-card);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow-subtle);
+}
+
+.submit-btn {
+    padding: 15px 40px;
+    background: var(--primary-color);
+    color: white;
+    border: none;
+    border-radius: var(--radius);
+    font-weight: 700;
+    cursor: pointer;
+    font-size: 15px;
+    transition: background 0.2s ease;
+}
+
+.submit-btn:hover:not(:disabled) {
+    background: #333;
+}
+
+.submit-btn:disabled {
+    background: var(--text-muted);
+    cursor: not-allowed;
+    opacity: 0.7;
+}
+
+.cancel-btn {
+    padding: 15px 30px;
+    background: transparent;
+    color: var(--text-muted);
+    border: 1px solid var(--border-color);
+    border-radius: var(--radius);
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.cancel-btn:hover {
+    background: var(--bg-light);
+}
+
+/* Responsive adjustments for the page container */
+@media (max-width: 768px) {
+    .add-movie-page {
+        padding: 20px 10px;
+    }
+
+    .add-movie-header {
+        flex-direction: column;
+        gap: 15px;
+        align-items: flex-start;
+    }
+
+    .form-actions {
+        flex-direction: column;
+        padding: 20px;
+    }
+
+    .submit-btn, .cancel-btn {
+        width: 100%;
+    }
+}

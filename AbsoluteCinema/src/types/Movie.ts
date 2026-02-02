@@ -1,9 +1,9 @@
 import { Genre } from "./Genre";
 import { Media } from "./Media";
 import { Session } from "./Session";
-import {convertIsoToDateTime} from "@/utils/convertToDataAndTime";
 import inceptionImg from "@/assets/posters/Inception3-2.jpg";
 import inceptionBannerImg from "@/assets/banners/Inception.jpg";
+import { convertIsoToDateTime } from "@/utils/dataTimeConverters";
 
 export interface MovieCardInfo {
     id: string;
@@ -56,10 +56,7 @@ export const mapMovieDetailsFromApi = async (
     data: any
 ): Promise<MovieDetails> => {
 
-    let movieId = data.movieId;
-    if (typeof movieId === 'object' && movieId?.id) {
-        movieId = movieId.id;
-    }
+    let movieId = data.movieId?.id ?? data.id;
 
     const movieDetails: MovieDetails = {
         id: String(movieId),
@@ -71,23 +68,14 @@ export const mapMovieDetailsFromApi = async (
         country: data.country,
         studio: data.studio,
         language: data.language,
-        genres: data.genres,
-        directors: data.persons,
-        starring: data.persons,
-
+        genres: data.genres?.map((g: any) => g.name) || [],
+        directors: data.persons?.filter((p: any) => p.personRole === 1).map((p: any) => p.personName) || [],
+        starring: data.persons?.filter((p: any) => p.personRole === 2).map((p: any) => p.personName) || [],
         medias: [
-            { id: 'poster', type: 'Poster', url: data.posterUrl },
-            {
-                id: 'video',
-                type: 'Video',
-                url: data.trailerUrls?.[0] ?? ''
-            },
-            ...(data.imageUrls?.map((u: string, index: number) => ({
-                id: `still-${index}`,
-                type: 'Still',
-                url: u
-            })) ?? []),
-        ],
+            { id: data.poster?.id, type: 'Poster', url: data.poster?.url },
+            ...(data.trailers?.map((t: any) => ({ id: t.id, type: 'Video', url: t.url })) || []),
+            ...(data.images?.map((img: any) => ({ id: img.id, type: 'Still', url: img.url })) || [])
+        ]
     };
 
     return movieDetails;
