@@ -21,6 +21,17 @@ interface SeatDraft {
 }
 
 export const HallsPage = () => {
+    const ALL_SEAT_TYPES: SeatType[] = [
+        { id: '6ea339c5-b6c8-4646-ab54-7d5f71644a87', name: 'Standart' },
+        { id: '0d678ce0-e043-4d20-b136-e295cfe00539', name: 'VIP' }
+    ];
+
+    const mergeSeatTypes = (types: SeatType[] = []) => {
+        const byId = new Map<string, SeatType>();
+        ALL_SEAT_TYPES.forEach(t => byId.set(t.id, t));
+        types.forEach(t => byId.set(t.id, t));
+        return Array.from(byId.values());
+    };
     const [halls, setHalls] = useState<Hall[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -67,8 +78,10 @@ export const HallsPage = () => {
                 availableSeatTypes: SeatType[];
             };
 
+            const mergedSeatTypes = mergeSeatTypes(availableSeatTypes);
+
             setHalls(prev => prev.map(h => (
-                h.id === hallId ? { ...h, seats, availableSeatTypes } : h
+                h.id === hallId ? { ...h, seats, availableSeatTypes: mergedSeatTypes } : h
             )));
 
             setHallDetailsLoaded(prev => ({ ...prev, [hallId]: true }));
@@ -90,7 +103,7 @@ export const HallsPage = () => {
 
             setSeatDrafts(prev => {
                 if (prev[hallId]) return prev;
-                const defaultSeatType = availableSeatTypes?.[0]?.id ?? '';
+                const defaultSeatType = mergedSeatTypes?.[0]?.id ?? '';
                 return {
                     ...prev,
                     [hallId]: { row: '', number: '', seatTypeId: defaultSeatType }
@@ -120,7 +133,27 @@ export const HallsPage = () => {
         }
         try {
             setActionLoading(prev => ({ ...prev, createHall: true }));
-            await createHall({ name: newHallName.trim() });
+            const response = await createHall({ name: newHallName.trim() });
+            const hallId = response?.id || response?.hallId;
+            
+            // Auto-fill with 6x9 seats with the specified seat type
+            if (hallId) {
+                const SEAT_TYPE_ID = '6ea339c5-b6c8-4646-ab54-7d5f71644a87';
+                const seats: Array<{ row: number; number: number }> = [];
+                
+                for (let row = 1; row <= 6; row++) {
+                    for (let seatNum = 1; seatNum <= 9; seatNum++) {
+                        seats.push({ row, number: seatNum });
+                    }
+                }
+                
+                await addSeatsToHall({
+                    hallId,
+                    seatTypeId: SEAT_TYPE_ID,
+                    seats
+                });
+            }
+            
             setNewHallName('');
             await fetchHalls();
         } catch (err) {
