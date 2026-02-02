@@ -1,14 +1,14 @@
-import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-// import { movieService } from '../../../api/movieService';
-import './AddMoviePage.css';
-import { MovieAddForm } from '../../../../components/MovieAddForm/MovieAddForm';
+import { useCallback, useEffect, useState } from 'react';
+import { data, useNavigate } from 'react-router-dom';
+import styles from './AddMoviePage.module.css';
+import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
 import { createMovie } from '../../../../api/movies';
 import { SessionManager } from '@/components/SessionManager/SessionManager';
-import { MOCK_HALLS, MOCK_SEAT_TYPES } from '@/data/hallsData';
 import { getDatesInRange } from '@/utils/getDatesInRange';
-import { createSession } from '@/api';
+import { createSession, getHallById, getHalls } from '@/api';
+import { Hall, mapHallDetailsFromApi, mapHallsListFromApi, SeatType } from '@/types/hall';
+import { prepareSessionPayload } from '@/utils/prepareSessionPayload';
 
 interface SessionFormData {
     id: string;
@@ -21,7 +21,9 @@ interface SessionFormData {
 }
 
 export const AddMoviePage = () => {
-    const AVAILABLE_HALLS = MOCK_HALLS;
+    const [halls, setHalls] = useState<Hall[]>([]);
+    const [seatTypes, setSeatTypes] = useState<SeatType[]>([]);
+    const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
     const navigate = useNavigate();
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -53,14 +55,6 @@ export const AddMoviePage = () => {
         }
     ]);
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({
-            ...prev,
-            [name]: value
-        }));
-    };
-
     const handlePosterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
@@ -69,12 +63,6 @@ export const AddMoviePage = () => {
                 poster: file
             }));
         }
-    };
-
-    const handleSessionChange = (id: string, field: keyof SessionFormData, value: string) => {
-        setSessions(prev => prev.map(session =>
-            session.id === id ? { ...session, [field]: value } : session
-        ));
     };
 
     const addSession = () => {
@@ -96,13 +84,57 @@ export const AddMoviePage = () => {
         }
     };
 
+    useEffect(() => {
+        const fetchHalls = async () => {
+            try {
+                const data = await getHalls();
+                setHalls(mapHallsListFromApi(data));
+            } catch (err) {
+                console.error('Failed to fetch halls:', err);
+                setError('Failed to load halls');
+            }
+        };
+        fetchHalls();
+    }, []);
+
+    const loadHallDetails = async (hallId: string, sessionId: string) => {
+        try {
+            const data = await getHallById(hallId);
+            const { seats, availableSeatTypes } = mapHallDetailsFromApi(data);
+
+            setHalls(prev => prev.map(h =>
+                h.id === hallId ? { ...h, seats, availableSeatTypes } : h
+            ));
+            const defaultEnabled = availableSeatTypes.reduce((acc: Record<string, boolean>, type: SeatType) => {
+                acc[type.id] = true;
+                return acc;
+            }, {} as Record<string, boolean>);
+
+            handleSessionChange(sessionId, 'enabledTypes', defaultEnabled);
+
+        } catch (err) {
+            console.error('Failed to load hall details:', err);
+        } finally {
+            setLoadingHalls(prev => ({ ...prev, [hallId]: false }));
+        }
+    };
+
+    const handleSessionChange = useCallback((id: string, field: keyof SessionFormData, value: any) => {
+        setSessions(prev => prev.map(session =>
+            session.id === id ? { ...session, [field]: value } : session
+        ));
+
+        if (field === 'hall' && value) {
+            loadHallDetails(value, id);
+        }
+    }, [loadHallDetails]);
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
         setError(null);
 
         try {
-
             const moviePayload: CreateMovieRequest = {
                 movieName: formData.movieName,
                 description: formData.description,
@@ -116,30 +148,24 @@ export const AddMoviePage = () => {
             };
 
             const movieResult = await createMovie(moviePayload as any);
-            const newMovieId = movieResult.movieId.id ?? movieResult.id;
-            console.log(movieResult);
+            const newMovieId = movieResult.movieId?.id ?? movieResult.id;
+
+            const sessionPromises: Promise<any>[] = [];
 
             for (const sessionCard of sessions) {
                 if (!sessionCard.hall) continue;
 
                 const dates = getDatesInRange(sessionCard.dateFrom, sessionCard.dateTo);
+                dates.forEach(date => {
+                    const payload = prepareSessionPayload(sessionCard, date, newMovieId);
 
-                const prices = Object.keys(sessionCard.enabledTypes)
-                    .filter(typeId => sessionCard.seatPrices[typeId])
-                    .map(typeId => ({
-                        seatTypeId: typeId,
-                        price: Number(sessionCard.seatPrices[typeId] || 0)
-                    }));
-
-                const sessionRequests = dates.map(date => ({
-                    movieId: newMovieId,
-                    hallId: sessionCard.hall,
-                    format: 2,
-                    startTime: `${date}T${sessionCard.time}:00.000Z`,
-                    prices: prices,
-                }));
-
-                await Promise.all(sessionRequests.map(req => createSession(req)));
+                    if (payload.prices.length > 0) {
+                        sessionPromises.push(createSession(payload));
+                    }
+                });
+            }
+            if (sessionPromises.length > 0) {
+                await Promise.all(sessionPromises);
             }
 
             navigate('/admin/movies');
@@ -151,15 +177,15 @@ export const AddMoviePage = () => {
     };
 
     return (
-        <div className="add-movie-page">
-            <div className="add-movie-header">
+        <div className={styles["add-movie-page"]}>
+            <div className={styles["add-movie-header"]}>
                 <h2>Add New Movie</h2>
-                <button onClick={() => navigate('/admin/movies')} className="back-btn">
+                <button onClick={() => navigate('/admin/movies')} className={styles["back-btn"]}>
                     Back to Movies
                 </button>
             </div>
 
-            {error && <div className="error-message">{error}</div>}
+            {error && <div className={styles["error-message"]}>{error}</div>}
 
             <form onSubmit={handleSubmit} className="add-movie-form">
                 <MovieAddForm formData={formData} setFormData={setFormData} />
@@ -167,22 +193,23 @@ export const AddMoviePage = () => {
                 {/* Sessions Section */}
                 <SessionManager
                     sessions={sessions}
-                    halls={AVAILABLE_HALLS}
-                    seatTypes={MOCK_SEAT_TYPES}
+                    halls={halls}
+                    seatTypes={seatTypes}
+                    loadingHalls={loadingHalls}
                     onAddSession={addSession}
                     onRemoveSession={removeSession}
                     onSessionChange={handleSessionChange}
                 />
 
                 {/* Submit */}
-                <div className="form-actions">
-                    <button type="submit" className="submit-btn" disabled={saving}>
+                <div className={styles["form-actions"]}>
+                    <button type="submit" className={styles["submit-btn"]} disabled={saving}>
                         {saving ? 'Creating Movie...' : 'Create Movie'}
                     </button>
                     <button
                         type="button"
                         onClick={() => navigate('/admin/movies')}
-                        className="cancel-btn"
+                        className={styles["cancel-btn"]}
                         disabled={saving}
                     >
                         Cancel
