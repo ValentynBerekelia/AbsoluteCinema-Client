@@ -1,16 +1,19 @@
 import { useState, useEffect, useCallback } from 'react';
 import { useNavigate, useParams } from 'react-router-dom';
-import  styles from './EditMoviePage.module.css';
+import styles from './EditMoviePage.module.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { MovieFormData } from '../../../../types/CreateMovieRequest';
 import { HallGrid } from '@/components/HallGrid/HallGrid';
 import { TicketPriceManager } from '@/components/TicketPriceManager/TicketPriceManager';
 import { getMovieById, updateMoviePartial, createAndAttachMedia, deleteMedia, MediaType } from '@/api/movies';
-import { getMovieSessions, updateSessionPartial, createSession } from '@/api/sessions';
+import { getMovieSessions, updateSessionPartial, createSession, deleteSession } from '@/api/sessions';
 import { getHalls, getHallById } from '@/api/halls';
 import { Hall, SeatType } from '@/types/hall';
 import { MediaManager } from '@/components/MediaManager/MediaManager';
 import { mapApiSessionToForm } from '@/types/Session';
+import { mapMediaToGallery, Media } from '@/types/Media';
+import { minutesToSeconds, timeSpanToMinutes } from '@/utils/dataTimeConverters';
+import { prepareSessionPayload } from '@/utils/prepareSessionPayload';
 
 interface SessionFormData {
     id: string;
@@ -20,26 +23,6 @@ interface SessionFormData {
     seatPrices: Record<string, string>;
     enabledTypes: Record<string, boolean>;
 }
-
-interface MediaItem {
-    id: string;
-    url: string;
-    type: MediaType;
-}
-
-// Helpers
-const convertTimeSpanToMinutes = (timeSpan: string): string => {
-    const match = timeSpan.match(/^(\d{1,2}):(\d{2}):(\d{2})$/);
-    if (match) return String(parseInt(match[1]) * 60 + parseInt(match[2]));
-    return timeSpan;
-};
-
-const calculateDurationSeconds = (durationString: string): number => {
-    const timeMatch = durationString.match(/^(\d{1,2}):(\d{2}):(\d{2})$/);
-    if (timeMatch) return parseInt(timeMatch[1]) * 3600 + parseInt(timeMatch[2]) * 60 + parseInt(timeMatch[3]);
-    const mins = parseInt(durationString.trim(), 10);
-    return !isNaN(mins) ? mins * 60 : 0;
-};
 
 export const EditMoviePage = () => {
     const navigate = useNavigate();
@@ -54,9 +37,9 @@ export const EditMoviePage = () => {
         genres: [], directors: [], starring: [], poster: null
     });
     const [sessions, setSessions] = useState<SessionFormData[]>([]);
-    const [stills, setStills] = useState<MediaItem[]>([]);
-    const [trailers, setTrailers] = useState<MediaItem[]>([]);
-    const [banner, setBanner] = useState<MediaItem | null>(null);
+    const [stills, setStills] = useState<Media[]>([]);
+    const [trailers, setTrailers] = useState<Media[]>([]);
+    const [banner, setBanner] = useState<Media | null>(null);
 
     // UI states
     const [saving, setSaving] = useState(false);
@@ -65,6 +48,7 @@ export const EditMoviePage = () => {
     const [stillInput, setStillInput] = useState('');
     const [trailerInput, setTrailerInput] = useState('');
     const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
+    const [loadingMovie, setLoadingMovie] = useState(false);
 
     // 1. Load Halls List
     useEffect(() => {
@@ -104,53 +88,66 @@ export const EditMoviePage = () => {
                 return acc;
             }, {});
 
-            setSessions(prev => prev.map(s => s.id === sessionId ? { ...s, enabledTypes: defaultEnabled } : s));
+            setSessions(prev => prev.map(s => {
+                if (s.id === sessionId) {
+                    const newPrices = {...s.seatPrices};
+                    const newEnabled = {...s.enabledTypes};
+
+                    hallData.availableSeatTypes?.forEach((type: any) => {
+                        const id = type.seatTypeId?.id ?? type.seatTypeId;
+                        if (!newPrices[id]) newPrices[id] = "0";
+                        if (!newEnabled[id] === undefined) newEnabled[id] = true;
+                    });
+
+                    return {...s, seatPrices: newPrices, enabledTypes: newEnabled};
+                }
+                return s;
+            }));
         } catch (err) { console.error("Hall details failed", err); }
         finally { setLoadingHalls(prev => ({ ...prev, [hallId]: false })); }
     }, []);
 
     // 3. Load Movie & Sessions
     useEffect(() => {
-        if (!safeMovieId) return;
+        setLoadingMovie(true);
         const loadInitialData = async () => {
             try {
                 const movieData = await getMovieById(safeMovieId);
+
+                const directors = movieData.persons
+                    ?.filter((p: any) => p.personRole === 1)
+                    .map((p: any) => p.personName) || [];
+
+                const starring = movieData.persons
+                    ?.filter((p: any) => p.personRole === 2)
+                    .map((p: any) => p.personName) || [];
+
                 setFormData({
-                    movieName: movieData.title || '',
-                    description: movieData.description || '',
-                    rate: movieData.rate || 0,
-                    ageLimit: movieData.ageLimit || 0,
-                    duration: movieData.duration ? convertTimeSpanToMinutes(movieData.duration) : '',
-                    country: movieData.country || '',
-                    studio: movieData.studio || '',
-                    language: movieData.language || '',
-                    genres: movieData.genres || [],
-                    directors: movieData.directors || [],
-                    starring: movieData.starring || [],
+                    movieName: movieData.title,
+                    description: movieData.description,
+                    rate: movieData.rate,
+                    ageLimit: movieData.ageLimit,
+                    duration: movieData.duration ? timeSpanToMinutes(String(movieData.duration)) : '',
+                    country: movieData.country,
+                    studio: movieData.studio,
+                    language: movieData.language,
+                    genres: movieData.genres?.map((g: any) => typeof g === 'object' ? g.name : g) || [],
+                    directors: directors,
+                    starring: starring,
                     poster: null,
-                    posterUrl: movieData.posterUrl || movieData.posterImage?.url || ''
+                    posterUrl: movieData.poster?.url || ''
                 });
 
                 // Media mapping
-                setStills(movieData.imageUrls?.map((url: string, i: number) => ({
-                    id: movieData.imageIds?.[i] || `img-${i}`,
-                    url, type: MediaType.Image
-                })) || []);
+                setStills(mapMediaToGallery(movieData.images, MediaType.Image));
 
-                // 2. (Video - Type 4)
-                if (movieData.trailerUrls && Array.isArray(movieData.trailerUrls)) {
-                    setTrailers(movieData.trailerUrls.map((url: string, i: number) => ({
-                        id: movieData.trailerIds?.[i] || `tr-${i}`,
-                        url,
-                        type: MediaType.Video
-                    })));
-                }
+                setTrailers(mapMediaToGallery(movieData.trailers, MediaType.Video));
 
                 // 3. (Banner - Type 5)
-                if (movieData.bannerUrl) {
+                if (movieData.banner) {
                     setBanner({
-                        id: movieData.bannerId || 'bn-0',
-                        url: movieData.bannerUrl,
+                        id: movieData.banner.id,
+                        url: movieData.banner.url,
                         type: MediaType.BannerImage
                     });
                 }
@@ -171,7 +168,9 @@ export const EditMoviePage = () => {
                 }
 
 
-            } catch (err) { setError("Failed to load movie data"); }
+            } catch (err) {
+                setError(String(err));
+            } finally { setLoadingMovie(false); }
         };
         loadInitialData();
     }, [safeMovieId, loadHallDetails]);
@@ -186,7 +185,7 @@ export const EditMoviePage = () => {
         try {
             const payload = {
                 ...formData,
-                durationSeconds: calculateDurationSeconds(formData.duration),
+                durationSeconds: minutesToSeconds(formData.duration),
                 name: formData.movieName
             };
             await updateMoviePartial(safeMovieId, payload);
@@ -199,6 +198,8 @@ export const EditMoviePage = () => {
         const session = sessions.find(s => s.id === sessionId);
         if (!session) return;
 
+        const payload = prepareSessionPayload(session, session.date, safeMovieId);
+        
         const prices = Object.keys(session.enabledTypes)
             .filter(tid => session.enabledTypes[tid])
             .map(tid => ({ seatTypeId: tid, price: Number(session.seatPrices[tid] || 0) }));
@@ -206,13 +207,7 @@ export const EditMoviePage = () => {
         try {
             const isNew = sessionId.length < 15;
             if (isNew) {
-                await createSession({
-                    movieId: safeMovieId,
-                    hallId: session.hall,
-                    format: 1,
-                    startTime: `${session.date}T${session.time}:00Z`,
-                    prices
-                });
+                await createSession(payload);
             } else {
                 await updateSessionPartial(sessionId, {
                     movieID: { id: safeMovieId },
@@ -224,6 +219,23 @@ export const EditMoviePage = () => {
         } catch (err) { setError("Session save failed"); }
     };
 
+    const handleDeleteSession = async (sessionId: string) => {
+        if (!window.confirm("Are you sure you want to delete this session?")) return;
+
+        try {
+            const isRealSession = sessionId.length > 15;
+
+            if (isRealSession) {
+                await deleteSession(sessionId);
+                console.log(`Session ${sessionId} deleted from DB`);
+            }
+
+            setSessions(prev => prev.filter(s => s.id !== sessionId));
+        } catch (err) {
+            console.error("Delete failed: ", err);
+        }
+    };
+
     // Media Handlers
     const handleAddStill = async () => {
         if (!stillInput.trim()) return;
@@ -233,6 +245,7 @@ export const EditMoviePage = () => {
             setStillInput('');
         } catch (err) { setError("Add still failed"); }
     };
+
 
     return (
         <div className={styles["edit-movie-page"]}>
@@ -274,7 +287,6 @@ export const EditMoviePage = () => {
                         const hallTypes = hall?.availableSeatTypes ?? [];
                         return (
                             <div key={s.id} className={styles["session-card"]}>
-                                {/* 1. Ряд управління (Дата, Час, Зал) */}
                                 <div className={styles["session-controls-row"]}>
                                     <input
                                         type="date"
@@ -298,12 +310,10 @@ export const EditMoviePage = () => {
                                     </select>
                                 </div>
 
-                                {/* 2. Візуалізація залу */}
                                 <div className={styles["hall-grid-container"]}>
                                     <HallGrid seats={hall?.seats || []} seatTypes={hallTypes} enabledTypes={s.enabledTypes} />
                                 </div>
 
-                                {/* 3. Управління цінами */}
                                 <div className={styles["ticket-prices-wrapper"]}>
                                     <h4 className={styles["prices-title"]}>Ticket Prices</h4>
                                     <TicketPriceManager
@@ -322,7 +332,7 @@ export const EditMoviePage = () => {
                                     <button
                                         type="button"
                                         className={styles["remove-session-btn"]}
-                                        onClick={() => {/* логіка видалення */ }}
+                                        onClick={() => handleDeleteSession(s.id)}
                                     >
                                         Remove Session
                                     </button>

@@ -1,6 +1,7 @@
 import { Seat } from "./hall";
 
 export interface Session {
+    id: string;
     date: string;
     time: string;
     movieType?: number;

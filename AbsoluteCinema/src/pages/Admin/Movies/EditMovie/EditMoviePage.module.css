@@ -341,7 +341,6 @@
     cursor: not-allowed;
 }
 
-/* Головні Кнопки Дій */
 .form-actions {
     display: flex;
     justify-content: flex-end;
@@ -365,4 +364,40 @@
 
 .submit-btn.primary:hover:not(:disabled) {
     background: var(--accent-color);
+}
+
+.error-message {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 16px 20px;
+    margin-bottom: 30px;
+    
+    background-color: #fff5f5;
+    color: #c62828;
+    border-left: 5px solid var(--accent-color);
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05);
+    
+    font-size: 15px;
+    font-weight: 500;
+    line-height: 1.4;
+    
+    animation: slideDown 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.error-message::before {
+    content: '⚠️';
+    font-size: 18px;
+}
+
+@keyframes slideDown {
+    from {
+        opacity: 0;
+        transform: translateY(-20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
 }

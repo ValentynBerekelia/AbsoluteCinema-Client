@@ -1,6 +1,6 @@
-import { useEffect, useState } from 'react';
-import { useNavigate } from 'react-router-dom';
-import './AddMoviePage.module.css';
+import { useCallback, useEffect, useState } from 'react';
+import { data, useNavigate } from 'react-router-dom';
+import styles from './AddMoviePage.module.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
 import { createMovie } from '../../../../api/movies';
@@ -8,6 +8,7 @@ import { SessionManager } from '@/components/SessionManager/SessionManager';
 import { getDatesInRange } from '@/utils/getDatesInRange';
 import { createSession, getHallById, getHalls } from '@/api';
 import { Hall, mapHallDetailsFromApi, mapHallsListFromApi, SeatType } from '@/types/hall';
+import { prepareSessionPayload } from '@/utils/prepareSessionPayload';
 
 interface SessionFormData {
     id: string;
@@ -118,12 +119,7 @@ export const AddMoviePage = () => {
         }
     };
 
-    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
-    };
-
-    const handleSessionChange = (id: string, field: keyof SessionFormData, value: any) => {
+    const handleSessionChange = useCallback((id: string, field: keyof SessionFormData, value: any) => {
         setSessions(prev => prev.map(session =>
             session.id === id ? { ...session, [field]: value } : session
         ));
@@ -131,7 +127,7 @@ export const AddMoviePage = () => {
         if (field === 'hall' && value) {
             loadHallDetails(value, id);
         }
-    };
+    }, [loadHallDetails]);
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -154,29 +150,22 @@ export const AddMoviePage = () => {
             const movieResult = await createMovie(moviePayload as any);
             const newMovieId = movieResult.movieId?.id ?? movieResult.id;
 
+            const sessionPromises: Promise<any>[] = [];
+
             for (const sessionCard of sessions) {
                 if (!sessionCard.hall) continue;
 
                 const dates = getDatesInRange(sessionCard.dateFrom, sessionCard.dateTo);
+                dates.forEach(date => {
+                    const payload = prepareSessionPayload(sessionCard, date, newMovieId);
 
-                const prices = Object.keys(sessionCard.enabledTypes)
-                    .filter(typeId => sessionCard.enabledTypes[typeId] && sessionCard.seatPrices[typeId])
-                    .map(typeId => ({
-                        seatTypeId: typeId,
-                        price: Number(sessionCard.seatPrices[typeId] || 0)
-                    }));
-
-                if (prices.length === 0) continue;
-
-                const sessionRequests = dates.map(date => ({
-                    movieId: newMovieId,
-                    hallId: sessionCard.hall,
-                    format: 2,
-                    startTime: `${date}T${sessionCard.time}:00.000Z`,
-                    prices: prices,
-                }));
-
-                await Promise.all(sessionRequests.map(req => createSession(req)));
+                    if (payload.prices.length > 0) {
+                        sessionPromises.push(createSession(payload));
+                    }
+                });
+            }
+            if (sessionPromises.length > 0) {
+                await Promise.all(sessionPromises);
             }
 
             navigate('/admin/movies');
@@ -188,15 +177,15 @@ export const AddMoviePage = () => {
     };
 
     return (
-        <div className="add-movie-page">
-            <div className="add-movie-header">
+        <div className={styles["add-movie-page"]}>
+            <div className={styles["add-movie-header"]}>
                 <h2>Add New Movie</h2>
-                <button onClick={() => navigate('/admin/movies')} className="back-btn">
+                <button onClick={() => navigate('/admin/movies')} className={styles["back-btn"]}>
                     Back to Movies
                 </button>
             </div>
 
-            {error && <div className="error-message">{error}</div>}
+            {error && <div className={styles["error-message"]}>{error}</div>}
 
             <form onSubmit={handleSubmit} className="add-movie-form">
                 <MovieAddForm formData={formData} setFormData={setFormData} />
@@ -213,14 +202,14 @@ export const AddMoviePage = () => {
                 />
 
                 {/* Submit */}
-                <div className="form-actions">
-                    <button type="submit" className="submit-btn" disabled={saving}>
+                <div className={styles["form-actions"]}>
+                    <button type="submit" className={styles["submit-btn"]} disabled={saving}>
                         {saving ? 'Creating Movie...' : 'Create Movie'}
                     </button>
                     <button
                         type="button"
                         onClick={() => navigate('/admin/movies')}
-                        className="cancel-btn"
+                        className={styles["cancel-btn"]}
                         disabled={saving}
                     >
                         Cancel

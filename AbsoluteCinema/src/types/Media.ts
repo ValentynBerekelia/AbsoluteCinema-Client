@@ -10,7 +10,7 @@ export enum MediaType {
 export interface Media {
     id: string;
     url: string;
-    type: MediaType | string;
+    type: MediaType;
 }
 
 export interface CreateMediaRequest {
@@ -25,3 +25,11 @@ export interface AttachMediaRequest {
 export interface CreateAndAttachMediaResponse {
   movieId: string;
 }
+
+export const mapMediaToGallery = (mediaArray: any[], type: MediaType) => {
+    return mediaArray?.map((item: any) => ({
+        id: item.id,
+        url: item.url,
+        type: type
+    })) || [];
+};
