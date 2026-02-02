@@ -22,25 +22,34 @@ export const HallGrid: React.FC<HallGridProps> = ({ seats, seatTypes, enabledTyp
     const maxColumns = Math.max(...seats.map(s => s.number));
 
     const getSeatClassByName = (typeId: string): string => {
-        const typeName = seatTypes.find(t => t.id === typeId)?.name.toLowerCase() || 'standard';
-        
-        return typeName;
+        const type = seatTypes.find(t => t.id === typeId);
+
+        if (!type) {
+            console.warn("Type not found for ID:", typeId);
+            return 'standard';
+        }
+
+        const typeName = type.name.toLowerCase();
+
+        if (typeName.includes('vip')) return 'vip';
+        if (typeName.includes('comfort')) return 'comfort';
+        return 'standard';
     };
     return (
-        <div 
-            className="seats-grid" 
+        <div
+            className="seats-grid"
             style={{ gridTemplateColumns: `repeat(${maxColumns}, 28px)` }}
         >
             {seats.map((seat, i) => {
                 const isActive = enabledTypes ? enabledTypes[seat.seatTypeId] : true;
 
                 return (
-                    <div 
-                        key={i} 
+                    <div
+                        key={i}
                         className={`seat-placeholder ${getSeatClassByName(seat.seatTypeId)} ${!isActive ? 'dimmed' : ''}`}
-                        style={{ 
-                            gridColumn: seat.number, 
-                            gridRow: seat.row 
+                        style={{
+                            gridColumn: seat.number,
+                            gridRow: seat.row
                         }}
                         title={`Row: ${seat.row}, Seat: ${seat.number}`}
                     />
