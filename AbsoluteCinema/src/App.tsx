@@ -73,11 +73,21 @@ function App() {
       />
       <Route
         path='/login'
-        element={<LoginPage />}
+        element={
+          <MainLayout>
+            <Home />
+            <LoginPage />
+          </MainLayout>
+        }
       />
       <Route
         path='/register'
-        element={<RegisterPage />}
+        element={
+          <MainLayout>
+            <Home />
+            <RegisterPage />
+          </MainLayout>
+        }
       />
     </Routes>
   )
