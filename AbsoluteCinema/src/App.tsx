@@ -7,6 +7,7 @@ import { AddMoviePage } from './pages/Admin/Movies/AddMovie/AddMoviePage'
 import { AdminMainPage } from './pages/Admin/MainPage/AdminMainPage'
 import { MovieDetailsPage } from './pages/MovieDetails/MovieDetailsPage'
 import { HallsPage } from './pages/Admin/Halls/HallsPage'
+import { EditMoviePage } from './pages/Admin/Movies/EditMovie/EditMoviePage'
 
 function App() {
 
@@ -58,6 +59,14 @@ function App() {
           <MainLayout>
             <MovieDetailsPage />
           </MainLayout>
+        }
+      />
+      <Route
+        path='/admin/movies/edit/:movieId'
+        element={
+          <AdminLayout>
+            <EditMoviePage />
+          </AdminLayout>
         }
       />
     </Routes>

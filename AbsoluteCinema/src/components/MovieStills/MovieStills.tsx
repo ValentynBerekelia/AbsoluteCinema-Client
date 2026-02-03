@@ -3,13 +3,14 @@ import { MovieDetails } from '../../types/Movie';
 import './MovieStills.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
+import { MediaType } from '@/types/Media';
 
 interface Props {
     movie: MovieDetails;
 }
 
 export const MovieStills = ({ movie }: Props) => {
-    const initialStills = movie.medias.filter(m => m.type === "Still");
+    const initialStills = movie.medias.filter(m => m.type === MediaType.Image);
     const [stills, setStills] = useState(initialStills);
     const [direction, setDirection] = useState<'left' | 'right' | null>(null);
     const [visibleCount, setVisibleCount] = useState(3);

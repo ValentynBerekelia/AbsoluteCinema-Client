@@ -21,11 +21,10 @@ export interface MovieCardInfo {
 export interface MovieAdminCardInfo {
     id: string;
     title: string;
-    duration : string; //cause in entity we have TimeSpan
+    duration: string; //cause in entity we have TimeSpan
     format: string;
     ageLimit: number;
     sessions: Session[];
-    halls: string[];
     poster: string;
 };
 
@@ -45,7 +44,7 @@ export interface MovieDetails {
     ageLimit: number;
     country: string;
     studio: string;
-    language:string;
+    language: string;
     directors: string[];
     starring: string[];
     medias: Media[];
@@ -109,7 +108,11 @@ export const mapMovieFromApi = (data: any): any[] => {
             starring: '',
             ageLimit: movie.ageLimit,
             format: '3D',
-            sessions: movie.sessionTimes?.map(convertIsoToDateTime) ?? []
+            sessions: movie.sessions?.map((s: any) => ({
+                id: s.id,
+                ...convertIsoToDateTime(s.startDateTime),
+                movieType: s.format
+            })) ?? []
         };
     });
 };
@@ -118,18 +121,21 @@ export const mapMoviesForAdmin = (data: any): MovieAdminCardInfo[] => {
     const movies = Array.isArray(data)
         ? data
         : data.movies ?? [data];
-    
+
     return movies.map((movie: any) => {
-        const movieId = typeof movie.id === 'object' ? movie.id.id : movie.id;
+        const id = movie.id?.id ?? movie.id;
 
         return {
-            id: String(movieId),
+            id: String(id),
             title: movie.name ?? '',
             duration: movie.duration,
             format: '3D',
             ageLimit: movie.ageLimit ?? 0,
-            sessions: movie.sessionTimes?.map(convertIsoToDateTime) ?? [],
-            halls: [],
+            sessions: movie.sessions?.map((s: any) => ({
+                id: s.id,
+                ...convertIsoToDateTime(s.startDateTime),
+                movieType: s.format
+            })) ?? [],
             poster: movie.posterUrl ?? ''
         }
     });

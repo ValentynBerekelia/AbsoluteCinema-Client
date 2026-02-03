@@ -4,7 +4,12 @@ export interface Session {
     id: string;
     date: string;
     time: string;
-    movieType?: number;
+    movieType?: SessionFormat;
+}
+
+export enum SessionFormat {
+    TwoD = 1,
+    ThreeD = 2,
 }
 
 export interface CreateSessionRequest {
@@ -21,12 +26,12 @@ interface Price {
 }
 export interface SessionFormData {
     id?: string;
-    dateFrom?: string; 
-    dateTo?: string;   
-    date?: string;     
+    dateFrom?: string;
+    dateTo?: string;
+    date?: string;
     time: string;
     hall: string;
-    seatPrices: Record<string, string>; 
+    seatPrices: Record<string, string>;
     enabledTypes: Record<string, boolean>;
 }
 
@@ -50,4 +55,15 @@ export const mapApiSessionToForm = (apiSession: any): SessionFormData => {
             return acc;
         }, {}) || {}
     };
+};
+
+export const getFormatLabel = (format?: SessionFormat): string => {
+    switch (format) {
+        case SessionFormat.TwoD:
+            return '2D';
+        case SessionFormat.ThreeD:
+            return '3D';
+        default:
+            return '';
+    }
 };

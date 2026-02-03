@@ -27,12 +27,6 @@ export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
         <div className='admin-movie-container'>
             <div className='admin-movie-header-row'>
                 <h2 className='admin-movie-title'>{movie.title}</h2>
-                <div className='admin-halls-group'>
-                    <span className='halls-label'>Hall(s):</span>
-                    {movie.halls.map((hall, idx) => (
-                        <span key={idx} className='admin-hall-badge'>{hall}</span>
-                    ))}
-                </div>
             </div>
 
             <div className='admin-movie-main-content'>

@@ -3,23 +3,29 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import './Hero.css'
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
-import { HERO_MOVIES } from '../../data/heroMovies';
 import { HeroBannerInfo } from '@/types/Movie';
 
 interface HeroProps {
     movies: HeroBannerInfo[]
 }
 
-export const Hero : React.FC<HeroProps> = ({movies}) => {
+export const Hero: React.FC<HeroProps> = ({ movies }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
+
+    if (!movies || movies.length === 0) {
+        return <section className="hero-loading">Loading...</section>;
+    }
+
     const movie = movies[currentIndex];
+
+    if (!movie) return null;
 
     const nextSlide = () => {
         setCurrentIndex((currentIndex + 1) % movies.length);
     };
 
     const prevSlide = () => {
-        setCurrentIndex((movies.length + currentIndex - 1) % HERO_MOVIES.length);
+        setCurrentIndex((movies.length + currentIndex - 1) % movies.length);
     };
 
     return (
@@ -27,7 +33,7 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
             <div className="hero-layers">
                 {movies.map((m, index) => (
                     <div
-                        key={m.id}
+                        key={m.id || index}
                         className={`hero-bg ${index === currentIndex ? 'active' : ''}`}
                         style={{ '--bg-image': `url(${m.image})` } as React.CSSProperties}
                     />

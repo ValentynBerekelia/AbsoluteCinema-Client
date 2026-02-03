@@ -109,6 +109,7 @@ export const EditMoviePage = () => {
 
     // 3. Load Movie & Sessions
     useEffect(() => {
+        if (!safeMovieId) return;
         setLoadingMovie(true);
         const loadInitialData = async () => {
             try {

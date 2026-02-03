@@ -1,13 +1,14 @@
 import ReactPlayer from 'react-player';
 import { MovieDetails } from '../../types/Movie';
 import './TrailerSection.css';
+import { MediaType } from '@/types/Media';
 
 interface TrailerSectionProps {
     movie: MovieDetails;
 }
 
 export const TrailerSection = ({ movie }: TrailerSectionProps) => {
-    const trailerUrl = movie.medias.find(m => m.type === "Video")?.url;
+    const trailerUrl = movie.medias.find(m => m.type === MediaType.Video)?.url;
 
     return (
         <section className="trailer-section">
