@@ -24,12 +24,15 @@ export const MovieSchedule = () => {
             try {
                 setLoading(true);
                 setError(null);
-                
-                // Add sessionDate parameter or another parameters for revorked query from backend 
+                let dateFirstParam = formatDateForApi(selectedDate);
+                const nextDay = new Date(selectedDate);
+                nextDay.setDate(nextDay.getDate() + 1);
+                let dateSecondParam = formatDateForApi(nextDay);
                 const params = {
                     pageNumber: 1,
                     pageSize: 20,
-                    // parameters
+                    firstDate: dateFirstParam,
+                    lastDate: dateSecondParam
                 };
                 
                 console.log('Fetching movies for date:', formatDateForApi(selectedDate));
