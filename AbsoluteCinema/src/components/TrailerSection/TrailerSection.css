@@ -1,12 +1,51 @@
 .trailer-section {
     position: relative;
+    background: #000;
     width: 100%;
-    height: 80vh; /* Висота трейлера на 80% екрана */
-    background-color: #000;
+    height: 80vh;
+    min-height: 500px;
+    overflow: hidden;
+}
+
+.trailer-navigation {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    display: flex;
+    justify-content: space-between;
+    transform: translateY(-50%);
+    pointer-events: none;
+    z-index: 10;
+    padding: 0 20px;
+}
+
+.nav-arrow {
+    pointer-events: auto;
+    background: rgba(0, 0, 0, 0.5);
+    color: white;
+    border: none;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    cursor: pointer;
+    transition: 0.3s;
+    font-size: 1.5rem;
+}
+
+.nav-arrow:hover {
+    background: var(--accent-color, #e50914);
+}
+
+.trailer-counter {
+    font-size: 0.9rem;
+    color: rgba(255, 255, 255, 0.7);
+    margin-left: 15px;
 }
 
 .player-wrapper {
-    position: relative;
+    position: absolute;
+    top: 0;
+    left: 0;
     width: 100%;
     height: 100%;
     z-index: 1;

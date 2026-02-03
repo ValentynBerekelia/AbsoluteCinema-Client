@@ -11,11 +11,9 @@ export interface MovieCardInfo {
     image: string;
     genre: string;
     duration: number;
-    director: string;
-    starring: string;
     ageLimit: number;
-    format: string;
     sessions: Session[];
+    format: string; 
 }
 
 export interface MovieAdminCardInfo {
@@ -26,6 +24,7 @@ export interface MovieAdminCardInfo {
     ageLimit: number;
     sessions: Session[];
     poster: string;
+    halls: string[];
 };
 
 export interface HeroBannerInfo {
@@ -47,7 +46,10 @@ export interface MovieDetails {
     language: string;
     directors: string[];
     starring: string[];
-    medias: Media[];
+    posterUrl: string;
+    bannerUrl: string;
+    stills: Media[];
+    trailers: Media[];
     genres: Genre[];
 };
 
@@ -84,9 +86,9 @@ export const mapMovieDetailsFromApi = async (
 
     let movieId = data.movieId?.id ?? data.id;
 
-    const movieDetails: MovieDetails = {
+    return {
         id: String(movieId),
-        title: data.title,
+        title: data.title || data.name,
         description: data.description,
         rate: data.rate,
         duration: normalizeDurationSeconds(data.duration ?? data.durationSeconds),
@@ -103,8 +105,6 @@ export const mapMovieDetailsFromApi = async (
             ...(data.images?.map((img: any) => ({ id: img.id, type: MediaType.Image, url: img.url })) || [])
         ]
     };
-
-    return movieDetails;
 };
 
 export interface MovieRecommendation {
@@ -131,10 +131,7 @@ export const mapMovieFromApi = (data: any): any[] => {
             image: movie.posterUrl ?? '',
             genre: (movie.genres || []).map((g: any) => g?.name ?? g).filter(Boolean).join(', '),
             duration: parseDuration(movie.duration),
-            director: '',
-            starring: '',
             ageLimit: movie.ageLimit,
-            format: '3D',
             sessions: movie.sessions?.map((s: any) => ({
                 id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''),
                 ...convertIsoToDateTime(s.startDateTime),

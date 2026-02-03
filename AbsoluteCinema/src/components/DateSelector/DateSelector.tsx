@@ -12,18 +12,20 @@ export const DateSelector = ({
     onDateChange, 
     daysToShow = 7 
 }: DateSelectorProps) => {
-    const dates = useMemo(() => {
-        const result: Date[] = [];
-        const today = new Date();
-        today.setHours(0, 0, 0, 0);
-        
-        for (let i = 0; i < daysToShow; i++) {
-            const date = new Date(today);
-            date.setDate(today.getDate() + i);
-            result.push(date);
-        }
-        return result;
-    }, [daysToShow]);
+        const dates = useMemo(() => {
+        const start = new Date();
+        const utcStart = new Date(
+            Date.UTC(
+                start.getUTCFullYear(),
+                start.getUTCMonth(),
+                start.getUTCDate()
+            )
+        );
+
+        return Array.from({ length: daysToShow }, (_, i) =>
+            new Date(utcStart.getTime() + i * 24 * 60 * 60 * 1000)
+        );
+    }  , [daysToShow]);
 
     const formatDateLabel = (date: Date, index: number): string => {
         if (index === 0) return 'Today';
