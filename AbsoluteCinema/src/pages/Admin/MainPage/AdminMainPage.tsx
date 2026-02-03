@@ -5,14 +5,13 @@ import { MoviesQueryParameters, SortOrder } from "@/types/MoviesQueryParameters"
 import { getMovies } from "@/api";
 import { mapMoviesForAdmin } from "@/types/Movie";
 import { useSearchParams } from "react-router-dom";
+import { AdminSearch } from "../../../components/layout/AdminSearch/AdminSearch"; 
 
 export const AdminMainPage = () => {
     const [movies, setMovies] = useState(ADMIN_MOVIES_DATA);
-    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(true);
-
+    
     const [searchParams] = useSearchParams();
-    // Extract the search text (or an empty string if nothing was entered)
     const searchTermFromUrl = searchParams.get('search') || '';
 
     const [queryParams, setQueryParams] = useState<MoviesQueryParameters>({
@@ -24,12 +23,12 @@ export const AdminMainPage = () => {
     });
 
     useEffect(() => {
-            setQueryParams(prev => ({
-                ...prev,
-                searchTerm: searchTermFromUrl,
-                pageNumber: 1
-            }));
-        }, [searchTermFromUrl]);
+        setQueryParams(prev => ({
+            ...prev,
+            searchTerm: searchTermFromUrl,
+            pageNumber: 1
+        }));
+    }, [searchTermFromUrl]);
 
     useEffect(() => {
         const fetchMovies = async () => {
@@ -38,12 +37,10 @@ export const AdminMainPage = () => {
                 const rawData = await getMovies(queryParams);
                 const mappedMovies = mapMoviesForAdmin(rawData);
                 setMovies(mappedMovies);
-                setError(null);
             } catch (error) {
                 console.error('Failed to fetch movies: ', error);
-                setError('Failed to load movies');
                 setMovies(ADMIN_MOVIES_DATA);
-            }finally {
+            } finally {
                 setLoading(false);
             }
         };
@@ -56,23 +53,33 @@ export const AdminMainPage = () => {
     }, [queryParams]);
 
     return (
-        <div className="admin-cards-list"
-            style={{
-                opacity: loading ? 0.5 : 1,
-                transition: 'opacity 0.3s ease',
-                pointerEvents: loading ? 'none' : 'auto',
-                minHeight: '200px'
-            }}
-        >
-            {movies.length > 0 ? (
-                movies.map(movie => (
-                    <AdminMovieCard key={movie.id} movie={movie} />
-                ))
-            ) : (
-                <p style={{color: 'black', textAlign: 'center', marginTop: '20px'}}>
-                    {loading ? 'Searching...' : 'No movies found'}
-                </p>
-            )}
-        </div>
+        <>
+            <AdminSearch />
+
+            <div 
+                className="admin-cards-list" 
+                style={{
+                    opacity: loading ? 0.5 : 1, 
+                    transition: 'opacity 0.3s ease',
+                    pointerEvents: loading ? 'none' : 'auto',
+                    minHeight: '200px'
+                }}
+            >
+                {movies.length > 0 ? (
+                    movies.map(movie => (
+                        <AdminMovieCard key={movie.id} movie={movie} />
+                    ))
+                ) : (
+                    <div style={{ 
+                        width: '100%', 
+                        textAlign: 'center', 
+                        marginTop: '40px',
+                        color: '#333'
+                    }}>
+                        {!loading && <h3>No movies found with this title</h3>}
+                    </div>
+                )}
+            </div>
+        </>
     );
 };
