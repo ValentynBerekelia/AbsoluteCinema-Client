@@ -35,6 +35,7 @@ export const HallGrid: React.FC<HallGridProps> = ({ seats, seatTypes, enabledTyp
         if (typeName.includes('comfort')) return 'comfort';
         return 'standard';
     };
+    
     return (
         <div
             className="seats-grid"
@@ -43,12 +44,21 @@ export const HallGrid: React.FC<HallGridProps> = ({ seats, seatTypes, enabledTyp
             {seats.map((seat, i) => {
                 const isActive = enabledTypes ? enabledTypes[seat.seatTypeId] : true;
 
+                // Calculate centered position for rows
+                const rowSeats = seats.filter(s => s.row === seat.row);
+                const rowSeatNumbers = rowSeats.map(s => s.number).sort((a, b) => a - b);
+                const rowMinSeat = Math.min(...rowSeatNumbers);
+                const rowMaxSeat = Math.max(...rowSeatNumbers);
+                const rowWidth = rowMaxSeat - rowMinSeat + 1;
+                const offset = Math.floor((maxColumns - rowWidth) / 2);
+                const centeredColumn = offset + (seat.number - rowMinSeat) + 1;
+
                 return (
                     <div
                         key={i}
                         className={`seat-placeholder ${getSeatClassByName(seat.seatTypeId)} ${!isActive ? 'dimmed' : ''}`}
                         style={{
-                            gridColumn: seat.number,
+                            gridColumn: centeredColumn,
                             gridRow: seat.row
                         }}
                         title={`Row: ${seat.row}, Seat: ${seat.number}`}
