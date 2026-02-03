@@ -8,13 +8,11 @@ interface Props {
 }
 
 export const MovieDescription = ({ movie }: Props) => {
-    const posterUrl = movie.medias.find(m => m.type === MediaType.PosterImage)?.url;
-
     return (
         <section className="movie-description-section">
             <div className="description-card">
                 <div className="description-poster">
-                    <img src={posterUrl} alt={movie.title} />
+                    <img src={movie.posterUrl} alt={movie.title} />
                 </div>
                 
                 <div className="description-content">

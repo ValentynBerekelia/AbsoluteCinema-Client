@@ -1,6 +1,7 @@
 import { useState } from 'react';
 import {HashLink} from 'react-router-hash-link';
 import './Header.css';
+import { Link } from 'react-router-dom';
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -9,16 +10,20 @@ export const Header = () => {
         setIsMenuOpen(!isMenuOpen);
     };
 
+    const closeMenu = () => setIsMenuOpen(false);
+
     return (
         <header className='header'>
             <div className='header-container'>
-                <div className='logo'>AbsoluteCinema</div>
+                <Link to="/" className='logo' onClick={closeMenu}>
+                    AbsoluteCinema
+                </Link>
                 <nav className={`nav ${isMenuOpen ? 'active' : ''}`}>
                     <ul className='nav-list'>
-                        <li><a href="#schedule">Schedule</a></li>
-                        <li><HashLink smooth to="/#coming-soon">Coming Soon</HashLink></li>
-                        <li><HashLink smooth to="/#promotion">Promotion</HashLink></li>
-                        <li><HashLink smooth to="/#about-us">About us</HashLink></li>
+                        <li><a href="#schedule" onClick={closeMenu}>Schedule</a></li>
+                        <li><HashLink smooth to="/#coming-soon" onClick={closeMenu}>Coming Soon</HashLink></li>
+                        <li><HashLink smooth to="/#promotion" onClick={closeMenu}>Promotion</HashLink></li>
+                        <li><HashLink smooth to="/#about-us" onClick={closeMenu}>About us</HashLink></li>
                         <li className="mobile-only">
                             <button className="login-btn mobile">Log in</button>
                         </li>

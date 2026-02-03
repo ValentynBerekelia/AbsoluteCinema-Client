@@ -3,17 +3,21 @@ import { MovieDetails } from '../../types/Movie';
 import './MovieStills.css';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
-import { MediaType } from '@/types/Media';
 
 interface Props {
     movie: MovieDetails;
 }
 
 export const MovieStills = ({ movie }: Props) => {
-    const initialStills = movie.medias.filter(m => m.type === MediaType.Image);
-    const [stills, setStills] = useState(initialStills);
+    // Тепер беремо кадри напряму з масиву stills
+    const [stills, setStills] = useState(movie.stills || []);
     const [direction, setDirection] = useState<'left' | 'right' | null>(null);
     const [visibleCount, setVisibleCount] = useState(3);
+
+    // Слідкуємо за зміною пропсів (якщо перейшли на інший фільм)
+    useEffect(() => {
+        setStills(movie.stills || []);
+    }, [movie.stills]);
 
     useEffect(() => {
         const handleResize = () => {
@@ -26,12 +30,13 @@ export const MovieStills = ({ movie }: Props) => {
             }
         };
 
-        handleResize(); // Initial check
+        handleResize();
         window.addEventListener('resize', handleResize);
         return () => window.removeEventListener('resize', handleResize);
     }, []);
 
     const handleNext = () => {
+        if (stills.length <= visibleCount) return;
         setDirection('left');
         setTimeout(() => {
             setStills((prev) => {
@@ -43,6 +48,7 @@ export const MovieStills = ({ movie }: Props) => {
     };
 
     const handlePrev = () => {
+        if (stills.length <= visibleCount) return;
         setDirection('right');
         setTimeout(() => {
             setStills((prev) => {
@@ -54,30 +60,34 @@ export const MovieStills = ({ movie }: Props) => {
         }, 150);
     };
 
-    if (stills.length === 0) return null;
+    if (!stills || stills.length === 0) return null;
 
     return (
         <section className="stills-section">
             <h2 className="stills-title">Stills from the movie</h2>
             <div className="stills-carousel-container">
-                <button className="carousel-btn left" onClick={handlePrev}>
-                    <FontAwesomeIcon icon={faChevronLeft} />
-                </button>
+                {stills.length > visibleCount && (
+                    <button className="carousel-btn left" onClick={handlePrev}>
+                        <FontAwesomeIcon icon={faChevronLeft} />
+                    </button>
+                )}
                 
                 <div className="stills-track">
                     {stills.slice(0, visibleCount).map((still, index) => (
                         <div 
-                            key={still.id} 
+                            key={still.id || index} 
                             className={`still-card ${direction && index === visibleCount - 1 ? `slide-${direction}` : ''}`}
                         >
-                            <img src={still.url} alt="Movie still" />
+                            <img src={still.url} alt={`Still from ${movie.title}`} />
                         </div>
                     ))}
                 </div>
 
-                <button className="carousel-btn right" onClick={handleNext}>
-                    <FontAwesomeIcon icon={faChevronRight} />
-                </button>
+                {stills.length > visibleCount && (
+                    <button className="carousel-btn right" onClick={handleNext}>
+                        <FontAwesomeIcon icon={faChevronRight} />
+                    </button>
+                )}
             </div>
         </section>
     );

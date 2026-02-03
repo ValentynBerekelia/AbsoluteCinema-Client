@@ -11,10 +11,7 @@ export interface MovieCardInfo {
     image: string;
     genre: string;
     duration: number;
-    director: string;
-    starring: string;
     ageLimit: number;
-    format: string;
     sessions: Session[];
 }
 
@@ -47,37 +44,35 @@ export interface MovieDetails {
     language: string;
     directors: string[];
     starring: string[];
-    medias: Media[];
+    posterUrl: string;
+    bannerUrl: string;
+    stills: Media[];
+    trailers: Media[];
     genres: Genre[];
-};
+}
+export const mapMovieDetailsFromApi = async (data: any): Promise<MovieDetails> => {
+    const movieId = data.movieId?.id ?? data.id;
 
-export const mapMovieDetailsFromApi = async (
-    data: any
-): Promise<MovieDetails> => {
-
-    let movieId = data.movieId?.id ?? data.id;
-
-    const movieDetails: MovieDetails = {
+    return {
         id: String(movieId),
-        title: data.title,
+        title: data.title || data.name,
         description: data.description,
         rate: data.rate,
-        duration: data.duration,
+        duration: typeof data.duration === 'string' ? parseDuration(data.duration) : data.duration,
         ageLimit: data.ageLimit,
         country: data.country,
         studio: data.studio,
         language: data.language,
-        genres: data.genres?.map((g: any) => g.name) || [],
+        genres: data.genres || [],
         directors: data.persons?.filter((p: any) => p.personRole === 1).map((p: any) => p.personName) || [],
         starring: data.persons?.filter((p: any) => p.personRole === 2).map((p: any) => p.personName) || [],
-        medias: [
-            { id: data.poster?.id, type: 'Poster', url: data.poster?.url },
-            ...(data.trailers?.map((t: any) => ({ id: t.id, type: 'Video', url: t.url })) || []),
-            ...(data.images?.map((img: any) => ({ id: img.id, type: 'Still', url: img.url })) || [])
-        ]
+        
+        posterUrl: data.poster?.url || '',
+        bannerUrl: data.banner?.url || '',
+        
+        stills: data.images?.map((img: any) => ({ id: img.id, type: 'Still', url: img.url })) || [],
+        trailers: data.trailers?.map((t: any) => ({ id: t.id, type: 'Video', url: t.url })) || []
     };
-
-    return movieDetails;
 };
 
 export interface MovieRecommendation {
@@ -102,12 +97,9 @@ export const mapMovieFromApi = (data: any): any[] => {
             id: String(movieId),
             title: movie.name,
             image: movie.posterUrl ?? '',
-            genre: movie.genres?.join(', ') ?? '',
+            genre: movie.genres?.map((g: any) => g.name).join(', ') ?? '',
             duration: parseDuration(movie.duration),
-            director: '',
-            starring: '',
             ageLimit: movie.ageLimit,
-            format: '3D',
             sessions: movie.sessions?.map((s: any) => ({
                 id: s.id,
                 ...convertIsoToDateTime(s.startDateTime),
