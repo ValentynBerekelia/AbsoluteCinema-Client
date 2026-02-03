@@ -13,6 +13,7 @@ export interface MovieCardInfo {
     duration: number;
     ageLimit: number;
     sessions: Session[];
+    format: string; 
 }
 
 export interface MovieAdminCardInfo {
@@ -23,6 +24,7 @@ export interface MovieAdminCardInfo {
     ageLimit: number;
     sessions: Session[];
     poster: string;
+    halls: string[];
 };
 
 export interface HeroBannerInfo {
