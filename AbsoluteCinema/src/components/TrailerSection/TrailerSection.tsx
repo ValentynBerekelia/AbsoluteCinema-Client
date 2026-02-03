@@ -1,14 +1,18 @@
 import ReactPlayer from 'react-player';
+import { Link } from 'react-router-dom';
 import { MovieDetails } from '../../types/Movie';
 import './TrailerSection.css';
 import { MediaType } from '@/types/Media';
 
 interface TrailerSectionProps {
     movie: MovieDetails;
+    movieId?: string;
 }
 
-export const TrailerSection = ({ movie }: TrailerSectionProps) => {
+export const TrailerSection = ({ movie, movieId }: TrailerSectionProps) => {
     const trailerUrl = movie.medias.find(m => m.type === MediaType.Video)?.url;
+
+    const targetPath = movieId ? `/movie/${movieId}/sessions` : '#';
 
     return (
         <section className="trailer-section">
@@ -29,7 +33,9 @@ export const TrailerSection = ({ movie }: TrailerSectionProps) => {
                     <div className="trailer-actions">
                         <span className="age-badge">{movie.ageLimit}+</span>
                         <span className="format-badge">XD</span>
-                        <button className="buy-ticket-btn">Buy a ticket</button>
+                        <Link className="buy-ticket-btn" to={targetPath}>
+                            Buy a ticket
+                        </Link>
                     </div>
                 </div>
             </div>
