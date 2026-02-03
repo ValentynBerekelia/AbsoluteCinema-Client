@@ -1,19 +1,20 @@
 .admin-movie-container {
-    margin-bottom: 40px;
+    margin-bottom: 20px;
     width: 100%;
     background-color: #f1f1f1;
-    border: 2px solid #9a9a9a;
+    border: 2px solid #9a9a9a; 
     border-radius: 8px;
     color: #333;
+    font-size: 16px;
 }
 
 .admin-movie-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 12px;
-    margin-left: 20px;
-    padding-right: 24px;
+    margin-top: 10px;
+    margin-left: 15px;
+    padding-right: 15px;
 }
 
 .admin-movie-title {
@@ -31,36 +32,37 @@
 
 .admin-hall-badge {
     background-color: #e8e8e8;
-    padding: 8px 12px;
-    border-radius: 16px;
+    padding: 4px 8px;
+    border-radius: 12px;
     margin-left: 10px;
-    font-size: 16px;
+    font-size: 12px;
 }
 
 .admin-movie-main-content {
     display: flex;
-    gap: 30px;
-    padding: 25px;
+    gap: 20px;
+    padding: 15px;
 }
 
 .admin-left-column {
-    flex: 0 0 308px;
+    flex: 0 0 240px;
 }
 
 .admin-poster-img {
     width: 100%;
-    max-height: 462px;
-    border: 2px solid #777;
-    margin-bottom: 20px;
+    height: auto; 
+    border: 1px solid #777;
+    margin-bottom: 10px;
 }
 
 .status-box, .detail-box {
     background-color: #e0e0e0;
     border: 1px solid #bbb;
-    padding: 3px 10px;
-    min-width: 70px;
+    padding: 2px 6px;
+    min-width: 50px;
     display: inline-block;
     text-align: center;
+    font-size: 12px;
 }
 
 .admin-right-column {
@@ -70,29 +72,33 @@
 }
 
 .details-grid {
-    margin-top: 12px;
-    margin-bottom: 12px;
+    margin-top: 8px;
+    margin-bottom: 8px;
 }
 
 .detail-entry {
-    margin-bottom: 12px;
-    font-size: 18px;
+    margin-bottom: 6px;
+    font-size: 16px;
 }
 
 .sessions-by-date-group {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 10px;
+    max-height: 180px; 
+    overflow-y: auto;
+    padding-right: 5px;
+    margin-top: 5px;
 }
 
 .date-block {
     display: flex;
     flex-direction: column;
-    gap: 8px;
+    gap: 4px;
 }
 
 .session-date-header {
-    font-size: 14px;
+    font-size: 13px;
     font-weight: 700;
     color: #555;
 }
@@ -100,46 +106,40 @@
 .sessions-row {
     display: flex;
     flex-wrap: wrap;
-    gap: 12px;
+    gap: 8px;
 }
 
 .admin-action-btn {
     margin-top: auto;
     width: 100%;
-    padding: 15px;
+    padding: 12px;
     background-color: #dedede;
     border: 1px solid #aaaaaa;
     font-size: 24px;
     font-weight: 700;
     cursor: pointer;
     transition: 0.2s;
+    border-radius: 4px;
 }
 
 .admin-action-btn:hover {
     background-color: #fff;
 }
 
-.sessions-by-date-group {
-    max-height: 250px;
-    overflow-y: auto;
-    padding-right: 10px;
-    margin-top: 10px;
-}
-
 .sessions-by-date-group::-webkit-scrollbar {
-    width: 6px;
+    width: 4px;
 }
 
 .sessions-by-date-group::-webkit-scrollbar-track {
     background: #f1f1f1;
-    border-radius: 10px;
+    border-radius: 4px;
 }
 
 .sessions-by-date-group::-webkit-scrollbar-thumb {
-    background: #888;
-    border-radius: 10px;
+    background: #bbb;
+    border-radius: 4px;
 }
 
 .sessions-by-date-group::-webkit-scrollbar-thumb:hover {
-    background: #555;
+    background: #888;
 }
