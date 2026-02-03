@@ -1,0 +1,174 @@
+.authContainer {
+    min-height: 100vh;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    padding: 20px;
+    position: relative;
+}
+
+.backBtn {
+    position: absolute;
+    top: 24px;
+    left: 24px;
+    background: rgba(255, 255, 255, 0.1);
+    color: #ccd6f6;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+}
+
+.backBtn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+    transform: translateX(-4px);
+}
+
+.authCard {
+    background: #0f3460;
+    border-radius: 16px;
+    padding: 48px;
+    width: 100%;
+    max-width: 520px;
+    box-shadow: 0 20px 60px rgba(0, 0, 0, 0.4);
+}
+
+.authHeader {
+    text-align: center;
+    margin-bottom: 32px;
+}
+
+.authHeader h1 {
+    font-size: 32px;
+    font-weight: 700;
+    color: #e94560;
+    margin: 0 0 8px 0;
+}
+
+.authHeader p {
+    font-size: 16px;
+    color: #a8b2d1;
+    margin: 0;
+}
+
+.authForm {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.formRow {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px;
+}
+
+.formRow:has(.formGroup:only-child) {
+    grid-template-columns: 1fr;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.formGroup label {
+    font-size: 14px;
+    font-weight: 500;
+    color: #ccd6f6;
+}
+
+.formGroup input {
+    padding: 14px 16px;
+    font-size: 16px;
+    border: 2px solid #1a1a2e;
+    border-radius: 8px;
+    background: #16213e;
+    color: #ccd6f6;
+    transition: all 0.3s ease;
+}
+
+.formGroup input:focus {
+    outline: none;
+    border-color: #e94560;
+    background: #1a1a2e;
+}
+
+.formGroup input::placeholder {
+    color: #64748b;
+}
+
+.errorMessage {
+    padding: 12px 16px;
+    background: rgba(239, 68, 68, 0.1);
+    border: 1px solid #ef4444;
+    border-radius: 8px;
+    color: #fca5a5;
+    font-size: 14px;
+}
+
+.submitBtn {
+    padding: 14px 24px;
+    font-size: 16px;
+    font-weight: 600;
+    color: white;
+    background: #e94560;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    margin-top: 8px;
+}
+
+.submitBtn:hover:not(:disabled) {
+    background: #d63651;
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(233, 69, 96, 0.4);
+}
+
+.submitBtn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.authFooter {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.authFooter p {
+    color: #a8b2d1;
+    font-size: 14px;
+}
+
+.linkBtn {
+    background: none;
+    border: none;
+    color: #e94560;
+    font-weight: 600;
+    cursor: pointer;
+    text-decoration: underline;
+    padding: 0;
+    font-size: 14px;
+}
+
+.linkBtn:hover {
+    color: #d63651;
+}
+
+@media (max-width: 640px) {
+    .authCard {
+        padding: 32px 24px;
+    }
+
+    .formRow {
+        grid-template-columns: 1fr;
+    }
+}

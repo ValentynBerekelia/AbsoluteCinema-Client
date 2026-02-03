@@ -46,6 +46,31 @@
     display: none;
 }
 
+.mobile-only.auth-buttons-mobile {
+    display: none;
+    gap: 16px;
+    width: 100%;
+    justify-content: center;
+}
+
+.register-btn {
+    background-color: #e94560;
+    color: white;
+    border: 1px solid #e94560;
+    width: 120px;
+    height: 40px;
+    padding: 8px;
+    gap: 8px;
+    font-size: 20px;
+    border-radius: 16px;
+    cursor: pointer;
+    transition: 0.2s;
+}
+
+.register-btn:hover {
+    background-color: #d63651;
+}
+
 .login-btn {
     background-color: #dedede;
     border: 1px solid #aaaaaa;
@@ -61,6 +86,12 @@
 
 .login-btn:hover {
     background-color: #d0d0d0;
+}
+
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
 }
 
 .burger-menu {
@@ -97,6 +128,10 @@
         justify-content: center;
     }
 
+    .mobile-only.auth-buttons-mobile {
+        display: flex;
+    }
+
     .nav.active {
         left: 0;
     }
@@ -129,6 +164,10 @@
     }
 
     .header-actions .login-btn {
+        display: none;
+    }
+
+    .header-actions .register-btn {
         display: none;
     }
 }

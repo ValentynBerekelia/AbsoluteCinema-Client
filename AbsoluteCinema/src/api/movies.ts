@@ -25,6 +25,19 @@ export interface CreateAndAttachMediaResponse {
   movieId: string;
 }
 
+export interface Genre {
+  id: string;
+  name: string;
+}
+
+export interface CreateGenreRequest {
+  genreName: string;
+}
+
+export interface UpdateGenreRequest {
+  name: string;
+}
+
 export const createMovie = async (movieData: CreateMovieRequest) => {
     const response = await axiosInstance.post('admin/movies', movieData);
     return response.data;
@@ -89,5 +102,26 @@ export const attachMedia = async (movieId: string, mediaId: string) => {
 
 export const deleteMedia = async (movieId: string, mediaId: string) => {
   const response = await axiosInstance.delete(`/admin/movies/${movieId}/media/${mediaId}`);
+  return response.data;
+};
+// Genre API Functions
+export const getGenres = async (movieId?: string) => {
+  const params = movieId ? { movieId } : {};
+  const response = await axiosInstance.get('/genres', { params });
+  return response.data;
+};
+
+export const createGenre = async (genreName: string) => {
+  const response = await axiosInstance.post('/genres', { genreName });
+  return response.data;
+};
+
+export const updateGenre = async (genreId: string, name: string) => {
+  const response = await axiosInstance.put(`/genre/${genreId}`, { name });
+  return response.data;
+};
+
+export const deleteGenre = async (genreId: string) => {
+  const response = await axiosInstance.delete(`/genre/${genreId}`);
   return response.data;
 };

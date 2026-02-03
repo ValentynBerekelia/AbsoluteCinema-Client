@@ -8,6 +8,8 @@ import { AdminMainPage } from './pages/Admin/MainPage/AdminMainPage'
 import { MovieDetailsPage } from './pages/MovieDetails/MovieDetailsPage'
 import { HallsPage } from './pages/Admin/Halls/HallsPage'
 import { EditMoviePage } from './pages/Admin/Movies/EditMovie/EditMoviePage'
+import { LoginPage } from './pages/Auth/Login/LoginPage'
+import { RegisterPage } from './pages/Auth/Register/RegisterPage'
 
 function App() {
 
@@ -68,6 +70,14 @@ function App() {
             <EditMoviePage />
           </AdminLayout>
         }
+      />
+      <Route
+        path='/login'
+        element={<LoginPage />}
+      />
+      <Route
+        path='/register'
+        element={<RegisterPage />}
       />
     </Routes>
   )
