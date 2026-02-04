@@ -93,7 +93,6 @@ export const getMovieById = async (id: string) => {
 
 export const getMovieFeatures = async () => {
   const response = await axiosInstance.get('/movies/features', {});
-  console.log("OPA", response);
   return response.data;
 }
 // Media API Functions

@@ -2,6 +2,7 @@ import { Children, ReactNode } from 'react'
 import './AdminLayout.css'
 import { AdminHeader } from '../AdminHeader/AdminHeader';
 import { AdminSidebar } from '../AdminSidebar/AdminSidebar';
+import { AdminSearch } from '../AdminSearch/AdminSearch';
 import { AdminFooter } from '../AdminFooter/AdminFooter';
 
 interface AdminLayoutProps {
@@ -16,6 +17,7 @@ export const AdminLayout = ({ children }: AdminLayoutProps) => {
                 <div className='admin-main-wrapper-row'>
                     <AdminSidebar />
                     <main className='admin-content'>
+                        <AdminSearch />
                         {children}
                     </main>
                 </div>

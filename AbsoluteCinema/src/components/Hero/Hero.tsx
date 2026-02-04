@@ -10,7 +10,7 @@ interface HeroProps {
     movies: HeroBannerInfo[]
 }
 
-export const Hero : React.FC<HeroProps> = ({movies}) => {
+export const Hero: React.FC<HeroProps> = ({ movies }) => {
     const [currentIndex, setCurrentIndex] = useState(0);
     const navigate = useNavigate();
 
@@ -19,6 +19,8 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
     }
 
     const movie = movies[currentIndex];
+
+    if (!movie) return null;
 
     const nextSlide = () => {
         setCurrentIndex((currentIndex + 1) % movies.length);
@@ -33,7 +35,7 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
             <div className="hero-layers">
                 {movies.map((m, index) => (
                     <div
-                        key={m.id}
+                        key={m.id || index}
                         className={`hero-bg ${index === currentIndex ? 'active' : ''}`}
                         style={{ '--bg-image': `url(${m.image})` } as React.CSSProperties}
                     />
@@ -47,7 +49,7 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
             </button>
 
             <div className='hero-content'>
-                <h1 className='hero-title'>{movie.title }</h1>
+                <h1 className='hero-title'>{movie.title}</h1>
                 <div className='hero-schedule'>
                     {movie.sessions.map((session, index) => (
                         <TimeBadge

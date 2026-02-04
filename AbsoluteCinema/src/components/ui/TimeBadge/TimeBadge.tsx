@@ -1,5 +1,4 @@
-import { Session, getFormatLabel } from "../../../types/Session";
-import { formatTime } from "@/utils/dataTimeConverters";
+import { Session } from "../../../types/Session";
 import './TimeBadge.css'
 
 interface TimeBadgeProps {
@@ -8,8 +7,8 @@ interface TimeBadgeProps {
     onclick?: () => void;
 }
 
-export const TimeBadge = ({ session, showPastDisabled = true, onclick }: TimeBadgeProps) => {
-    const isPast = () => {
+export const TimeBadge = ({ session, showPastDisabled=true, onclick}: TimeBadgeProps) => {
+    const isPast= () => {
         if (!showPastDisabled) return false;
 
         const now = new Date();
@@ -17,27 +16,19 @@ export const TimeBadge = ({ session, showPastDisabled = true, onclick }: TimeBad
         const [hours, minutes] = session.time.split(':').map(Number);
 
         const sessionDate = new Date(year, month - 1, day, hours, minutes);
+        
         return sessionDate < now;
     };
 
     const past = isPast();
-    const formatLabel = getFormatLabel(session.movieType);
 
     return (
         <button 
-            className={`session-item ${past ? 'past' : ''}`} 
+            className={`time-badge ${past ? 'past' : ''}`}
             onClick={onclick}
             disabled={past}
-            type="button"
-        >
-            <span className="session-item__time">
-                {formatTime(session.time)}
-            </span>
-            {formatLabel && (
-                <span className="session-item__format">
-                    {formatLabel}
-                </span>
-            )}
+            >
+                {session.time}
         </button>
     );
 };

@@ -2,25 +2,14 @@ import { useEffect, useState } from 'react';
 import { Hero } from '../../components/Hero/Hero';
 import { PromotionForm } from '../../components/PromotionForm/PromotionForm';
 import { getMovieFeatures } from '../../api/movies';
-import { HeroBannerInfo } from '../../types/Movie';
+import { mapHeroBannersFromApi, HeroBannerInfo } from '../../types/Movie';
 import { HERO_MOVIES } from '../../data/heroMovies';
 import './Home.css';
 import { MovieSchedule } from '@/components/MovieSchedule/MovieSchedule';
+import { useHeroMovies } from '@/hooks/useHeroMovies';
 
 export const Home = () => {
-    const [heroMovies, setHeroMovies] = useState<HeroBannerInfo[]>(HERO_MOVIES);
-
-    useEffect(() => {
-        getMovieFeatures()
-            .then((data) => {
-                if (data && data.length > 0) {
-                    setHeroMovies(data);
-                }
-            })
-            .catch(() => {
-                setHeroMovies(HERO_MOVIES);
-            });
-    }, []);
+    const {heroMovies, isLoading} = useHeroMovies();
 
     return (
         <main className="home-page">

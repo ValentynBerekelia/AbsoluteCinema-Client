@@ -13,9 +13,9 @@ export const ADMIN_MOVIES_DATA: MovieAdminCardInfo[] = [
         poster: inceptionImg,
         halls: ["Grand Hall", "Blue Room"],
         sessions: [
-            { id: "1", date: "2026-01-23", time: "11:00" },
-            { id: "2", date: "2026-01-23", time: "14:30" },
-            { id: "3", date: "2026-01-24", time: "19:00" }
+            { date: "2026-01-23", time: "11:00" },
+            { date: "2026-01-23", time: "14:30" },
+            { date: "2026-01-24", time: "19:00" }
         ]
     },
     {
@@ -27,10 +27,10 @@ export const ADMIN_MOVIES_DATA: MovieAdminCardInfo[] = [
         poster: interstellarImg,
         halls: ["IMAX Premium"],
         sessions: [
-            { id: "1", date: "2026-01-23", time: "12:00" },
-            { id: "2", date: "2026-01-23", time: "15:00" },
-            { id: "3", date: "2026-01-23", time: "18:00" },
-            { id: "4", date: "2026-01-24", time: "21:00" }
+            { date: "2026-01-23", time: "12:00" },
+            { date: "2026-01-23", time: "15:00" },
+            { date: "2026-01-23", time: "18:00" },
+            { date: "2026-01-24", time: "21:00" }
         ]
     },
     {
@@ -42,8 +42,8 @@ export const ADMIN_MOVIES_DATA: MovieAdminCardInfo[] = [
         poster: matrixImg,
         halls: ["Hall 3", "Retro Cinema"],
         sessions: [
-            { id: "1", date: "2026-01-23", time: "12:00" },
-            { id: "2", date: "2026-01-23", time: "15:00" }
+            { date: "2026-01-23", time: "12:00" },
+            { date: "2026-01-23", time: "15:00" }
         ]
     }
 ];

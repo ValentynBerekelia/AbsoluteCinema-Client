@@ -18,7 +18,7 @@ export const MovieDescription = ({ movie }: Props) => {
         <section className="movie-description-section">
             <div className="description-card">
                 <div className="description-poster">
-                    <img src={movie.posterUrl} alt={movie.title} />
+                    <img src={posterUrl} alt={movie.title} />
                 </div>
                 
                 <div className="description-content">

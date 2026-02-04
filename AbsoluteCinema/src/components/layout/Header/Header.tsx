@@ -2,7 +2,6 @@ import { useState } from 'react';
 import { HashLink } from 'react-router-hash-link';
 import { useNavigate } from 'react-router-dom';
 import './Header.css';
-import { Link } from 'react-router-dom';
 
 export const Header = () => {
     const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -25,9 +24,7 @@ export const Header = () => {
     return (
         <header className='header'>
             <div className='header-container'>
-                <Link to="/" className='logo' onClick={closeMenu}>
-                    AbsoluteCinema
-                </Link>
+                <div className='logo'>AbsoluteCinema</div>
                 <nav className={`nav ${isMenuOpen ? 'active' : ''}`}>
                     <ul className='nav-list'>
                         <li><a href="#schedule">Schedule</a></li>

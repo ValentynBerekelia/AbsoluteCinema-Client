@@ -18,9 +18,6 @@
 .logo {
     font-size: clamp(20px, 4vw, 32px);
     display: flex;
-    text-decoration: none;
-    color: inherit;
-    cursor: pointer;
     align-items: center;
     white-space: nowrap;
 }
