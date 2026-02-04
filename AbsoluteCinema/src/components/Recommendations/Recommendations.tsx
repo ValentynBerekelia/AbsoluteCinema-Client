@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faChevronLeft, faChevronRight } from '@fortawesome/free-solid-svg-icons';
 import './Recommendations.css';
@@ -11,7 +11,14 @@ interface Props {
 
 export const Recommendations = ({ recommendations }: Props) => {
     const [items, setItems] = useState<MovieRecommendation[]>(recommendations);
+    const navigate = useNavigate();
     const visible = items.slice(0, 3);
+
+    const handleBuyTicket = (movieId: string) => {
+        if (movieId && movieId !== 'undefined') {
+            navigate(`/movie/${movieId}/sessions`);
+        }
+    };
 
     const rotate = (direction: 'left' | 'right') => {
         setItems(prev => {
@@ -50,7 +57,15 @@ export const Recommendations = ({ recommendations }: Props) => {
                                                 {movie.title}
                                             </div>
                                             <div className="card-footer-overlay">
-                                                <button className="recommendation-btn">Buy a ticket</button>
+                                                <button 
+                                                    className="recommendation-btn"
+                                                    onClick={(e) => {
+                                                        e.preventDefault();
+                                                        handleBuyTicket(movie.id);
+                                                    }}
+                                                >
+                                                    Buy a ticket
+                                                </button>
                                             </div>
                                         </>
                                     )}

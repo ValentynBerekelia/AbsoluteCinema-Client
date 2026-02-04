@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MovieCardInfo } from '../../types/Movie';
 import { getFormatLabel } from '../../types/Session';
 import './ScheduleMovieCard.css';
@@ -10,6 +10,7 @@ interface ScheduleMovieCardProps {
 }
 
 export const ScheduleMovieCard = ({ movie }: ScheduleMovieCardProps) => {
+    const navigate = useNavigate();
     const validSessions = movie.sessions?.filter(session => {
         const time = formatTime(session.date);
         return time !== '';
@@ -50,7 +51,11 @@ export const ScheduleMovieCard = ({ movie }: ScheduleMovieCardProps) => {
                             <TimeBadge
                                 key={session.id || idx}
                                 session={session}
-                                onclick={() => console.log('Session selected:', session.id)}
+                                onclick={() => {
+                                    if (session.id) {
+                                        navigate(`/booking/${movie.id}/${session.id}`);
+                                    }
+                                }}
                             />
                         ))
                     ) : (
