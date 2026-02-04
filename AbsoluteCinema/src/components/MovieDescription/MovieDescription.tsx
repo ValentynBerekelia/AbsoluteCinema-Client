@@ -8,6 +8,15 @@ interface Props {
 }
 
 export const MovieDescription = ({ movie }: Props) => {
+<<<<<<< Updated upstream
+=======
+    const posterUrl = movie.medias.find(m => m.type === MediaType.PosterImage)?.url;
+    const genresText = (movie.genres || [])
+        .map((g: any) => g?.name ?? g)
+        .filter(Boolean)
+        .join(', ');
+
+>>>>>>> Stashed changes
     return (
         <section className="movie-description-section">
             <div className="description-card">
@@ -20,7 +29,7 @@ export const MovieDescription = ({ movie }: Props) => {
                     <p className="movie-text">{movie.description}</p>
                     
                     <div className="info-grid">
-                        <div className="info-item"><span>Genre:</span> {movie.genres.map(g => g.name).join(', ')}</div>
+                        <div className="info-item"><span>Genre:</span> {genresText}</div>
                         <div className="info-item"><span>Duration:</span> {formatToMinutes(movie.duration)}</div>
                         <div className="info-item"><span>Age limit:</span> {movie.ageLimit}+</div>
                         <div className="info-item"><span>Country:</span> {movie.country}</div>

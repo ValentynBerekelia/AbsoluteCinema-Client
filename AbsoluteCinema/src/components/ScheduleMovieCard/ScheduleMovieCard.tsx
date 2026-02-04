@@ -1,4 +1,4 @@
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { MovieCardInfo } from '../../types/Movie';
 import { getFormatLabel } from '../../types/Session';
 import './ScheduleMovieCard.css';
@@ -10,8 +10,10 @@ interface ScheduleMovieCardProps {
 }
 
 export const ScheduleMovieCard = ({ movie }: ScheduleMovieCardProps) => {
+    const navigate = useNavigate();
+    
     const validSessions = movie.sessions?.filter(session => {
-        const time = formatTime(session.date);
+        const time = formatTime(session.time);
         return time !== '';
     }) || [];
 
@@ -46,6 +48,7 @@ export const ScheduleMovieCard = ({ movie }: ScheduleMovieCardProps) => {
 
                 <div className="schedule-card__sessions">
                     {hasSessions ? (
+<<<<<<< Updated upstream
                         validSessions.map((session, idx) => (
                             <TimeBadge
                                 key={session.id || idx}
@@ -53,6 +56,32 @@ export const ScheduleMovieCard = ({ movie }: ScheduleMovieCardProps) => {
                                 onclick={() => console.log('Session selected:', session.id)}
                             />
                         ))
+=======
+                        validSessions.map((session, idx) => {
+                            const formatLabel = getFormatLabel(session.movieType);
+                            return (
+                                <button 
+                                    key={session.id || idx} 
+                                    className="session-item"
+                                    onClick={(e) => {
+                                        e.preventDefault();
+                                        if (session.id) {
+                                            navigate(`/booking/${movie.id}/${session.id}`);
+                                        }
+                                    }}
+                                >
+                                    <span className="session-item__time">
+                                        {formatTime(session.time)}
+                                    </span>
+                                    {formatLabel && (
+                                        <span className="session-item__format">
+                                            {formatLabel}
+                                        </span>
+                                    )}
+                                </button>
+                            );
+                        })
+>>>>>>> Stashed changes
                     ) : (
                         <span className="schedule-card__no-sessions">No sessions available</span>
                     )}

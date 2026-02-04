@@ -1,14 +1,20 @@
 import { useState } from 'react';
 import ReactPlayer from 'react-player';
+<<<<<<< Updated upstream
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
+=======
+import { Link } from 'react-router-dom';
+>>>>>>> Stashed changes
 import { MovieDetails } from '../../types/Movie';
 import './TrailerSection.css';
 
 interface TrailerSectionProps {
     movie: MovieDetails;
+    movieId?: string;
 }
 
+<<<<<<< Updated upstream
 export const TrailerSection = ({ movie }: TrailerSectionProps) => {
     const [currentTrailerIndex, setCurrentTrailerIndex] = useState(0);
 
@@ -23,6 +29,12 @@ export const TrailerSection = ({ movie }: TrailerSectionProps) => {
     const prevTrailer = () => {
         setCurrentTrailerIndex((prev) => (prev - 1 + trailers.length) % trailers.length);
     };
+=======
+export const TrailerSection = ({ movie, movieId }: TrailerSectionProps) => {
+    const trailerUrl = movie.medias.find(m => m.type === MediaType.Video)?.url;
+>>>>>>> Stashed changes
+
+    const targetPath = movieId ? `/movie/${movieId}/sessions` : '#';
 
     return (
         <section className="trailer-section">
@@ -69,8 +81,15 @@ export const TrailerSection = ({ movie }: TrailerSectionProps) => {
                     </div>
                     <div className="trailer-actions">
                         <span className="age-badge">{movie.ageLimit}+</span>
+<<<<<<< Updated upstream
                         <span className="format-badge">IMAX</span>
                         <button className="buy-ticket-btn">Buy a ticket</button>
+=======
+                        <span className="format-badge">XD</span>
+                        <Link className="buy-ticket-btn" to={targetPath}>
+                            Buy a ticket
+                        </Link>
+>>>>>>> Stashed changes
                     </div>
                 </div>
             </div>

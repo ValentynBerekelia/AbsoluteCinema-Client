@@ -1,0 +1,228 @@
+.booking-page {
+    min-height: 100vh;
+    background: #f5f5f5;
+    padding-bottom: 100px;
+}
+
+.booking-page__header {
+    background: white;
+    padding: 20px 40px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+    margin-bottom: 30px;
+}
+
+.btn-back {
+    background: transparent;
+    border: 1px solid #ddd;
+    padding: 8px 16px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 15px;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background: #f5f5f5;
+    border-color: #999;
+}
+
+.booking-page__title {
+    font-size: 32px;
+    font-weight: 700;
+    color: #333;
+    margin: 10px 0 15px 0;
+}
+
+.booking-page__session-info {
+    display: flex;
+    gap: 30px;
+    flex-wrap: wrap;
+    font-size: 14px;
+    color: #666;
+}
+
+.session-info-item strong {
+    color: #333;
+    margin-right: 5px;
+}
+
+.booking-page__content {
+    max-width: 1400px;
+    margin: 0 auto;
+    padding: 0 20px;
+}
+
+.booking-page__layout {
+    display: grid;
+    grid-template-columns: 320px 1fr;
+    gap: 24px;
+    align-items: start;
+}
+
+.booking-page__sidebar {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+    position: sticky;
+    top: 20px;
+}
+
+.sidebar-title {
+    font-size: 18px;
+    font-weight: 700;
+    margin: 0 0 16px 0;
+    color: #222;
+}
+
+.sidebar-block {
+    margin-bottom: 18px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid #eee;
+}
+
+.sidebar-block h4 {
+    margin: 0 0 10px 0;
+    font-size: 14px;
+    color: #555;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+}
+
+.sidebar-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 14px;
+    color: #666;
+    margin-bottom: 8px;
+}
+
+.seat-list,
+.price-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.seat-list li,
+.price-list li {
+    display: flex;
+    justify-content: space-between;
+    font-size: 14px;
+    color: #333;
+}
+
+.seat-list li span,
+.price-list li span {
+    font-weight: 600;
+}
+
+.seat-empty {
+    font-size: 14px;
+    color: #888;
+    margin: 0;
+}
+
+.sidebar-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-size: 16px;
+    font-weight: 700;
+    color: #222;
+}
+
+.booking-page__map {
+    background: #ffffff;
+    border-radius: 12px;
+    padding: 20px;
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.06);
+}
+
+.booking-page__loading,
+.booking-page__error,
+.booking-page__no-seats {
+    text-align: center;
+    padding: 60px 20px;
+    font-size: 18px;
+    color: #666;
+}
+
+.booking-page__error {
+    color: #d32f2f;
+}
+
+.booking-page__footer {
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: white;
+    padding: 20px 40px;
+    box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+    display: flex;
+    justify-content: center;
+    z-index: 100;
+}
+
+.btn-book {
+    background: #2196f3;
+    color: white;
+    border: none;
+    padding: 16px 48px;
+    border-radius: 8px;
+    font-size: 18px;
+    font-weight: 700;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    min-width: 250px;
+}
+
+.btn-book:hover:not(:disabled) {
+    background: #1976d2;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(33, 150, 243, 0.4);
+}
+
+.btn-book:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+@media (max-width: 768px) {
+        .booking-page__layout {
+            grid-template-columns: 1fr;
+        }
+
+        .booking-page__sidebar {
+            position: static;
+            top: auto;
+        }
+    .booking-page__header {
+        padding: 15px 20px;
+    }
+
+    .booking-page__title {
+        font-size: 24px;
+    }
+
+    .booking-page__session-info {
+        flex-direction: column;
+        gap: 10px;
+    }
+
+    .booking-page__footer {
+        padding: 15px 20px;
+    }
+
+    .btn-book {
+        width: 100%;
+        min-width: auto;
+    }
+}
