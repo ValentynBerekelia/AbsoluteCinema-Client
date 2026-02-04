@@ -14,12 +14,6 @@ export const Recommendations = ({ recommendations }: Props) => {
     const navigate = useNavigate();
     const visible = items.slice(0, 3);
 
-    const handleBuyTicket = (movieId: string) => {
-        if (movieId && movieId !== 'undefined') {
-            navigate(`/movie/${movieId}/sessions`);
-        }
-    };
-
     const rotate = (direction: 'left' | 'right') => {
         setItems(prev => {
             if (direction === 'right') {
@@ -30,6 +24,12 @@ export const Recommendations = ({ recommendations }: Props) => {
             const rest = prev.slice(0, -1);
             return [last, ...rest];
         });
+    };
+
+    const handleBuyTicket = (movieId: string) => {
+        if (movieId && movieId !== 'undefined') {
+            navigate(`/movie/${movieId}/sessions`);
+        }
     };
 
     return (

@@ -1,7 +1,6 @@
 import { formatToMinutes } from '@/utils/dataTimeConverters';
 import { MovieDetails } from '../../types/Movie';
 import './MovieDescription.css';
-import { MediaType } from '@/types/Media';
 
 interface Props {
     movie: MovieDetails;
@@ -12,7 +11,6 @@ export const MovieDescription = ({ movie }: Props) => {
         .map((g: any) => g?.name ?? g)
         .filter(Boolean)
         .join(', ');
-
     return (
         <section className="movie-description-section">
             <div className="description-card">

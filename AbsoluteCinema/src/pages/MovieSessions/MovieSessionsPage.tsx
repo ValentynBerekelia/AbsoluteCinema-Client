@@ -178,7 +178,6 @@ export const MovieSessionsPage = () => {
         const fetchData = async () => {
             try {
                 setLoading(true);
-
                 const [movieResult, sessionsResult] = await Promise.allSettled([
                     getMovieById(id),
                     getMovieSessions(id)

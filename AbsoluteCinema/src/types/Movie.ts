@@ -52,6 +52,7 @@ export interface MovieDetails {
     trailers: Media[];
     genres: Genre[];
 }
+
 const normalizeGenres = (genres: any[]): Genre[] => {
     return (genres || []).map((g: any) => ({
         id: String(g?.id ?? g?.genreId ?? g?.name ?? g ?? ''),

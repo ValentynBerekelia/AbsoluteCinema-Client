@@ -1,6 +1,5 @@
 import { Link, useNavigate } from 'react-router-dom';
 import { MovieCardInfo } from '../../types/Movie';
-import { getFormatLabel } from '../../types/Session';
 import './ScheduleMovieCard.css';
 import { convertDuration, formatTime } from '@/utils/dataTimeConverters';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
@@ -12,7 +11,7 @@ interface ScheduleMovieCardProps {
 export const ScheduleMovieCard = ({ movie }: ScheduleMovieCardProps) => {
     const navigate = useNavigate();
     const validSessions = movie.sessions?.filter(session => {
-        const time = formatTime(session.date);
+        const time = formatTime(session.time);
         return time !== '';
     }) || [];
 

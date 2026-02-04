@@ -34,7 +34,6 @@ export interface BookingRequest {
 export const createMockBooking = async (bookingData: BookingRequest) => {
     // Mock implementation - в реальності це має бути POST до /bookings або /tickets
     console.log('Mock booking created:', bookingData);
-
     // Симулюємо успішну відповідь
     return new Promise((resolve) => {
         setTimeout(() => {
