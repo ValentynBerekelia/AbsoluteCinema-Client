@@ -3,7 +3,7 @@ import { data, useNavigate } from 'react-router-dom';
 import styles from './AddMoviePage.module.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
-import { createMovie } from '../../../../api/movies';
+import { createMovie, attachPersonToMovie, attachGenreToMovie, getGenres } from '../../../../api/movies';
 import { SessionManager } from '@/components/SessionManager/SessionManager';
 import { getDatesInRange } from '@/utils/getDatesInRange';
 import { createSession, getHallById, getHalls } from '@/api';
@@ -27,6 +27,7 @@ export const AddMoviePage = () => {
     const navigate = useNavigate();
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
+    const [genreOptions, setGenreOptions] = useState<string[]>([]);
 
     const [formData, setFormData] = useState<MovieFormData>({
         movieName: 'Add Movie Title',
@@ -94,7 +95,22 @@ export const AddMoviePage = () => {
                 setError('Failed to load halls');
             }
         };
+
+        const fetchGenres = async () => {
+            try {
+                const allGenres = await getGenres();
+                const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
+                const names = genreList
+                    .map((g: any) => g?.name ?? g)
+                    .filter((g: any) => typeof g === 'string' && g.trim().length > 0);
+                setGenreOptions(names);
+            } catch (err) {
+                console.error('Failed to fetch genres:', err);
+            }
+        };
+
         fetchHalls();
+        fetchGenres();
     }, []);
 
     const loadHallDetails = async (hallId: string, sessionId: string) => {
@@ -110,7 +126,16 @@ export const AddMoviePage = () => {
                 return acc;
             }, {} as Record<string, boolean>);
 
-            handleSessionChange(sessionId, 'enabledTypes', defaultEnabled);
+            setSessions(prev => prev.map(session => {
+                if (session.id !== sessionId) return session;
+                const mergedPrices = { ...session.seatPrices };
+                availableSeatTypes.forEach(type => {
+                    if (mergedPrices[type.id] === undefined) {
+                        mergedPrices[type.id] = '';
+                    }
+                });
+                return { ...session, enabledTypes: defaultEnabled, seatPrices: mergedPrices };
+            }));
 
         } catch (err) {
             console.error('Failed to load hall details:', err);
@@ -150,6 +175,45 @@ export const AddMoviePage = () => {
             const movieResult = await createMovie(moviePayload as any);
             const newMovieId = movieResult.movieId?.id ?? movieResult.id;
 
+            // Attach Genres to Movie
+            if (formData.genres && formData.genres.length > 0) {
+                const allGenres = await getGenres();
+                const genreList = Array.isArray(allGenres) ? allGenres : allGenres.genres || [];
+                
+                for (const genreName of formData.genres) {
+                    const genre = genreList.find((g: any) => g.name === genreName);
+                    if (genre) {
+                        try {
+                            await attachGenreToMovie(newMovieId, genre.id);
+                        } catch (err) {
+                            console.error(`Failed to attach genre ${genreName}:`, err);
+                        }
+                    }
+                }
+            }
+
+            // Attach Directors to Movie
+            if (formData.directors && formData.directors.length > 0) {
+                for (const directorName of formData.directors) {
+                    try {
+                        await attachPersonToMovie(newMovieId, directorName, 1); // 1 = Director
+                    } catch (err) {
+                        console.error(`Failed to attach director ${directorName}:`, err);
+                    }
+                }
+            }
+
+            // Attach Actors (Starring) to Movie
+            if (formData.starring && formData.starring.length > 0) {
+                for (const actorName of formData.starring) {
+                    try {
+                        await attachPersonToMovie(newMovieId, actorName, 2); // 2 = Actor
+                    } catch (err) {
+                        console.error(`Failed to attach actor ${actorName}:`, err);
+                    }
+                }
+            }
+
             const sessionPromises: Promise<any>[] = [];
 
             for (const sessionCard of sessions) {
@@ -188,7 +252,11 @@ export const AddMoviePage = () => {
             {error && <div className={styles["error-message"]}>{error}</div>}
 
             <form onSubmit={handleSubmit} className="add-movie-form">
-                <MovieAddForm formData={formData} setFormData={setFormData} />
+                <MovieAddForm
+                    formData={formData}
+                    setFormData={setFormData}
+                    genreOptions={genreOptions}
+                />
 
                 {/* Sessions Section */}
                 <SessionManager

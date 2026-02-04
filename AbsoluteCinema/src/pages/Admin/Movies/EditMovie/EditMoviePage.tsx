@@ -5,7 +5,7 @@ import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { MovieFormData } from '../../../../types/CreateMovieRequest';
 import { HallGrid } from '@/components/HallGrid/HallGrid';
 import { TicketPriceManager } from '@/components/TicketPriceManager/TicketPriceManager';
-import { getMovieById, updateMoviePartial, createAndAttachMedia, deleteMedia, MediaType } from '@/api/movies';
+import { getMovieById, updateMoviePartial, createAndAttachMedia, deleteMedia, MediaType, attachPersonToMovie, removePersonFromMovie, attachGenreToMovie, removeGenreFromMovie, getGenres } from '@/api/movies';
 import { getMovieSessions, updateSessionPartial, createSession, deleteSession } from '@/api/sessions';
 import { getHalls, getHallById } from '@/api/halls';
 import { Hall, SeatType } from '@/types/hall';
@@ -36,6 +36,11 @@ export const EditMoviePage = () => {
         duration: '', country: '', studio: '', language: '',
         genres: [], directors: [], starring: [], poster: null, posterUrl: ''
     });
+    const [originalFormData, setOriginalFormData] = useState<MovieFormData>({
+        movieName: '', description: '', rate: 0, ageLimit: 0,
+        duration: '', country: '', studio: '', language: '',
+        genres: [], directors: [], starring: [], poster: null, posterUrl: ''
+    });
     const [sessions, setSessions] = useState<SessionFormData[]>([]);
     const [stills, setStills] = useState<Media[]>([]);
     const [trailers, setTrailers] = useState<Media[]>([]);
@@ -49,6 +54,7 @@ export const EditMoviePage = () => {
     const [trailerInput, setTrailerInput] = useState('');
     const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
     const [loadingMovie, setLoadingMovie] = useState(false);
+    const [genreOptions, setGenreOptions] = useState<string[]>([]);
 
     // 1. Load Halls List
     useEffect(() => {
@@ -64,6 +70,23 @@ export const EditMoviePage = () => {
             } catch (err) { console.error("Halls load failed", err); }
         };
         fetchHalls();
+    }, []);
+
+    useEffect(() => {
+        const fetchGenres = async () => {
+            try {
+                const allGenres = await getGenres();
+                const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
+                const names = genreList
+                    .map((g: any) => g?.name ?? g)
+                    .filter((g: any) => typeof g === 'string' && g.trim().length > 0);
+                setGenreOptions(names);
+            } catch (err) {
+                console.error('Failed to fetch genres:', err);
+            }
+        };
+
+        fetchGenres();
     }, []);
 
     // 2. Load Hall Details (Seats & Types)
@@ -96,7 +119,7 @@ export const EditMoviePage = () => {
                     hallData.availableSeatTypes?.forEach((type: any) => {
                         const id = type.seatTypeId?.id ?? type.seatTypeId;
                         if (!newPrices[id]) newPrices[id] = "0";
-                        if (!newEnabled[id] === undefined) newEnabled[id] = true;
+                        if (newEnabled[id] === undefined) newEnabled[id] = true;
                     });
 
                     return {...s, seatPrices: newPrices, enabledTypes: newEnabled};
@@ -123,7 +146,9 @@ export const EditMoviePage = () => {
                     ?.filter((p: any) => p.personRole === 2)
                     .map((p: any) => p.personName) || [];
 
-                setFormData({
+                const genresArray = movieData.genres?.map((g: any) => typeof g === 'object' ? g.name : g) || [];
+
+                const newFormData = {
                     movieName: movieData.title,
                     description: movieData.description,
                     rate: movieData.rate,
@@ -132,12 +157,15 @@ export const EditMoviePage = () => {
                     country: movieData.country,
                     studio: movieData.studio,
                     language: movieData.language,
-                    genres: movieData.genres?.map((g: any) => typeof g === 'object' ? g.name : g) || [],
+                    genres: genresArray,
                     directors: directors,
                     starring: starring,
                     poster: null,
                     posterUrl: movieData.poster?.url || ''
-                });
+                };
+
+                setFormData(newFormData);
+                setOriginalFormData(newFormData);
 
                 // Media mapping
                 setStills(mapMediaToGallery(movieData.images, MediaType.Image));
@@ -190,6 +218,88 @@ export const EditMoviePage = () => {
                 name: formData.movieName
             };
             await updateMoviePartial(safeMovieId, payload);
+
+            // Handle Genres Changes
+            const allGenres = await getGenres();
+            const genreList = Array.isArray(allGenres) ? allGenres : allGenres.genres || [];
+            
+            const removedGenres = originalFormData.genres.filter(g => !formData.genres.includes(g));
+            const addedGenres = formData.genres.filter(g => !originalFormData.genres.includes(g));
+
+            for (const genreName of removedGenres) {
+                const genre = genreList.find((g: any) => g.name === genreName);
+                if (genre) {
+                    try {
+                        await removeGenreFromMovie(safeMovieId, genre.id);
+                    } catch (err) {
+                        console.error(`Failed to remove genre ${genreName}:`, err);
+                    }
+                }
+            }
+
+            for (const genreName of addedGenres) {
+                const genre = genreList.find((g: any) => g.name === genreName);
+                if (genre) {
+                    try {
+                        await attachGenreToMovie(safeMovieId, genre.id);
+                    } catch (err) {
+                        console.error(`Failed to attach genre ${genreName}:`, err);
+                    }
+                }
+            }
+
+            // Handle Directors Changes
+            const removedDirectors = originalFormData.directors.filter(d => !formData.directors.includes(d));
+            const addedDirectors = formData.directors.filter(d => !originalFormData.directors.includes(d));
+
+            for (const directorName of removedDirectors) {
+                try {
+                    // Get current persons and find director
+                    const movieData = await getMovieById(safeMovieId);
+                    const director = movieData.persons?.find((p: any) => p.personName === directorName && p.personRole === 1);
+                    if (director) {
+                        await removePersonFromMovie(safeMovieId, director.id);
+                    }
+                } catch (err) {
+                    console.error(`Failed to remove director ${directorName}:`, err);
+                }
+            }
+
+            for (const directorName of addedDirectors) {
+                try {
+                    await attachPersonToMovie(safeMovieId, directorName, 1); // 1 = Director
+                } catch (err) {
+                    console.error(`Failed to attach director ${directorName}:`, err);
+                }
+            }
+
+            // Handle Actors (Starring) Changes
+            const removedActors = originalFormData.starring.filter(a => !formData.starring.includes(a));
+            const addedActors = formData.starring.filter(a => !originalFormData.starring.includes(a));
+
+            for (const actorName of removedActors) {
+                try {
+                    // Get current persons and find actor
+                    const movieData = await getMovieById(safeMovieId);
+                    const actor = movieData.persons?.find((p: any) => p.personName === actorName && p.personRole === 2);
+                    if (actor) {
+                        await removePersonFromMovie(safeMovieId, actor.id);
+                    }
+                } catch (err) {
+                    console.error(`Failed to remove actor ${actorName}:`, err);
+                }
+            }
+
+            for (const actorName of addedActors) {
+                try {
+                    await attachPersonToMovie(safeMovieId, actorName, 2); // 2 = Actor
+                } catch (err) {
+                    console.error(`Failed to attach actor ${actorName}:`, err);
+                }
+            }
+
+            // Update original data to match current state
+            setOriginalFormData(formData);
             alert("Movie info updated!");
         } catch (err) { setError("Save failed"); }
         finally { setSaving(false); }
@@ -204,6 +314,10 @@ export const EditMoviePage = () => {
         const prices = Object.keys(session.enabledTypes)
             .filter(tid => session.enabledTypes[tid])
             .map(tid => ({ seatTypeId: tid, price: Number(session.seatPrices[tid] || 0) }));
+        const seatPrices = prices.reduce((acc: Record<string, number>, p) => {
+            acc[p.seatTypeId] = p.price;
+            return acc;
+        }, {} as Record<string, number>);
 
         try {
             const isNew = sessionId.length < 15;
@@ -213,7 +327,8 @@ export const EditMoviePage = () => {
                 await updateSessionPartial(sessionId, {
                     movieID: { id: safeMovieId },
                     hallId: { id: session.hall },
-                    startDateTime: `${session.date}T${session.time}:00Z`
+                    startDateTime: `${session.date}T${session.time}:00Z`,
+                    seatPrices
                 });
             }
             alert("Session saved!");
@@ -259,7 +374,11 @@ export const EditMoviePage = () => {
 
             <div className={styles["edit-movie-form"]}>
                 <div className={styles["movie-details-section"]}>
-                    <MovieAddForm formData={formData} setFormData={setFormData} />
+                    <MovieAddForm
+                        formData={formData}
+                        setFormData={setFormData}
+                        genreOptions={genreOptions}
+                    />
                     <div className={styles["details-save-actions"]}>
                         <button
                             onClick={handleSaveMovieDetailsOnly}

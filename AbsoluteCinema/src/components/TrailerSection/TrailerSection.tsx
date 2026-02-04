@@ -1,4 +1,5 @@
 import { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import ReactPlayer from 'react-player';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
@@ -7,10 +8,12 @@ import './TrailerSection.css';
 
 interface TrailerSectionProps {
     movie: MovieDetails;
+    movieId?: string;
 }
 
-export const TrailerSection = ({ movie }: TrailerSectionProps) => {
+export const TrailerSection = ({ movie, movieId }: TrailerSectionProps) => {
     const [currentTrailerIndex, setCurrentTrailerIndex] = useState(0);
+    const navigate = useNavigate();
 
     const trailers = movie.trailers || [];
     const hasTrailers = trailers.length > 0;
@@ -70,7 +73,17 @@ export const TrailerSection = ({ movie }: TrailerSectionProps) => {
                     <div className="trailer-actions">
                         <span className="age-badge">{movie.ageLimit}+</span>
                         <span className="format-badge">IMAX</span>
-                        <button className="buy-ticket-btn">Buy a ticket</button>
+                        <button
+                            className="buy-ticket-btn"
+                            onClick={() => {
+                                const targetId = movieId || movie?.id;
+                                if (targetId) {
+                                    navigate(`/movie/${targetId}/sessions`);
+                                }
+                            }}
+                        >
+                            Buy a ticket
+                        </button>
                     </div>
                 </div>
             </div>

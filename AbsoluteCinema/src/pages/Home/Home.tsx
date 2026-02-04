@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import { Hero } from '../../components/Hero/Hero';
 import { PromotionForm } from '../../components/PromotionForm/PromotionForm';
 import { getMovieFeatures } from '../../api/movies';
-import { HeroBannerInfo } from '../../types/Movie';
+import { HeroBannerInfo, mapHeroBannersFromApi } from '../../types/Movie';
 import { HERO_MOVIES } from '../../data/heroMovies';
 import './Home.css';
 import { MovieSchedule } from '@/components/MovieSchedule/MovieSchedule';
@@ -13,9 +13,14 @@ export const Home = () => {
     useEffect(() => {
         getMovieFeatures()
             .then((data) => {
-                if (data && data.length > 0) {
-                    setHeroMovies(data);
+                if (data) {
+                    const mapped = mapHeroBannersFromApi(data);
+                    if (mapped.length > 0) {
+                        setHeroMovies(mapped);
+                        return;
+                    }
                 }
+                setHeroMovies(HERO_MOVIES);
             })
             .catch(() => {
                 setHeroMovies(HERO_MOVIES);

@@ -25,3 +25,25 @@ export const getMovieSessions = async (movieId: string) => {
     const response = await axiosInstance.get(`movies/${movieId}/sessions`);
     return response.data;
 };
+
+export interface BookingRequest {
+    sessionId: string;
+    seatIds: string[];
+}
+
+export const createMockBooking = async (bookingData: BookingRequest) => {
+    // Mock implementation - в реальності це має бути POST до /bookings або /tickets
+    console.log('Mock booking created:', bookingData);
+    // Симулюємо успішну відповідь
+    return new Promise((resolve) => {
+        setTimeout(() => {
+            resolve({
+                success: true,
+                bookingId: `BOOKING-${Date.now()}`,
+                sessionId: bookingData.sessionId,
+                seats: bookingData.seatIds,
+                timestamp: new Date().toISOString()
+            });
+        }, 500);
+    });
+};

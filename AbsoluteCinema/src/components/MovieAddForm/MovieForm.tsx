@@ -7,13 +7,22 @@ import { minutesToTimeSpan } from '../../utils/durationConverter';
 interface Props {
     formData: MovieFormData;
     setFormData: React.Dispatch<React.SetStateAction<MovieFormData>>;
+    genreOptions?: string[];
+    directorOptions?: string[];
+    actorOptions?: string[];
 }
 
 const GENRES_LIST = ['Action', 'Sci-Fi', 'Drama', 'Comedy', 'Thriller', 'Horror'];
 const DIRECTORS_LIST = ['Christopher Nolan', 'James Cameron', 'Quentin Tarantino', 'Denis Villeneuve'];
 const ACTORS_LIST = ['Leonardo DiCaprio', 'Cillian Murphy', 'Tom Hardy', 'Anne Hathaway'];
 
-export const MovieAddForm = ({ formData, setFormData }: Props) => {
+export const MovieAddForm = ({
+    formData,
+    setFormData,
+    genreOptions,
+    directorOptions,
+    actorOptions
+}: Props) => {
     const [posterPreview, setPosterPreview] = useState<string | null>(null);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
@@ -93,9 +102,27 @@ export const MovieAddForm = ({ formData, setFormData }: Props) => {
                             <input name="studio" type="text" value={formData.studio} onChange={handleInputChange} />
                         </div>
                     </div>
-                    <MultiSelectField label="Genres" options={GENRES_LIST} selectedValues={formData.genres} onChange={(vals) => setFormData(p => ({ ...p, genres: vals }))} placeholder="Select Genres" />
-                    <MultiSelectField label="Directors" options={DIRECTORS_LIST} selectedValues={formData.directors || []} onChange={(vals) => setFormData(p => ({ ...p, directors: vals }))} placeholder="Select Directors" />
-                    <MultiSelectField label="Starring" options={ACTORS_LIST} selectedValues={formData.starring || []} onChange={(vals) => setFormData(p => ({ ...p, starring: vals }))} placeholder="Select Actors" />
+                    <MultiSelectField
+                        label="Genres"
+                        options={genreOptions && genreOptions.length > 0 ? genreOptions : GENRES_LIST}
+                        selectedValues={formData.genres}
+                        onChange={(vals) => setFormData(p => ({ ...p, genres: vals }))}
+                        placeholder="Select Genres"
+                    />
+                    <MultiSelectField
+                        label="Directors"
+                        options={directorOptions && directorOptions.length > 0 ? directorOptions : DIRECTORS_LIST}
+                        selectedValues={formData.directors || []}
+                        onChange={(vals) => setFormData(p => ({ ...p, directors: vals }))}
+                        placeholder="Select Directors"
+                    />
+                    <MultiSelectField
+                        label="Starring"
+                        options={actorOptions && actorOptions.length > 0 ? actorOptions : ACTORS_LIST}
+                        selectedValues={formData.starring || []}
+                        onChange={(vals) => setFormData(p => ({ ...p, starring: vals }))}
+                        placeholder="Select Actors"
+                    />
 
                     <div className="form-group description-row">
                         <label>Description</label>
