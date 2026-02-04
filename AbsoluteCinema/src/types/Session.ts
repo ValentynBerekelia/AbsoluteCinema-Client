@@ -5,13 +5,6 @@ export interface Session {
     date: string;
     time: string;
     movieType?: SessionFormat;
-    hallName?: string;
-    basePrice?: number;
-    seatPrices?: Array<{
-        seatTypeId: string;
-        seatTypeName?: string;
-        price?: number | null;
-    }>;
 }
 
 export enum SessionFormat {

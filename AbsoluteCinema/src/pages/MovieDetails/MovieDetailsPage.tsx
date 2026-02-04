@@ -11,7 +11,7 @@ import { useParams } from "react-router-dom";
 
 export const MovieDetailsPage = () => {
     const {id} = useParams<{id: string}>();
-    const [movie, setMovie] = useState<typeof MOCK_MOVIE_DETAILS>({...MOCK_MOVIE_DETAILS, id: id || MOCK_MOVIE_DETAILS.id});
+    const [movie, setMovie] = useState(MOCK_MOVIE_DETAILS);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
@@ -31,7 +31,7 @@ export const MovieDetailsPage = () => {
                 }
             } catch (err) {
                 setError(err instanceof Error ? err.message : 'Failed to fetch movies');
-                setMovie({...MOCK_MOVIE_DETAILS, id: id || MOCK_MOVIE_DETAILS.id});
+                setMovie(MOCK_MOVIE_DETAILS);
             } finally {
                 setLoading(false);
             }
@@ -50,7 +50,7 @@ export const MovieDetailsPage = () => {
     
     return (
         <div>
-            <TrailerSection movie={movie} movieId={id} />
+            <TrailerSection movie={movie}/>
             <MovieDescription movie={movie}/>
             <MovieStills movie={movie}/>
             <Recommendations recommendations={MOCK_RECOMMENDATIONS}/>

@@ -2,15 +2,11 @@ import { useState, useEffect } from 'react';
 import { ScheduleMovieCard } from '../ScheduleMovieCard/ScheduleMovieCard';
 import { getMovies } from '../../api/movies';
 import { mapMovieFromApi, MovieCardInfo } from '../../types/Movie';
-import { SortOrder } from '@/types/MoviesQueryParameters';
 import './MovieSchedule.css';
 import { DateSelector } from '../DateSelector/DateSelector';
 
 const formatDateForApi = (date: Date): string => {
-    const year = date.getFullYear();
-    const month = String(date.getMonth() + 1).padStart(2, '0');
-    const day = String(date.getDate()).padStart(2, '0');
-    return `${year}-${month}-${day}`;
+    return date.toISOString().split('T')[0];
 };
 
 export const MovieSchedule = () => {
@@ -28,41 +24,25 @@ export const MovieSchedule = () => {
             try {
                 setLoading(true);
                 setError(null);
-                const dateKey = formatDateForApi(selectedDate);
-                
-                // Add sessionDate parameter or another parameters for revorked query from backend 
+                let dateFirstParam = formatDateForApi(selectedDate);
+                const nextDay = new Date(selectedDate);
+                nextDay.setDate(nextDay.getDate() + 1);
+                let dateSecondParam = formatDateForApi(nextDay);
                 const params = {
                     pageNumber: 1,
                     pageSize: 20,
-                    firstDate: dateKey,
-                    secondDate: dateKey,
-                    sortColumn: 'name',
-                    sortOrder: SortOrder.Asc
+                    firstDate: dateFirstParam,
+                    lastDate: dateSecondParam
                 };
                 
-                console.log('Fetching movies for date:', dateKey);
+                console.log('Fetching movies for date:', formatDateForApi(selectedDate));
                 
                 const data = await getMovies(params);
                 const mappedMovies = mapMovieFromApi(data);
-                const filteredMovies = mappedMovies
-                    .map(movie => ({
-                        ...movie,
-                        sessions: (movie.sessions || [])
-                            .filter((session: any) => session.date === dateKey)
-                            .sort((a: any, b: any) => (a.time || '').localeCompare(b.time || ''))
-                    }))
-                    .filter(movie => movie.sessions && movie.sessions.length > 0)
-                    .sort((a, b) => {
-                        const aTime = a.sessions?.[0]?.time || '';
-                        const bTime = b.sessions?.[0]?.time || '';
-                        const timeCompare = aTime.localeCompare(bTime);
-                        if (timeCompare !== 0) return timeCompare;
-                        return (a.title || '').localeCompare(b.title || '');
-                    });
                 
-                console.log('Mapped movies:', filteredMovies);
+                console.log('Mapped movies:', mappedMovies);
                 
-                setMovies(filteredMovies);
+                setMovies(mappedMovies);
             } catch (err) {
                 console.error('Failed to fetch movies:', err);
                 setError('Failed to load schedule. Please try again later.');

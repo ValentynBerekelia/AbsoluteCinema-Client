@@ -8,10 +8,6 @@ import { AdminMainPage } from './pages/Admin/MainPage/AdminMainPage'
 import { MovieDetailsPage } from './pages/MovieDetails/MovieDetailsPage'
 import { HallsPage } from './pages/Admin/Halls/HallsPage'
 import { EditMoviePage } from './pages/Admin/Movies/EditMovie/EditMoviePage'
-import { LoginPage } from './pages/Auth/Login/LoginPage'
-import { RegisterPage } from './pages/Auth/Register/RegisterPage'
-import { BookingPage } from './pages/Booking/BookingPage'
-import { MovieSessionsPage } from './pages/MovieSessions/MovieSessionsPage'
 
 function App() {
 
@@ -58,14 +54,6 @@ function App() {
         }
       />
       <Route
-        path='/movie/:id/sessions'
-        element={
-          <MainLayout>
-            <MovieSessionsPage />
-          </MainLayout>
-        }
-      />
-      <Route
         path='/movie/:id'
         element={
           <MainLayout>
@@ -79,32 +67,6 @@ function App() {
           <AdminLayout>
             <EditMoviePage />
           </AdminLayout>
-        }
-      />
-      <Route
-        path='/booking/:movieId/:sessionId'
-        element={
-          <MainLayout>
-            <BookingPage />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/login'
-        element={
-          <MainLayout>
-            <Home />
-            <LoginPage />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/register'
-        element={
-          <MainLayout>
-            <Home />
-            <RegisterPage />
-          </MainLayout>
         }
       />
     </Routes>

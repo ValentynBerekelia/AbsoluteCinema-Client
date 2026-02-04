@@ -6,8 +6,6 @@ export enum SortOrder {
 export interface MoviesQueryParameters {
   searchTerm?: string;
   genres?: string[];
-  firstDate?: string;
-  secondDate?: string;
   pageNumber?: number;
   pageSize?: number;
   sortColumn?: string;

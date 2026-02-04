@@ -1,4 +1,4 @@
-import { Link, useNavigate } from 'react-router-dom';
+import { Link } from 'react-router-dom';
 import { MovieCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import './MovieCard.css';
@@ -8,8 +8,6 @@ interface MovieCardProps {
 }
 
 export const MovieCard = ({movie}: MovieCardProps) => {
-    const navigate = useNavigate();
-
     return (
         <div className='movie-card'>
             <div className='movie-card-header'>
@@ -26,15 +24,7 @@ export const MovieCard = ({movie}: MovieCardProps) => {
                 <div className='movie-card-right'>
                     <div className='movie-card-schedule'>
                         {movie.sessions.map((session, index) => (
-                            <TimeBadge 
-                                key={index} 
-                                session={session}
-                                onclick={() => {
-                                    if (session.id) {
-                                        navigate(`/booking/${movie.id}/${session.id}`);
-                                    }
-                                }}
-                            />
+                            <TimeBadge key={index} session={session}/>
                         ))}
                     </div>
                     <div className='movie-card-description'>
