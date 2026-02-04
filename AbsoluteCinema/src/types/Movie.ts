@@ -1,5 +1,5 @@
 import { Genre } from "./Genre";
-import { Media, MediaType } from "./Media";
+import { Media } from "./Media";
 import { Session } from "./Session";
 import inceptionImg from "@/assets/posters/Inception3-2.jpg";
 import inceptionBannerImg from "@/assets/banners/Inception.jpg";
@@ -51,59 +51,29 @@ export interface MovieDetails {
     stills: Media[];
     trailers: Media[];
     genres: Genre[];
-};
-
-const normalizeGenres = (genres: any[]): Genre[] => {
-    return (genres || []).map((g: any) => ({
-        id: String(g?.id ?? g?.genreId ?? g?.name ?? g ?? ''),
-        name: String(g?.name ?? g ?? '')
-    }));
-};
-
-const normalizeDurationSeconds = (duration: any): number => {
-    if (duration == null) return 0;
-    if (typeof duration === 'number') return duration;
-    if (typeof duration === 'string') {
-        const parts = duration.split(':').map(Number);
-        if (parts.length >= 2 && parts.every(p => !Number.isNaN(p))) {
-            const [h, m, s = 0] = parts;
-            return h * 3600 + m * 60 + s;
-        }
-        const num = Number(duration);
-        return Number.isNaN(num) ? 0 : num;
-    }
-    if (typeof duration === 'object') {
-        if (typeof duration.totalSeconds === 'number') return duration.totalSeconds;
-        if (typeof duration.totalMinutes === 'number') return Math.round(duration.totalMinutes * 60);
-        if (typeof duration.ticks === 'number') return Math.round(duration.ticks / 10_000_000);
-    }
-    return 0;
-};
-
-export const mapMovieDetailsFromApi = async (
-    data: any
-): Promise<MovieDetails> => {
-
-    let movieId = data.movieId?.id ?? data.id;
+}
+export const mapMovieDetailsFromApi = async (data: any): Promise<MovieDetails> => {
+    const movieId = data.movieId?.id ?? data.id;
 
     return {
         id: String(movieId),
         title: data.title || data.name,
         description: data.description,
         rate: data.rate,
-        duration: normalizeDurationSeconds(data.duration ?? data.durationSeconds),
+        duration: typeof data.duration === 'string' ? parseDuration(data.duration) : data.duration,
         ageLimit: data.ageLimit,
         country: data.country,
         studio: data.studio,
         language: data.language,
-        genres: normalizeGenres(data.genres),
+        genres: data.genres || [],
         directors: data.persons?.filter((p: any) => p.personRole === 1).map((p: any) => p.personName) || [],
         starring: data.persons?.filter((p: any) => p.personRole === 2).map((p: any) => p.personName) || [],
-        medias: [
-            ...(data.poster?.url ? [{ id: data.poster?.id, type: MediaType.PosterImage, url: data.poster?.url }] : []),
-            ...(data.trailers?.map((t: any) => ({ id: t.id, type: MediaType.Video, url: t.url })) || []),
-            ...(data.images?.map((img: any) => ({ id: img.id, type: MediaType.Image, url: img.url })) || [])
-        ]
+        
+        posterUrl: data.poster?.url || '',
+        bannerUrl: data.banner?.url || '',
+        
+        stills: data.images?.map((img: any) => ({ id: img.id, type: 'Still', url: img.url })) || [],
+        trailers: data.trailers?.map((t: any) => ({ id: t.id, type: 'Video', url: t.url })) || []
     };
 };
 
@@ -129,11 +99,11 @@ export const mapMovieFromApi = (data: any): any[] => {
             id: String(movieId),
             title: movie.name,
             image: movie.posterUrl ?? '',
-            genre: (movie.genres || []).map((g: any) => g?.name ?? g).filter(Boolean).join(', '),
+            genre: movie.genres?.map((g: any) => g.name).join(', ') ?? '',
             duration: parseDuration(movie.duration),
             ageLimit: movie.ageLimit,
             sessions: movie.sessions?.map((s: any) => ({
-                id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''),
+                id: s.id,
                 ...convertIsoToDateTime(s.startDateTime),
                 movieType: s.format
             })) ?? []
@@ -179,7 +149,7 @@ export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
                 const dateTime = convertIsoToDateTime(s.startDateTime);
                 const date = dateTime.date;
                 const time = dateTime.time;
-                return { id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''), date, time };
+                return { date, time };
             }) ?? []
         };
     });

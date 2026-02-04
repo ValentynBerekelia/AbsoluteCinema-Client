@@ -1,5 +1,4 @@
 import { MovieDetails } from "../types/Movie";
-import { MediaType } from "../types/Media";
 import inceptionImg from '../assets/posters/Inception3-2.jpg'
 import inceptionBannerImg from '../assets/banners/Inception.jpg'
 export const MOCK_MOVIE_DETAILS: MovieDetails = {
@@ -16,11 +15,11 @@ export const MOCK_MOVIE_DETAILS: MovieDetails = {
     directors: ["asd"],
     starring: ["asd"],
     medias: [
-        { id: "m1", type: MediaType.PosterImage, url: inceptionImg },
-        { id: "m2", type: MediaType.Video, url: "https://www.youtube.com/watch?v=YoHD9XEInc0" },
-        { id: "m3", type: MediaType.Image, url: inceptionImg },
-        { id: "m4", type: MediaType.Image, url: inceptionBannerImg },
-        { id: "m5", type: MediaType.Image, url: inceptionImg },
-        { id: "m6", type: MediaType.Image, url: inceptionBannerImg },
+        { id: "m1", type: "Poster", url: inceptionImg },
+        { id: "m2", type: "Video", url: "https://www.youtube.com/watch?v=YoHD9XEInc0" },
+        { id: "m3", type: "Still", url: inceptionImg },
+        { id: "m4", type: "Still", url: inceptionBannerImg },
+        { id: "m5", type: "Still", url: inceptionImg },
+        { id: "m6", type: "Still", url: inceptionBannerImg },
     ],
 };

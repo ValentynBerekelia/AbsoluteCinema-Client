@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
 import './Hero.css'
@@ -12,12 +11,6 @@ interface HeroProps {
 
 export const Hero : React.FC<HeroProps> = ({movies}) => {
     const [currentIndex, setCurrentIndex] = useState(0);
-    const navigate = useNavigate();
-
-    if (!movies || movies.length === 0) {
-        return <section className="hero-loading">Loading...</section>;
-    }
-
     const movie = movies[currentIndex];
 
     const nextSlide = () => {
@@ -50,22 +43,10 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
                 <h1 className='hero-title'>{movie.title }</h1>
                 <div className='hero-schedule'>
                     {movie.sessions.map((session, index) => (
-                        <TimeBadge
-                            key={index}
-                            session={session}
-                            onclick={() => {
-                                if (session.id) {
-                                    navigate(`/booking/${movie.id}/${session.id}`);
-                                }
-                            }}
-                        />
+                        <TimeBadge key={index} session={session}/>
                     ))}
                 </div>
-                <button className='book-now-btn' onClick={() => {
-                    if (movie?.id && movie.id !== 'undefined') {
-                        navigate(`/movie/${movie.id}/sessions`);
-                    }
-                }}>Book your tickets now</button>
+                <button className='book-now-btn'>Book your tickets now</button>
                 <div className='slider-dots'>
                     {movies.map((_, index) => (
                         <span

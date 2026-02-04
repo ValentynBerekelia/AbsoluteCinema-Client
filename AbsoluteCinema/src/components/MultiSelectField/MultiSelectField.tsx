@@ -7,10 +7,9 @@ interface MultiSelectProps {
     selectedValues: string[];
     onChange: (values: string[]) => void;
     placeholder?: string;
-    disabled?: boolean;
 }
 
-export const MultiSelectField = ({ label, options, selectedValues, onChange, placeholder, disabled }: MultiSelectProps) => {
+export const MultiSelectField = ({ label, options, selectedValues, onChange, placeholder }: MultiSelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -25,7 +24,6 @@ export const MultiSelectField = ({ label, options, selectedValues, onChange, pla
     }, []);
 
     const toggleOption = (option: string) => {
-        if (disabled) return;
         const newValues = selectedValues.includes(option)
             ? selectedValues.filter(v => v !== option)
             : [...selectedValues, option];
@@ -37,8 +35,8 @@ export const MultiSelectField = ({ label, options, selectedValues, onChange, pla
             <label>{label}</label>
             <div className="multi-select-container">
                 <div
-                    className={`selected-tags-box ${isOpen ? 'active-border' : ''} ${disabled ? 'disabled' : ''}`}
-                    onClick={() => !disabled && setIsOpen(!isOpen)}
+                    className={`selected-tags-box ${isOpen ? 'active-border' : ''}`}
+                    onClick={() => setIsOpen(!isOpen)}
                 >
                     {selectedValues.length > 0 ? (
                         selectedValues.map((val, index) => (

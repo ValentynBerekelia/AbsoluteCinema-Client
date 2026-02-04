@@ -1,18 +1,28 @@
 import { useState } from 'react';
 import ReactPlayer from 'react-player';
-import { Link } from 'react-router-dom';
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { MovieDetails } from '../../types/Movie';
 import './TrailerSection.css';
 
 interface TrailerSectionProps {
     movie: MovieDetails;
-    movieId?: string;
 }
 
-export const TrailerSection = ({ movie, movieId }: TrailerSectionProps) => {
-    const trailerUrl = movie.medias.find(m => m.type === MediaType.Video)?.url;
+export const TrailerSection = ({ movie }: TrailerSectionProps) => {
+    const [currentTrailerIndex, setCurrentTrailerIndex] = useState(0);
 
-    const targetPath = movieId ? `/movie/${movieId}/sessions` : '#';
+    const trailers = movie.trailers || [];
+    const hasTrailers = trailers.length > 0;
+    const currentTrailer = trailers[currentTrailerIndex];
+
+    const nextTrailer = () => {
+        setCurrentTrailerIndex((prev) => (prev + 1) % trailers.length);
+    };
+
+    const prevTrailer = () => {
+        setCurrentTrailerIndex((prev) => (prev - 1 + trailers.length) % trailers.length);
+    };
 
     return (
         <section className="trailer-section">
@@ -59,10 +69,8 @@ export const TrailerSection = ({ movie, movieId }: TrailerSectionProps) => {
                     </div>
                     <div className="trailer-actions">
                         <span className="age-badge">{movie.ageLimit}+</span>
-                        <span className="format-badge">XD</span>
-                        <Link className="buy-ticket-btn" to={targetPath}>
-                            Buy a ticket
-                        </Link>
+                        <span className="format-badge">IMAX</span>
+                        <button className="buy-ticket-btn">Buy a ticket</button>
                     </div>
                 </div>
             </div>
