@@ -1,7 +1,3 @@
-.movie-schedule {
-    padding: 50px 0;
-}
-
 .movie-schedule__title {
     font-size: 32px;
     font-weight: 700;
@@ -49,9 +45,7 @@
 
 /* Mobile */
 @media (max-width: 600px) {
-    .movie-schedule {
-        padding: 30px 0;
-    }
+
     
     .movie-schedule__title {
         font-size: 24px;
