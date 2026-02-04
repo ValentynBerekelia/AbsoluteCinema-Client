@@ -53,6 +53,15 @@ export interface MovieDetails {
     genres: Genre[];
 }
 
+const extractId = (obj: any): string => {
+    if (typeof obj === 'string') return obj;
+    if (typeof obj === 'number') return String(obj);
+    if (typeof obj === 'object' && obj !== null) {
+        return obj.id ? String(obj.id) : '';
+    }
+    return '';
+};
+
 const normalizeGenres = (genres: any[]): Genre[] => {
     return (genres || []).map((g: any) => ({
         id: String(g?.id ?? g?.genreId ?? g?.name ?? g ?? ''),
@@ -128,11 +137,14 @@ export const mapMovieFromApi = (data: any): any[] => {
             genre: (movie.genres || []).map((g: any) => g?.name ?? g).filter(Boolean).join(', '),
             duration: parseDuration(movie.duration),
             ageLimit: movie.ageLimit,
-            sessions: movie.sessions?.map((s: any) => ({
-                id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''),
-                ...convertIsoToDateTime(s.startDateTime),
-                movieType: s.format
-            })) ?? []
+            sessions: movie.sessions?.map((s: any) => {
+                const sessionId = extractId(s.id) || extractId(s.sessionId) || '';
+                return {
+                    id: sessionId,
+                    ...convertIsoToDateTime(s.startDateTime),
+                    movieType: s.format
+                };
+            }) ?? []
         };
     });
 };
@@ -175,7 +187,8 @@ export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
                 const dateTime = convertIsoToDateTime(s.startDateTime);
                 const date = dateTime.date;
                 const time = dateTime.time;
-                return { id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''), date, time };
+                const sessionId = extractId(s.id) || extractId(s.sessionId) || '';
+                return { id: sessionId, date, time };
             }) ?? []
         };
     });

@@ -105,20 +105,29 @@
 }
 
 .recommendation-btn {
-    background-color: #d3d3d3;
-    color: #333;
-    padding: 10px 25px;
+    background: linear-gradient(135deg, #e50914 0%, #c70812 100%);
+    color: #ffffff;
+    padding: 12px 32px;
     border: none;
     border-radius: 8px;
     font-weight: 700;
     font-size: 16px;
     cursor: pointer;
-    transition: all 0.3s ease;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .recommendation-btn:hover {
-    background-color: #ffffff;
-    transform: translateY(-2px);
+    background: linear-gradient(135deg, #c70812 0%, #a50610 100%);
+    box-shadow: 0 8px 25px rgba(229, 9, 20, 0.5);
+    transform: translateY(-3px);
+}
+
+.recommendation-btn:active {
+    transform: translateY(-1px);
+    box-shadow: 0 2px 8px rgba(229, 9, 20, 0.3);
 }
 
 .recommendation-card img {

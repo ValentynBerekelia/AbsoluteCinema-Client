@@ -43,14 +43,42 @@
 .info-grid {
     display: flex;
     flex-direction: column;
-    gap: 12px;
+    gap: 16px;
 }
 
 .info-item {
-    font-size: 18px;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
 }
 
-.info-item span {
+.info-item span:first-child {
     font-weight: 700;
-    margin-right: 8px;
+    color: #1a1a1a;
+    min-width: 110px;
+}
+
+.info-item span:last-child {
+    color: #555;
+}
+
+.info-item--special span:last-child {
+    flex: none;
+}
+
+.info-item--special {
+    align-items: center;
+}
+
+.age-badge {
+    display: inline-block;
+    width: fit-content;
+    padding: 6px 14px;
+    background: linear-gradient(135deg, #e50914 0%, #c70812 100%);
+    color: #ffffff !important;
+    border-radius: 6px;
+    font-weight: 700;
+    font-size: 14px;
+    box-shadow: 0 2px 8px rgba(229, 9, 20, 0.2);
 }

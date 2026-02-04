@@ -10,13 +10,13 @@
 }
 
 .movie-schedule__content {
-    margin-top: 28px;
+    margin-top: 32px;
 }
 
 .movie-schedule__grid {
     display: grid;
     grid-template-columns: repeat(2, 1fr);
-    gap: 24px;
+    gap: 28px;
 }
 
 .movie-schedule__status {
@@ -37,13 +37,13 @@
     }
     
     .movie-schedule__grid {
-        gap: 20px;
+        gap: 24px;
     }
 }
 
 @media (max-width: 800px) {
     .movie-schedule__grid {
-        grid-template-columns: 1fr;
+        gap: 20px;
     }
 }
 

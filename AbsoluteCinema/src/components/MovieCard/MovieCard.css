@@ -24,14 +24,17 @@
 .movie-age-format {
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: 8px;
 }
 
 .movie-age-format span {
-    background-color: #e8e8e8;
-    padding: 12px;
-    font-size: 24px;
-    border-radius: 12px;
+    background: linear-gradient(135deg, #e50914 0%, #c70812 100%);
+    color: #ffffff;
+    padding: 6px 12px;
+    font-size: 14px;
+    border-radius: 6px;
+    font-weight: 700;
+    box-shadow: 0 2px 6px rgba(229, 9, 20, 0.2);
 }
 
 .movie-card-content {

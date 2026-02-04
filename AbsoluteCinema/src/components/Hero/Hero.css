@@ -75,19 +75,29 @@
 }
 
 .book-now-btn {
-    padding: 12px 36px;
-    background-color: #dedede;
-    border: 1px solid #aaaaaa;
-    border-radius: 4px;
+    padding: 14px 48px;
+    background: linear-gradient(135deg, #e50914 0%, #c70812 100%);
+    border: none;
+    border-radius: 8px;
     font-weight: 700;
-    font-size: 24px;
+    font-size: 18px;
+    color: #ffffff;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s cubic-bezier(0.25, 0.46, 0.45, 0.94);
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.3);
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
 }
 
 .book-now-btn:hover {
-    background-color: #ffffff;
-    box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+    background: linear-gradient(135deg, #c70812 0%, #a50610 100%);
+    box-shadow: 0 8px 25px rgba(229, 9, 20, 0.5);
+    transform: translateY(-2px);
+}
+
+.book-now-btn:active {
+    transform: translateY(0);
+    box-shadow: 0 2px 8px rgba(229, 9, 20, 0.3);
 }
 
 .slide-arrow {

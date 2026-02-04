@@ -183,14 +183,15 @@ export const BookingPage = () => {
     const formatDateTime = (dateTimeStr: string) => {
         if (!dateTimeStr) return '';
         const date = new Date(dateTimeStr);
-        return date.toLocaleString('en-US', {
-            weekday: 'short',
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        
+        const weekday = date.toLocaleDateString('en-US', { weekday: 'short' });
+        const year = date.getUTCFullYear();
+        const month = date.toLocaleDateString('en-US', { month: 'short' });
+        const day = String(date.getUTCDate()).padStart(2, '0');
+        const hours = String(date.getUTCHours()).padStart(2, '0');
+        const minutes = String(date.getUTCMinutes()).padStart(2, '0');
+        
+        return `${weekday}, ${month} ${day}, ${year} ${hours}:${minutes}`;
     };
 
     if (loading) {

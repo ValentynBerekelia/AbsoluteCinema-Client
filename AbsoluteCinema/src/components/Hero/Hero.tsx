@@ -54,7 +54,7 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
                             key={index}
                             session={session}
                             onclick={() => {
-                                if (session.id) {
+                                if (session && session.id) {
                                     navigate(`/booking/${movie.id}/${session.id}`);
                                 }
                             }}
