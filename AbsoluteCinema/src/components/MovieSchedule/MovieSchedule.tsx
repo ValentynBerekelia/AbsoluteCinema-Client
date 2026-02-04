@@ -5,6 +5,7 @@ import { mapMovieFromApi, MovieCardInfo } from '../../types/Movie';
 import { SortOrder } from '@/types/MoviesQueryParameters';
 import './MovieSchedule.css';
 import { DateSelector } from '../DateSelector/DateSelector';
+import { MovieFilters } from '../MovieFilters/MovieFilters';
 
 const formatDateForApi = (date: Date): string => {
     const year = date.getFullYear();
@@ -19,6 +20,11 @@ export const MovieSchedule = () => {
         today.setHours(0, 0, 0, 0);
         return today;
     });
+
+    const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+    const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
+
+
     const [movies, setMovies] = useState<MovieCardInfo[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
@@ -77,6 +83,20 @@ export const MovieSchedule = () => {
         setSelectedDate(date);
     };
 
+const displayedMovies = movies.filter(movie => {
+        const matchesGenre = selectedGenres.length === 0 
+            ? true 
+            : selectedGenres.some(selected => 
+                movie.genre?.toLowerCase().includes(selected.toLowerCase())
+              );
+
+        const matchesFormat = selectedFormat
+            ? (movie.format === selectedFormat || movie.sessions?.some((s: any) => s.type === selectedFormat))
+            : true;
+
+        return matchesGenre && matchesFormat;
+    });
+
     return (
         <section className="movie-schedule">
             <h2 className="movie-schedule__title">Session Schedule</h2>
@@ -85,6 +105,15 @@ export const MovieSchedule = () => {
                 selectedDate={selectedDate} 
                 onDateChange={handleDateChange} 
             />
+
+            <div className="movie-schedule__filters-wrapper">
+                <MovieFilters 
+                    selectedGenres={selectedGenres}
+                    selectedFormat={selectedFormat}
+                    onSelectGenre={setSelectedGenres}
+                    onSelectFormat={setSelectedFormat}
+                />
+            </div>
 
             <div className="movie-schedule__content">
                 {loading && (
@@ -97,15 +126,17 @@ export const MovieSchedule = () => {
                     </div>
                 )}
                 
-                {!loading && !error && movies.length === 0 && (
+                {!loading && !error && displayedMovies.length === 0 && (
                     <div className="movie-schedule__status">
-                        No sessions available for this date
+                        {movies.length > 0 
+                            ? "No movies match selected filters" 
+                            : "No sessions available for this date"}
                     </div>
                 )}
                 
-                {!loading && !error && movies.length > 0 && (
+                {!loading && !error && displayedMovies.length > 0 && (
                     <div className="movie-schedule__grid">
-                        {movies.map((movie) => (
+                        {displayedMovies.map((movie) => (
                             <ScheduleMovieCard key={movie.id} movie={movie} />
                         ))}
                     </div>
