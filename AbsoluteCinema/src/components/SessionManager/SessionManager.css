@@ -17,7 +17,6 @@
     color: var(--text-main);
 }
 
-/* Картка окремої сесії */
 .session-card {
     background: #fff;
     border: 1px solid var(--border-color);
@@ -32,7 +31,6 @@
     border-color: #adb5bd;
 }
 
-/* Хедер картки з маленькою кнопкою видалення */
 .session-header {
     display: flex;
     justify-content: space-between;
@@ -67,7 +65,6 @@
     background: #fff3cd;
 }
 
-/* Сітка інпутів з датами та часом */
 .session-dates {
     display: grid;
     grid-template-columns: 1fr 1fr 120px;
@@ -75,12 +72,61 @@
     margin-bottom: 25px;
 }
 
-/* Вибір залу */
 .hall-selector {
     margin-bottom: 25px;
 }
 
-/* Контейнер статусу (лоадер/сітка/плейсхолдер) */
+.form-input {
+    width: 100%;
+    padding: 12px 16px;
+    border: 1px solid #ced4da;
+    border-radius: 8px;
+    font-size: 14px;
+    background-color: #fff;
+    transition: all 0.2s ease;
+    color: #495057;
+    outline: none;
+}
+
+.form-input:focus {
+    border-color: #1b1818;
+    box-shadow: 0 0 0 3px rgba(176, 100, 1, 0.1);
+}
+
+.hall-select {
+    cursor: pointer;
+    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 16 16'%3e%3cpath fill='none' stroke='%23343a40' stroke-linecap='round' stroke-linejoin='round' stroke-width='2' d='m2 5 6 6 6-6'/%3e%3c/svg%3e");
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 12px;
+    appearance: none;
+    padding-right: 40px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #343a40;
+}
+
+.hall-selector-row {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    margin-bottom: 25px;
+}
+
+.hall-selector-row label {
+    margin-bottom: 0;
+    white-space: nowrap;
+}
+
+.time-input {
+    max-width: 150px;
+}
+
 .hall-status-container {
     min-height: 220px;
     display: flex;
@@ -93,7 +139,6 @@
     overflow: hidden;
 }
 
-/* Лоадер та анімація */
 .hall-loader {
     display: flex;
     flex-direction: column;
@@ -117,7 +162,6 @@
     100% { transform: rotate(360deg); }
 }
 
-/* Стан без даних або з помилкою */
 .hall-placeholder, 
 .hall-error {
     color: var(--text-tertiary);
@@ -130,7 +174,6 @@
     font-weight: 500;
 }
 
-/* Кнопка "Зберегти сесію" всередині картки */
 .save-session-btn {
     width: 100%;
     padding: 14px;
@@ -149,7 +192,6 @@
     background: var(--primary-color);
 }
 
-/* Кнопка "Додати нову сесію" (пунктирна на всю ширину) */
 .add-session-btn {
     width: 100%;
     padding: 20px;
@@ -172,7 +214,6 @@
     color: var(--text-main);
 }
 
-/* Адаптивність */
 @media (max-width: 768px) {
     .session-dates {
         grid-template-columns: 1fr;

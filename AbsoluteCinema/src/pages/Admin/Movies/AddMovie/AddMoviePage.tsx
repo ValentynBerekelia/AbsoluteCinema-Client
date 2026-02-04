@@ -41,7 +41,8 @@ export const AddMoviePage = () => {
         genres: [],
         directors: [],
         starring: [],
-        poster: null as File | null
+        poster: null as File | null,
+        posterUrl: ''
     });
 
     const [sessions, setSessions] = useState<SessionFormData[]>([
@@ -129,7 +130,7 @@ export const AddMoviePage = () => {
             setSessions(prev => prev.map(session => {
                 if (session.id !== sessionId) return session;
                 const mergedPrices = { ...session.seatPrices };
-                availableSeatTypes.forEach(type => {
+                availableSeatTypes.forEach((type: SeatType) => {
                     if (mergedPrices[type.id] === undefined) {
                         mergedPrices[type.id] = '';
                     }

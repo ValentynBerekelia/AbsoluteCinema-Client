@@ -83,7 +83,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             </div>
                         </div>
 
-                        <div className="hall-selector">
+                        <div className="hall-selector-row">
                             <label>Hall:</label>
                             <select
                                 value={session.hall}

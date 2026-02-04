@@ -1,83 +1,82 @@
-import styles from '../../pages/Admin/Halls/HallsPage.module.css';
+import { getSeatClassByName } from '@/utils/getSeatClassByName';
+import styles from './HallSeatGrid.module.css';
 import { Hall, Seat } from '@/types/hall';
+import { getDynamicSeatColor } from '@/utils/colorGenerator';
 
 interface HallSeatGridProps {
     hall: Hall;
-    pendingTypeChanges: Record<string, string>;
-    pendingDeletes: Record<string, boolean>;
     deleteModeByHall: Record<string, boolean>;
     selectedSeatTypeByHall: Record<string, string>;
-    canDeleteSeat: (seats: Seat[], seat: Seat) => boolean;
-    getSeatClassByName: (types: any[], typeId: string) => string;
     handleSeatGridClick: (hallId: string, seat: Seat) => void;
     addSeatToRowEdge: (hallId: string, rowNum: number, side: 'left' | 'right', seatTypeId: string) => void;
-    getRowStats: (seats: Seat[], rowNum: number) => any;
     actionLoading: Record<string, boolean>;
 }
 
 export const HallSeatGrid = ({
     hall,
-    pendingTypeChanges,
-    pendingDeletes,
     deleteModeByHall,
     selectedSeatTypeByHall,
-    canDeleteSeat,
-    getSeatClassByName,
     handleSeatGridClick,
     addSeatToRowEdge,
-    getRowStats,
-    actionLoading
+    actionLoading,
 }: HallSeatGridProps) => {
-    const maxSeatNum = Math.max(1, ...(hall.seats || []).map(s => s.number));
-    
+    const rowNumbers = Array.from(new Set((hall.seats || []).map(s => s.row))).sort((a, b) => a - b);
+
     return (
-        <div
-            className={styles["seat-grid"]}
-            style={{
-                gridTemplateColumns: `repeat(${maxSeatNum + 1}, 28px)`
-            }}
-        >
-            {(hall.seats || []).map(seat => {
-                const seatId = seat.seatId;
-                const effectiveTypeId = seatId ? (pendingTypeChanges[seatId] || seat.seatTypeId) : seat.seatTypeId;
-                const isDeleted = seatId ? !!pendingDeletes[seatId] : false;
-                const canDelete = canDeleteSeat(hall.seats || [], seat);
-                
-                const rowSeats = (hall.seats || []).filter(s => s.row === seat.row);
-                const rowSeatNumbers = rowSeats.map(s => s.number).sort((a, b) => a - b);
-                const rowMinSeat = Math.min(...rowSeatNumbers);
-                const rowMaxSeat = Math.max(...rowSeatNumbers);
-                const rowWidth = rowMaxSeat - rowMinSeat + 1;
-                const offset = Math.floor((maxSeatNum - rowWidth) / 2);
-                const centeredColumn = offset + (seat.number - rowMinSeat) + 1;
-                
-                return (
-                    <button
-                        key={`${seatId ?? 'seat'}-${seat.row}-${seat.number}`}
-                        className={`${styles["seat-cell"]} ${styles[`seat-${getSeatClassByName(hall.availableSeatTypes || [], effectiveTypeId)}`]} ${isDeleted ? styles["seat-deleted"] : ''} ${canDelete ? styles["seat-edge"] : ''}`}
-                        style={{ gridColumn: centeredColumn, gridRow: seat.row }}
-                        title={`Row: ${seat.row}, Seat: ${seat.number}${canDelete ? ' (edge)' : ''}`}
-                        onClick={() => handleSeatGridClick(hall.id, seat)}
-                    />
-                );
-            })}
-            {(hall.seats || []).length > 0 && Array.from(new Set((hall.seats || []).map(s => s.row))).sort((a, b) => a - b).map(rowNum => {
-                const rowStats = getRowStats(hall.seats || [], rowNum);
-                const rowWidth = rowStats.maxSeat - rowStats.minSeat + 1;
-                const offset = Math.floor((maxSeatNum - rowWidth) / 2);
-                const centeredAddColumn = offset + rowWidth + 1;
-                
-                return (
-                    <button
-                        key={`add-seat-${rowNum}`}
-                        className={styles["seat-add-btn"]}
-                        style={{ gridColumn: centeredAddColumn, gridRow: rowNum }}
-                        onClick={() => addSeatToRowEdge(hall.id, rowNum, 'right', selectedSeatTypeByHall[hall.id] || '')}
-                        disabled={!selectedSeatTypeByHall[hall.id] || actionLoading[`add-edge-${hall.id}-${rowNum}-right`]}
-                        title="Add seat to the end of this row"
-                    />
-                );
-            })}
+        <div className={styles["hall-layout-wrapper"]}>
+            <div className={styles["screen-line"]}>SCREEN</div>
+
+            <div className={styles["rows-container"]}>
+                {rowNumbers.map(rowNum => {
+                    const rowSeats = (hall.seats || []).filter(s => s.row === rowNum).sort((a, b) => a.number - b.number);
+
+                    const seatNumbers = rowSeats.map(s => s.number);
+                    const maxRowSeat = Math.max(...seatNumbers);
+
+                    return (
+                        <div key={`row-${rowNum}`} className={styles["hall-row"]}>
+                            <span className={styles["row-number-label"]}>{rowNum}</span>
+
+                            <div className={styles["seats-in-row"]}>
+                                {rowSeats.map(seat => {
+                                    const maxRowInHall = Math.max(...(hall.seats || []).map(s => s.row));
+                                    const typeObj = hall.availableSeatTypes?.find(t => t.id === seat.seatTypeId);
+                                    const seatColor = getDynamicSeatColor(typeObj?.name || 'standard');
+
+                                    const isLastInRow = seat.number === maxRowSeat;
+                                    const isRemovableRow = !(rowSeats.length === 1 && seat.row !== maxRowInHall);
+
+                                    const isRemovable = deleteModeByHall[hall.id] && isLastInRow && isRemovableRow;
+
+                                    return (
+                                        <button
+                                            key={seat.seatId || `seat-${seat.row}-${seat.number}`}
+                                            className={`${styles["seat-cell"]} ${isRemovable ? styles["removable-edge"] : ''}`}
+                                            style={{
+                                                backgroundColor: seatColor,
+                                                gridRow: seat.row
+                                            }}
+                                            onClick={() => handleSeatGridClick(hall.id, seat)}
+                                            type="button"
+                                            title={`Row: ${seat.row}, Seat: ${seat.number}${isRemovable ? ' (Can be deleted)' : ''}`}
+                                        />
+                                    );
+                                })}
+
+                                <button
+                                    className={styles["seat-add-btn-mini"]}
+                                    onClick={() => addSeatToRowEdge(hall.id, rowNum, 'right', selectedSeatTypeByHall[hall.id] || '6ea339c5-b6c8-4646-ab54-7d5f71644a87')}
+                                    disabled={!selectedSeatTypeByHall[hall.id] || actionLoading[`add-edge-${hall.id}-${rowNum}-right`]}
+                                    title="Add seat to row"
+                                    type="button"
+                                >
+                                    +
+                                </button>
+                            </div>
+                        </div>
+                    );
+                })}
+            </div>
         </div>
     );
 };

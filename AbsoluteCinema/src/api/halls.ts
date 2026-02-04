@@ -39,3 +39,8 @@ export const deleteSeatFromHall = async (seatId: string) => {
     const response = await axiosInstance.delete(`admin/halls/${seatId}`);
     return response.data;
 };
+
+export const getSeatTypes = async () => {
+    const response = await axiosInstance.get('admin/seatType');
+    return response.data;
+};

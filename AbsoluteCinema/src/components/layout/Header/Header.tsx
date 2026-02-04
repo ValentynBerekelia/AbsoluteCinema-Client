@@ -1,6 +1,6 @@
 import { useState } from 'react';
 import { HashLink } from 'react-router-hash-link';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 
 export const Header = () => {
@@ -21,10 +21,14 @@ export const Header = () => {
         setIsMenuOpen(false);
     };
 
+    const closeMenu = () => setIsMenuOpen(false);
+
     return (
         <header className='header'>
             <div className='header-container'>
-                <div className='logo'>AbsoluteCinema</div>
+                <Link to="/" className='logo' onClick={closeMenu}>
+                    AbsoluteCinema
+                </Link>
                 <nav className={`nav ${isMenuOpen ? 'active' : ''}`}>
                     <ul className='nav-list'>
                         <li><a href="#schedule">Schedule</a></li>

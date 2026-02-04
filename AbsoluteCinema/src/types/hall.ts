@@ -44,3 +44,14 @@ export const mapHallDetailsFromApi = (data: any) => {
 
     return { seats, availableSeatTypes };
 };
+
+export const mapSeatTypesFromApi = (data: any): SeatType[] => {
+    const rawTypes = Array.isArray(data?.seatTypes)
+        ? data.seatTypes
+        : data?.seatTypes?.$values || [];
+
+    return rawTypes.map((st: any) => ({
+        id: st.seatTypeId?.id ?? st.id ?? st.seatTypeId,
+        name: st.name
+    }));
+};

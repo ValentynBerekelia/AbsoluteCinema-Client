@@ -5,21 +5,29 @@ import { MoviesQueryParameters, SortOrder } from "@/types/MoviesQueryParameters"
 import { getMovies } from "@/api";
 import { mapMoviesForAdmin } from "@/types/Movie";
 import { useSearchParams } from "react-router-dom";
-import { AdminSearch } from "../../../components/layout/AdminSearch/AdminSearch"; 
+import { AdminSearch } from "../../../components/layout/AdminSearch/AdminSearch";
 
 export const AdminMainPage = () => {
     const [movies, setMovies] = useState(ADMIN_MOVIES_DATA);
     const [loading, setLoading] = useState(true);
-    
+
     const [searchParams] = useSearchParams();
     const searchTermFromUrl = searchParams.get('search') || '';
 
-    const [queryParams, setQueryParams] = useState<MoviesQueryParameters>({
-        pageNumber: 1,
-        pageSize: 10,
-        sortColumn: 'rate',
-        sortOrder: SortOrder.Asc,
-        searchTerm: searchTermFromUrl
+    const [queryParams, setQueryParams] = useState<MoviesQueryParameters>(() => {
+        const today = new Date();
+        const tenDaysLater = new Date();
+        tenDaysLater.setDate(today.getDate() + 10);
+
+        return {
+            pageNumber: 1,
+            pageSize: 10,
+            sortColumn: 'rate',
+            sortOrder: SortOrder.Asc,
+            searchTerm: searchTermFromUrl,
+            firstDate: today.toISOString().split('T')[0],
+            secondDate: tenDaysLater.toISOString().split('T')[0],
+        };
     });
 
     useEffect(() => {
@@ -56,10 +64,10 @@ export const AdminMainPage = () => {
         <>
             <AdminSearch />
 
-            <div 
-                className="admin-cards-list" 
+            <div
+                className="admin-cards-list"
                 style={{
-                    opacity: loading ? 0.5 : 1, 
+                    opacity: loading ? 0.5 : 1,
                     transition: 'opacity 0.3s ease',
                     pointerEvents: loading ? 'none' : 'auto',
                     minHeight: '200px'
@@ -70,9 +78,9 @@ export const AdminMainPage = () => {
                         <AdminMovieCard key={movie.id} movie={movie} />
                     ))
                 ) : (
-                    <div style={{ 
-                        width: '100%', 
-                        textAlign: 'center', 
+                    <div style={{
+                        width: '100%',
+                        textAlign: 'center',
                         marginTop: '40px',
                         color: '#333'
                     }}>
