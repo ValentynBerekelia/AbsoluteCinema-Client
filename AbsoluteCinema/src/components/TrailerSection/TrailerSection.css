@@ -87,25 +87,56 @@
     gap: 20px;
 }
 
+.age-badge {
+    padding: 8px 16px;
+    background-color: rgba(51, 51, 51, 0.9);
+    color: #ffffff;
+    border: 2px solid #ffffff;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 700;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    backdrop-filter: blur(10px);
+}
+
+.format-badge {
+    padding: 8px 16px;
+    background: linear-gradient(135deg, #333333 0%, #1a1a1a 100%);
+    color: #ffffff;
+    border: 2px solid #e50914;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+    text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.5);
+    box-shadow: 0 0 15px rgba(229, 9, 20, 0.3);
+}
+
 .buy-ticket-btn {
-    padding: 12px 35px;
-    background-color: #d9d9d9;
+    padding: 14px 40px;
+    background: linear-gradient(135deg, #e50914 0%, #b8070f 100%);
     border: none;
     border-radius: 8px;
     font-size: 20px;
     font-weight: 700;
+    color: #ffffff;
     cursor: pointer;
-    transition: 0.3s;
+    transition: all 0.3s ease;
     position: relative;
     z-index: 3;
     pointer-events: auto;
     text-decoration: none;
-    color: #000;
     display: inline-flex;
     align-items: center;
     justify-content: center;
+    box-shadow: 0 4px 15px rgba(229, 9, 20, 0.4);
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .buy-ticket-btn:hover {
-    background-color: #fff;
+    background: linear-gradient(135deg, #ff0a16 0%, #d4070e 100%);
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(229, 9, 20, 0.6);
 }
