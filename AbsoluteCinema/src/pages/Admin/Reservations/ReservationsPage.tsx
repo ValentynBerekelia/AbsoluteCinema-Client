@@ -39,14 +39,44 @@ const formatSessionDate = (dateTime: string) => {
 };
 
 const normalizeTickets = (data: any): TicketInfo[] => {
-    const ticketsArray = Array.isArray(data) ? data : data?.tickets ?? [];
-    return ticketsArray.map((t: any) => ({
-        id: String(t.id?.id ?? t.id ?? t.ticketId ?? ''),
-        sessionId: String(t.sessionId?.id ?? t.sessionId ?? t.session?.id ?? ''),
-        seatId: String(t.seatId?.id ?? t.seatId ?? t.seat?.id ?? ''),
-        userId: String(t.userId?.id ?? t.userId ?? t.user?.id ?? '')
-    })).filter((t: TicketInfo) => t.id && t.seatId);
+    const ticketsArray = Array.isArray(data) ? data : data?.tickets ?? data?.data ?? [];
+    
+    const normalized = ticketsArray.map((t: any) => {
+        // The API returns deeply nested: seat.id.id
+        let seatId = '';
+        
+        // Try: seat.id.id (the actual nested structure)
+        if (t.seat?.id?.id) {
+            seatId = String(t.seat.id.id);
+        }
+        // Fallback: seat.id if it's a string
+        else if (typeof t.seat?.id === 'string') {
+            seatId = String(t.seat.id);
+        }
+        // Fallback: seatId field
+        else if (t.seatId?.id?.id) {
+            seatId = String(t.seatId.id.id);
+        }
+        else if (t.seatId) {
+            seatId = typeof t.seatId === 'string' ? t.seatId : String(t.seatId?.id ?? '');
+        }
+        
+        const ticket = {
+            id: String(t.id?.id ?? t.id ?? t.ticketId ?? ''),
+            sessionId: String(t.sessionId?.id ?? t.sessionId ?? t.session?.id?.id ?? ''),
+            seatId: seatId,
+            userId: String(t.userId?.id ?? t.userId ?? t.user?.id?.id ?? '')
+        };
+        
+        console.log(`✓ Ticket - SeatID: ${seatId}`);
+        return ticket;
+    }).filter((t: TicketInfo) => t.id && t.seatId);
+    
+    console.log('✓ Tickets loaded:', normalized.length, '| SeatIDs:', normalized.map((t: TicketInfo) => t.seatId).join(', '));
+    return normalized;
 };
+
+const ADMIN_USER_ID = '61981f2a-81ac-4afd-a87c-1ed52239d7ca';
 
 export const ReservationsPage = () => {
     const [sessions, setSessions] = useState<SessionSummary[]>([]);
@@ -59,6 +89,7 @@ export const ReservationsPage = () => {
     const [selectedSeatId, setSelectedSeatId] = useState<string | null>(null);
     const [userIdInput, setUserIdInput] = useState('');
     const [commentInput, setCommentInput] = useState('');
+    const [isAdminReservation, setIsAdminReservation] = useState(false);
     const [reservationNotes, setReservationNotes] = useState<Record<string, string>>({});
     const [actionLoading, setActionLoading] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -104,7 +135,14 @@ export const ReservationsPage = () => {
                     })
                 );
 
-                const flattenedSessions = sessionsPerMovie.flat().filter(s => s.id);
+                const flattenedSessions = sessionsPerMovie.flat()
+                    .filter(s => s.id)
+                    .filter(s => {
+                        const sessionTime = new Date(s.startDateTime).getTime();
+                        const now = new Date().getTime();
+                        // Only show current and future sessions
+                        return sessionTime >= now;
+                    });
                 flattenedSessions.sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
 
                 setSessions(flattenedSessions);
@@ -126,9 +164,16 @@ export const ReservationsPage = () => {
     const selectedSession = useMemo(() => sessions.find(s => s.id === selectedSessionId) || null, [sessions, selectedSessionId]);
 
     const refreshTickets = async (sessionId: string) => {
-        const ticketsResponse = await getSessionTickets(sessionId);
-        const normalized = normalizeTickets(ticketsResponse);
-        setTickets(normalized);
+        try {
+            const ticketsResponse = await getSessionTickets(sessionId);
+            console.log('Raw tickets response:', ticketsResponse);
+            const normalized = normalizeTickets(ticketsResponse);
+            console.log('Normalized tickets:', normalized);
+            setTickets(normalized);
+        } catch (err) {
+            console.error('Failed to fetch tickets:', err);
+            setTickets([]);
+        }
     };
 
     useEffect(() => {
@@ -144,6 +189,8 @@ export const ReservationsPage = () => {
                 if (selectedSession.hallId) {
                     const hallResponse = await getHallById(selectedSession.hallId);
                     const { seats, availableSeatTypes } = mapHallDetailsFromApi(hallResponse);
+                    console.log('🏛️ Hall seats sample:', seats.slice(0, 3).map((s: Seat) => ({ seatId: s.seatId, row: s.row, number: s.number })));
+                    console.log('🏛️ All hall seat IDs:', seats.map((s: Seat) => s.seatId).join(' | '));
                     setHallSeats(seats);
                     setHallTypes(availableSeatTypes);
                 } else {
@@ -162,7 +209,11 @@ export const ReservationsPage = () => {
         loadSessionDetails();
     }, [selectedSession]);
 
-    const occupiedSeatIds = useMemo(() => tickets.map(t => t.seatId), [tickets]);
+    const occupiedSeatIds = useMemo(() => {
+        const ids = tickets.map((t: TicketInfo) => t.seatId);
+        console.log('📍 Occupied seats:', ids.join(', ') || '(none)');
+        return ids;
+    }, [tickets]);
 
     const groupedByRow = useMemo(() => {
         const grouped = hallSeats.reduce((acc, seat) => {
@@ -189,14 +240,15 @@ export const ReservationsPage = () => {
         : null;
 
     const handleCreateReservation = async () => {
-        if (!selectedSession || !selectedSeatId || !userIdInput) return;
+        const finalUserId = isAdminReservation ? ADMIN_USER_ID : userIdInput;
+        if (!selectedSession || !selectedSeatId || !finalUserId) return;
 
         try {
             setActionLoading(true);
             await createTicket({
                 sessionId: selectedSession.id,
                 seatId: selectedSeatId,
-                userId: userIdInput
+                userId: finalUserId
             });
 
             setReservationNotes(prev => ({
@@ -206,6 +258,8 @@ export const ReservationsPage = () => {
 
             await refreshTickets(selectedSession.id);
             setCommentInput('');
+            setUserIdInput('');
+            setIsAdminReservation(false);
         } catch (err) {
             console.error('Failed to create ticket:', err);
         } finally {
@@ -289,6 +343,9 @@ export const ReservationsPage = () => {
                                                 <div className="seat-row-grid">
                                                     {row.seats.map(seat => {
                                                         const isOccupied = occupiedSeatIds.includes(seat.seatId || '');
+                                                        if (seat.row === 6 && seat.number === 9) {
+                                                            console.log(`Seat 6-9: seatId="${seat.seatId}" | occupied=${isOccupied} | occupiedIds=[${occupiedSeatIds.join(', ')}]`);
+                                                        }
                                                         const isSelected = selectedSeatId === seat.seatId;
                                                         const seatType = hallTypes.find(t => t.id === seat.seatTypeId);
                                                         const seatColor = getDynamicSeatColor(seatType?.name || 'standard');
@@ -297,10 +354,13 @@ export const ReservationsPage = () => {
                                                             <button
                                                                 key={seat.seatId}
                                                                 className={`seat-cell ${isOccupied ? 'occupied' : ''} ${isSelected ? 'selected' : ''}`}
-                                                                style={{ backgroundColor: seatColor }}
+                                                                style={{ 
+                                                                    backgroundColor: isOccupied ? '#f0f0f0' : seatColor,
+                                                                    opacity: isOccupied ? 0.5 : 1
+                                                                }}
                                                                 onClick={() => setSelectedSeatId(seat.seatId || null)}
                                                                 type="button"
-                                                                title={`Row ${seat.row}, Seat ${seat.number}`}
+                                                                title={`Row ${seat.row}, Seat ${seat.number}${isOccupied ? ' (Occupied)' : ''}`}
                                                             >
                                                                 {seat.number}
                                                             </button>
@@ -347,13 +407,28 @@ export const ReservationsPage = () => {
                                                 </>
                                             ) : (
                                                 <>
+                                                    <div className="checkbox-group">
+                                                        <input
+                                                            type="checkbox"
+                                                            id="admin-reservation"
+                                                            checked={isAdminReservation}
+                                                            onChange={(e) => {
+                                                                setIsAdminReservation(e.target.checked);
+                                                                if (!e.target.checked) {
+                                                                    setUserIdInput('');
+                                                                }
+                                                            }}
+                                                        />
+                                                        <label htmlFor="admin-reservation">Admin Reservation</label>
+                                                    </div>
                                                     <div className="input-group">
                                                         <label>User ID</label>
                                                         <input
                                                             type="text"
-                                                            value={userIdInput}
-                                                            onChange={(e) => setUserIdInput(e.target.value)}
+                                                            value={isAdminReservation ? ADMIN_USER_ID : userIdInput}
+                                                            onChange={(e) => !isAdminReservation && setUserIdInput(e.target.value)}
                                                             placeholder="Enter user UUID"
+                                                            disabled={isAdminReservation}
                                                         />
                                                     </div>
                                                     <div className="input-group">
@@ -367,7 +442,7 @@ export const ReservationsPage = () => {
                                                     <button
                                                         className="action-btn"
                                                         onClick={handleCreateReservation}
-                                                        disabled={actionLoading || !userIdInput}
+                                                        disabled={actionLoading || (!isAdminReservation && !userIdInput)}
                                                         type="button"
                                                     >
                                                         Create reservation
