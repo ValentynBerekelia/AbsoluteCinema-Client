@@ -23,6 +23,7 @@ export interface AttachMediaRequest {
 
 export interface CreateAndAttachMediaResponse {
   movieId: string;
+  mediaId: string;
 }
 
 export const createMovie = async (movieData: CreateMovieRequest) => {

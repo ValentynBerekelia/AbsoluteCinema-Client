@@ -34,7 +34,7 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
         setLoading(true);
         try {
             const response = await createAndAttachMedia(movieId, { url, type });
-            const newId = response.movieId || Date.now().toString();
+            const newId = response.mediaId || Date.now().toString();
             const newMedia: Media = { id: newId, url, type };
             
             if (type === MediaType.Image) {
