@@ -44,6 +44,8 @@ export const HallListItem = ({
     addNewRow
 }: HallListItemProps) => {
 
+    const isTypeSelected = !!selectedSeatTypeByHall[hall.id]
+
     return (
         <div className={styles["hall-item"]}>
             <div className={styles["hall-summary"]}>
@@ -120,7 +122,11 @@ export const HallListItem = ({
                                     addSeatToRowEdge={addSeatToRowEdge}
                                     actionLoading={actionLoading}
                                 />
-                                <button className={styles["row-add-btn"]} onClick={() => addNewRow(hall.id, selectedSeatTypeByHall[hall.id] || '6ea339c5-b6c8-4646-ab54-7d5f71644a87')}>
+                                <button 
+                                    className={styles["row-add-btn"]}
+                                    disabled={!isTypeSelected}
+                                    onClick={() => addNewRow(hall.id, selectedSeatTypeByHall[hall.id])}
+                                >
                                     + Add Row
                                 </button>
                             </div>

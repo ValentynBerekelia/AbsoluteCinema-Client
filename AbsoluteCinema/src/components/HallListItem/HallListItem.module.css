@@ -219,15 +219,6 @@
     width: 100%;
 }
 
-.seat-standard { 
-    background-color: #adb5bd !important; 
-}
-.seat-vip { 
-    background-color: #f59f00 !important; 
-}
-.seat-comfort { 
-    background-color: #339af0 !important; 
-}
 
 .seat-type-chip:hover:not(.seat-type-chip-active) {
     opacity: 0.8;

@@ -70,10 +70,6 @@
     z-index: 5;
 }
 
-.seat-standard { background: #adb5bd; }
-.seat-vip { background: #f59f00; }
-.seat-comfort { background: #339af0; }
-
 .seat-add-btn-mini {
     width: 30px;
     height: 30px;

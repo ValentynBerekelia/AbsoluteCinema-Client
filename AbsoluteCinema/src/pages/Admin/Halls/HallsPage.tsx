@@ -175,10 +175,11 @@ export const HallsPage = () => {
 
             try {
                 await deleteSeatFromHall(seat.seatId);
-                await loadHallDetails(hallId);
-            } catch (err) {
-                setError('Failed to delete seat');
-            }
+
+                setHalls(prev => prev.map(h =>
+                    h.id === hallId ? { ...h, seats: h.seats?.filter(s => s.seatId !== seat.seatId) } : h
+                ));
+            } catch (err) { setError('Failed to delete seat'); }
             return;
         }
 
@@ -190,7 +191,11 @@ export const HallsPage = () => {
                     number: seat.number,
                     seatTypeId: selectedType
                 });
-                await loadHallDetails(hallId);
+                setHalls(prevHalls => prevHalls.map(h =>
+                    h.id === hallId
+                        ? { ...h, seats: h.seats?.map(s => s.seatId === seat.seatId ? { ...s, seatTypeId: selectedType } : s) }
+                        : h
+                ));
             } catch (err) {
                 setError('Failed to update seat type');
             }
@@ -203,7 +208,6 @@ export const HallsPage = () => {
 
         const stats = getRowStats(hall.seats, rowNum);
         const newNum = side === 'left' ? stats.minSeat - 1 : stats.maxSeat + 1;
-
         if (newNum < 1) return;
 
         try {
@@ -212,7 +216,13 @@ export const HallsPage = () => {
                 seatTypeId,
                 seats: [{ row: rowNum, number: newNum }]
             });
-            await loadHallDetails(hallId);
+
+            const data = await getHallById(hallId);
+            const { seats } = mapHallDetailsFromApi(data);
+
+            setHalls(prev => prev.map(h =>
+                h.id === hallId ? { ...h, seats } : h
+            ));
         } catch (err) { console.error(err); }
     };
 
@@ -222,7 +232,6 @@ export const HallsPage = () => {
 
         const maxRow = Math.max(...hall.seats.map(s => s.row));
         const refStats = getRowStats(hall.seats, maxRow);
-
         const seatsToAdd = Array.from({ length: refStats.count }, (_, i) => ({
             row: maxRow + 1,
             number: i + refStats.minSeat
@@ -230,7 +239,13 @@ export const HallsPage = () => {
 
         try {
             await addSeatsToHall({ hallId, seatTypeId, seats: seatsToAdd });
-            await loadHallDetails(hallId);
+
+            const data = await getHallById(hallId);
+            const { seats } = mapHallDetailsFromApi(data);
+
+            setHalls(prev => prev.map(h =>
+                h.id === hallId ? { ...h, seats } : h
+            ));
         } catch (err) { console.error(err); }
     };
 
