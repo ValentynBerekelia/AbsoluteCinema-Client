@@ -22,7 +22,7 @@ export const MovieSchedule = () => {
     });
 
     const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-    const [selectedFormat, setSelectedFormat] = useState<string | null>(null);
+    const [selectedFormat, setSelectedFormat] = useState<number | null>(null);
 
 
     const [movies, setMovies] = useState<MovieCardInfo[]>([]);
@@ -91,7 +91,7 @@ const displayedMovies = movies.filter(movie => {
               );
 
         const matchesFormat = selectedFormat
-            ? (movie.format === selectedFormat || movie.sessions?.some((s: any) => s.type === selectedFormat))
+            ? (movie.sessions?.some((s: any) => s.movieType === selectedFormat))
             : true;
 
         return matchesGenre && matchesFormat;

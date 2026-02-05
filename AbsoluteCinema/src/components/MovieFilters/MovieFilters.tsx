@@ -1,3 +1,4 @@
+import { getFormatLabel, SessionFormat } from '@/types/Session';
 import './MovieFilters.css';
 
 // Genre stub (to be replaced with backend data in the future)
@@ -11,13 +12,13 @@ const GENRES = [
     "Adventure"
 ];
 
-const FORMATS = ["2D", "3D"];
+const FORMATS = [SessionFormat.TwoD, SessionFormat.ThreeD];
 
 interface MovieFiltersProps {
     selectedGenres: string[];
-    selectedFormat: string | null;
+    selectedFormat: number | null;
     onSelectGenre: (genres: string[]) => void;
-    onSelectFormat: (format: string | null) => void;
+    onSelectFormat: (format: number | null) => void;
 }
 
 export const MovieFilters = ({ 
@@ -35,7 +36,7 @@ const handleGenreClick = (genre: string) => {
         }
     };
 
-    const handleFormatClick = (format: string) => {
+    const handleFormatClick = (format: number) => {
         onSelectFormat(selectedFormat === format ? null : format);
     };
 
@@ -67,7 +68,7 @@ const handleGenreClick = (genre: string) => {
                             className={`filter-chip ${selectedFormat === format ? 'active' : ''}`}
                             onClick={() => handleFormatClick(format)}
                         >
-                            {format}
+                            {getFormatLabel(format)}
                         </button>
                     ))}
                 </div>
