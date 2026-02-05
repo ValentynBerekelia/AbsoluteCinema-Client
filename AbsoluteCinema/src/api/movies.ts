@@ -150,7 +150,7 @@ export const attachPersonToMovie = async (movieId: string, personName: string, p
 };
 
 export const attachGenreToMovie = async (movieId: string, genreId: string) => {
-  const response = await axiosInstance.post(`/admin/movies/${movieId}/genres`, {
+  const response = await axiosInstance.post(`/admin/movies/${movieId}/genre/attach`, {
     genreId
   });
   return response.data;
@@ -162,6 +162,6 @@ export const removePersonFromMovie = async (movieId: string, personId: string) =
 };
 
 export const removeGenreFromMovie = async (movieId: string, genreId: string) => {
-  const response = await axiosInstance.delete(`/admin/movies/${movieId}/genres/${genreId}`);
+  const response = await axiosInstance.delete(`/admin/movies/${movieId}/genre/${genreId}`);
   return response.data;
 };

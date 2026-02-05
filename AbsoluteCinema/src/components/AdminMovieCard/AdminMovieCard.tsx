@@ -5,9 +5,10 @@ import './AdminMovieCard.css';
 
 interface AdminMovieCardProps {
     movie: MovieAdminCardInfo;
+    onDelete: (id: string) => void;
 }
 
-export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
+export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
     const navigate = useNavigate();
 
     const groupedSessions = movie.sessions.reduce((acc, session) => {
@@ -23,10 +24,24 @@ export const AdminMovieCard = ({ movie }: AdminMovieCardProps) => {
         return new Date(a).getTime() - new Date(b).getTime();
     });
 
+    const handleDelete = (e: React.MouseEvent) => {
+        e.stopPropagation();
+        if (window.confirm(`Видалити фільм "${movie.title}"?`)) {
+            onDelete(movie.id);
+        }
+    };
+
     return (
         <div className='admin-movie-container'>
             <div className='admin-movie-header-row'>
                 <h2 className='admin-movie-title'>{movie.title}</h2>
+                <button 
+                    className='admin-delete-movie-btn' 
+                    onClick={handleDelete}
+                    title="Delete Movie"
+                >
+                    ✕
+                </button>
             </div>
 
             <div className='admin-movie-main-content'>

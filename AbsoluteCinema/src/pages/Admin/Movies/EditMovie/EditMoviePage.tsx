@@ -14,6 +14,8 @@ import { mapApiSessionToForm } from '@/types/Session';
 import { mapMediaToGallery, Media } from '@/types/Media';
 import { minutesToSeconds, timeSpanToMinutes } from '@/utils/dataTimeConverters';
 import { prepareSessionPayload } from '@/utils/prepareSessionPayload';
+import { Genre } from '@/types/Genre';
+import { useToast } from '@/context/ToastContext/ToastContext';
 
 interface SessionFormData {
     id: string;
@@ -25,6 +27,7 @@ interface SessionFormData {
 }
 
 export const EditMoviePage = () => {
+    const { showToast } = useToast();
     const navigate = useNavigate();
     const { movieId } = useParams<{ movieId: string }>();
     const safeMovieId = movieId ?? '';
@@ -45,14 +48,14 @@ export const EditMoviePage = () => {
     const [stills, setStills] = useState<Media[]>([]);
     const [trailers, setTrailers] = useState<Media[]>([]);
     const [banner, setBanner] = useState<Media | null>(null);
+    const [genreOptions, setGenreOptions] = useState<Genre[]>([]);
+
 
     // UI states
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [stillInput, setStillInput] = useState('');
     const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
     const [loadingMovie, setLoadingMovie] = useState(false);
-    const [genreOptions, setGenreOptions] = useState<string[]>([]);
 
     // 1. Load Halls List
     useEffect(() => {
@@ -75,13 +78,17 @@ export const EditMoviePage = () => {
             try {
                 const allGenres = await getGenres();
                 const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
-                const names = genreList
-                    .map((g: any) => g?.name ?? g)
-                    .filter((g: any) => typeof g === 'string' && g.trim().length > 0);
-                setGenreOptions(names);
+                const formattedGenres = genreList
+                    .map((g: any) => ({
+                        id: g?.id || '',
+                        name: g?.name || g
+                    }))
+                    .filter((g: any) => g.name.trim().length > 0);
+                setGenreOptions(formattedGenres);
             } catch (err) {
                 console.error('Failed to fetch genres:', err);
             }
+
         };
 
         fetchGenres();
@@ -105,8 +112,8 @@ export const EditMoviePage = () => {
 
             setSessions(prev => prev.map(s => {
                 if (s.id === sessionId) {
-                    const newPrices = {...s.seatPrices};
-                    const newEnabled = {...s.enabledTypes};
+                    const newPrices = { ...s.seatPrices };
+                    const newEnabled = { ...s.enabledTypes };
 
                     hallData.availableSeatTypes?.forEach((type: any) => {
                         const id = type.seatTypeId?.id ?? type.seatTypeId;
@@ -114,7 +121,7 @@ export const EditMoviePage = () => {
                         if (newEnabled[id] === undefined) newEnabled[id] = true;
                     });
 
-                    return {...s, seatPrices: newPrices, enabledTypes: newEnabled};
+                    return { ...s, seatPrices: newPrices, enabledTypes: newEnabled };
                 }
                 return s;
             }));
@@ -138,7 +145,10 @@ export const EditMoviePage = () => {
                     ?.filter((p: any) => p.personRole === 2)
                     .map((p: any) => p.personName) || [];
 
-                const genresArray = movieData.genres?.map((g: any) => typeof g === 'object' ? g.name : g) || [];
+                const genresArray: Genre[] = movieData.genres?.map((g: any) => ({
+                    id: g.id ?? '',
+                    name: g.name ?? g
+                })) || [];
 
                 const newFormData = {
                     movieName: movieData.title,
@@ -212,31 +222,32 @@ export const EditMoviePage = () => {
             await updateMoviePartial(safeMovieId, payload);
 
             // Handle Genres Changes
-            const allGenres = await getGenres();
-            const genreList = Array.isArray(allGenres) ? allGenres : allGenres.genres || [];
-            
-            const removedGenres = originalFormData.genres.filter(g => !formData.genres.includes(g));
-            const addedGenres = formData.genres.filter(g => !originalFormData.genres.includes(g));
+            const currentGenreIds = formData.genres.map(g => g.id);
+            const originalGenreIds = originalFormData.genres.map(g => g.id);
 
-            for (const genreName of removedGenres) {
-                const genre = genreList.find((g: any) => g.name === genreName);
-                if (genre) {
+            const removedGenres = originalFormData.genres.filter(g => !currentGenreIds.includes(g.id));
+            const addedGenres = formData.genres.filter(g => !originalGenreIds.includes(g.id));
+
+            for (const genre of removedGenres) {
+                if (genre.id) {
                     try {
                         await removeGenreFromMovie(safeMovieId, genre.id);
+                        console.log(`Successfully removed genre ID: ${genre.id}`);
                     } catch (err) {
-                        console.error(`Failed to remove genre ${genreName}:`, err);
+                        console.error(`Failed to remove genre ${genre.name} (ID: ${genre.id}):`, err);
                     }
                 }
             }
 
-            for (const genreName of addedGenres) {
-                const genre = genreList.find((g: any) => g.name === genreName);
-                if (genre) {
+            for (const genre of addedGenres) {
+                if (genre.id) {
                     try {
                         await attachGenreToMovie(safeMovieId, genre.id);
                     } catch (err) {
-                        console.error(`Failed to attach genre ${genreName}:`, err);
+                        console.error(`Failed to attach genre ${genre.name}:`, err);
                     }
+                } else {
+                    console.warn(`Genre ${genre.name} has no ID and cannot be attached.`);
                 }
             }
 
@@ -292,8 +303,11 @@ export const EditMoviePage = () => {
 
             // Update original data to match current state
             setOriginalFormData(formData);
-            alert("Movie info updated!");
-        } catch (err) { setError("Save failed"); }
+            showToast('success', "Movie information updated successfully!");
+        } catch (err) {
+            setError("Save failed");
+            showToast('error', "Failed to save movie information");
+        }
         finally { setSaving(false); }
     };
 
@@ -302,7 +316,7 @@ export const EditMoviePage = () => {
         if (!session) return;
 
         const payload = prepareSessionPayload(session, session.date, safeMovieId);
-        
+
         const prices = Object.keys(session.enabledTypes)
             .filter(tid => session.enabledTypes[tid])
             .map(tid => ({ seatTypeId: tid, price: Number(session.seatPrices[tid] || 0) }));
@@ -323,8 +337,11 @@ export const EditMoviePage = () => {
                     seatPrices
                 });
             }
-            alert("Session saved!");
-        } catch (err) { setError("Session save failed"); }
+            showToast('success', "Session updated successfully!");
+        } catch (err) { 
+            showToast('error', "Session save failed");
+            setError("Session save failed"); 
+        }
     };
 
     const handleDeleteSession = async (sessionId: string) => {
@@ -344,16 +361,6 @@ export const EditMoviePage = () => {
         }
     };
 
-    // Media Handlers
-    const handleAddStill = async () => {
-        if (!stillInput.trim()) return;
-        try {
-            await createAndAttachMedia(safeMovieId, { url: stillInput, type: MediaType.Image });
-            setStills(p => [...p, { id: Date.now().toString(), url: stillInput, type: MediaType.Image }]);
-            setStillInput('');
-        } catch (err) { setError("Add still failed"); }
-    };
-
 
     return (
         <div className={styles["edit-movie-page"]}>
@@ -361,9 +368,6 @@ export const EditMoviePage = () => {
                 <h2>Edit Movie</h2>
                 <button onClick={() => navigate('/admin/movies')} className={styles['back-btn']}>← Back</button>
             </div>
-
-            {error && <div className={styles["error-message"]}>{error}</div>}
-
             <div className={styles["edit-movie-form"]}>
                 <div className={styles["movie-details-section"]}>
                     <MovieAddForm

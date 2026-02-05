@@ -2,16 +2,16 @@ import React, { useState, ChangeEvent } from 'react';
 import { MovieFormData } from '../../types/CreateMovieRequest';
 import { MultiSelectField } from '../MultiSelectField/MultiSelectField';
 import './MovieForm.css';
+import { Genre } from '@/types/Genre';
 
 interface Props {
     formData: MovieFormData;
     setFormData: React.Dispatch<React.SetStateAction<MovieFormData>>;
-    genreOptions?: string[];
+    genreOptions?: Genre[];
     directorOptions?: string[];
     actorOptions?: string[];
 }
 
-const GENRES_LIST = ['Action', 'Sci-Fi', 'Drama', 'Comedy', 'Thriller', 'Horror'];
 const DIRECTORS_LIST = ['Christopher Nolan', 'James Cameron', 'Quentin Tarantino', 'Denis Villeneuve'];
 const ACTORS_LIST = ['Leonardo DiCaprio', 'Cillian Murphy', 'Tom Hardy', 'Anne Hathaway'];
 
@@ -108,9 +108,16 @@ export const MovieAddForm = ({
                     </div>
                     <MultiSelectField
                         label="Genres"
-                        options={genreOptions && genreOptions.length > 0 ? genreOptions : GENRES_LIST}
-                        selectedValues={formData.genres}
-                        onChange={(vals) => setFormData(p => ({ ...p, genres: vals }))}
+                        options={(genreOptions || []).map(g => g.name)}
+                        selectedValues={formData.genres.map(g => typeof g === 'string' ? g : g.name)}
+                        onChange={(selectedNames) => {
+                            const updatedGenres: Genre[] = selectedNames.map(name => {
+                                const found = (genreOptions || []).find(opt => opt.name === name);
+                                return found || { id: '', name: name };
+                            });
+
+                            setFormData(p => ({ ...p, genres: updatedGenres }));
+                        }}
                         placeholder="Select Genres"
                     />
                     <MultiSelectField

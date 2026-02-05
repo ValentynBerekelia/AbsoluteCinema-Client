@@ -9,6 +9,9 @@ import { getDatesInRange } from '@/utils/getDatesInRange';
 import { createSession, getHallById, getHalls } from '@/api';
 import { Hall, mapHallDetailsFromApi, mapHallsListFromApi, SeatType } from '@/types/hall';
 import { prepareSessionPayload } from '@/utils/prepareSessionPayload';
+import { Genre } from '@/types/Genre';
+import { minutesToTimeSpan } from '@/utils/dataTimeConverters';
+import { useToast } from '@/context/ToastContext/ToastContext';
 
 interface SessionFormData {
     id: string;
@@ -21,13 +24,15 @@ interface SessionFormData {
 }
 
 export const AddMoviePage = () => {
+    const { showToast } = useToast();
+
     const [halls, setHalls] = useState<Hall[]>([]);
     const [seatTypes, setSeatTypes] = useState<SeatType[]>([]);
     const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
     const navigate = useNavigate();
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [genreOptions, setGenreOptions] = useState<string[]>([]);
+    const [genreOptions, setGenreOptions] = useState<Genre[]>([]);
 
     const [formData, setFormData] = useState<MovieFormData>({
         movieName: 'Add Movie Title',
@@ -94,6 +99,7 @@ export const AddMoviePage = () => {
             } catch (err) {
                 console.error('Failed to fetch halls:', err);
                 setError('Failed to load halls');
+                showToast('error', 'Failed to load halls');
             }
         };
 
@@ -101,12 +107,17 @@ export const AddMoviePage = () => {
             try {
                 const allGenres = await getGenres();
                 const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
-                const names = genreList
-                    .map((g: any) => g?.name ?? g)
-                    .filter((g: any) => typeof g === 'string' && g.trim().length > 0);
-                setGenreOptions(names);
+                const formattedGenres = genreList
+                    .map((g: any) => ({
+                        id: g?.id ?? '',
+                        name: g?.name ?? g
+                    }))
+                    .filter((g: any) => g.name.trim().length > 0);
+                setGenreOptions(formattedGenres);
             } catch (err) {
                 console.error('Failed to fetch genres:', err);
+                showToast('error', 'Failed to fetch genres');
+
             }
         };
 
@@ -140,6 +151,7 @@ export const AddMoviePage = () => {
 
         } catch (err) {
             console.error('Failed to load hall details:', err);
+            showToast('error', 'Failed to load hall details');
         } finally {
             setLoadingHalls(prev => ({ ...prev, [hallId]: false }));
         }
@@ -166,11 +178,11 @@ export const AddMoviePage = () => {
                 description: formData.description,
                 rate: Number(formData.rate),
                 ageLimit: Number(formData.ageLimit),
-                duration: formData.duration,
+                duration: minutesToTimeSpan(Number(formData.duration)),
                 country: formData.country,
                 studio: formData.studio,
                 language: formData.language,
-                genres: formData.genres
+                genres: []
             };
 
             const movieResult = await createMovie(moviePayload as any);
@@ -180,7 +192,7 @@ export const AddMoviePage = () => {
             if (formData.genres && formData.genres.length > 0) {
                 const allGenres = await getGenres();
                 const genreList = Array.isArray(allGenres) ? allGenres : allGenres.genres || [];
-                
+
                 for (const genreName of formData.genres) {
                     const genre = genreList.find((g: any) => g.name === genreName);
                     if (genre) {
@@ -236,6 +248,7 @@ export const AddMoviePage = () => {
             navigate('/admin/movies');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to create movie');
+            showToast('error', err.response?.data?.message || 'Failed to create movie');
         } finally {
             setSaving(false);
         }

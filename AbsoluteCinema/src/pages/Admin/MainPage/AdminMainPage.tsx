@@ -2,12 +2,15 @@ import { AdminMovieCard } from "../../../components/AdminMovieCard/AdminMovieCar
 import { ADMIN_MOVIES_DATA } from "../../../data/adminMovies";
 import { useEffect, useState } from "react";
 import { MoviesQueryParameters, SortOrder } from "@/types/MoviesQueryParameters";
-import { getMovies } from "@/api";
+import { deleteMovie, getMovies } from "@/api";
 import { mapMoviesForAdmin } from "@/types/Movie";
 import { useSearchParams } from "react-router-dom";
 import { AdminSearch } from "../../../components/layout/AdminSearch/AdminSearch";
+import { useToast } from "@/context/ToastContext/ToastContext";
 
 export const AdminMainPage = () => {
+        const { showToast } = useToast();
+
     const [movies, setMovies] = useState(ADMIN_MOVIES_DATA);
     const [loading, setLoading] = useState(true);
 
@@ -60,6 +63,18 @@ export const AdminMainPage = () => {
         return () => clearTimeout(timeoutId);
     }, [queryParams]);
 
+    const handleDelete = async (id: string) => {
+        if (!window.confirm("Delete this movie and all his sessions?")) return;
+
+        try {
+            await deleteMovie(id);
+            setMovies(prev => prev.filter(m => m.id !== id));
+            showToast('success', 'Movie deleted successfully');
+        } catch (err) {
+            showToast('error', 'Failed to delete movie');
+        }
+    };
+
     return (
         <>
             <AdminSearch />
@@ -75,7 +90,7 @@ export const AdminMainPage = () => {
             >
                 {movies.length > 0 ? (
                     movies.map(movie => (
-                        <AdminMovieCard key={movie.id} movie={movie} />
+                        <AdminMovieCard key={movie.id} movie={movie} onDelete={handleDelete}/>
                     ))
                 ) : (
                     <div style={{

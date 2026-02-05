@@ -1,3 +1,4 @@
+import { Genre } from "./Genre";
 
 export interface CreateMovieRequest {
     movieName: string;
@@ -8,7 +9,7 @@ export interface CreateMovieRequest {
     country: string;
     studio: string;
     language: string;
-    genres: string[];
+    genres: Genre[];
 }
 
 export interface MovieFormData extends CreateMovieRequest {
