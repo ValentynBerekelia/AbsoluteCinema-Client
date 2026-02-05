@@ -2,7 +2,6 @@ import React, { useState, ChangeEvent } from 'react';
 import { MovieFormData } from '../../types/CreateMovieRequest';
 import { MultiSelectField } from '../MultiSelectField/MultiSelectField';
 import './MovieForm.css';
-import { minutesToTimeSpan } from '../../utils/durationConverter';
 
 interface Props {
     formData: MovieFormData;
@@ -33,10 +32,15 @@ export const MovieAddForm = ({
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
-            setPosterPreview(URL.createObjectURL(file));
+            const objectUrl = URL.createObjectURL(file);
+            setPosterPreview(objectUrl);
             setFormData(prev => ({ ...prev, poster: file }));
+
+            return () => URL.revokeObjectURL(objectUrl);
         }
     };
+
+    const currentImage = posterPreview ?? formData.posterUrl;
 
     return (
         <div className="movie-add-container">
@@ -52,8 +56,8 @@ export const MovieAddForm = ({
             <div className="movie-add-body">
                 <div className="poster-upload-section">
                     <div className="poster-skeleton">
-                        {posterPreview ? (
-                            <img src={posterPreview} alt="Preview" className="poster-img-preview" />
+                        {currentImage ? (
+                            <img src={currentImage} alt="Preview" className="poster-img-preview" />
                         ) : (
                             <div className="skeleton-x">X</div>
                         )}

@@ -73,6 +73,7 @@
     margin-bottom: 16px;
     display: flex;
     flex-direction: column;
+    gap: 8px;
     align-items: center;
     width: 100%;
     overflow-x: auto;
@@ -184,38 +185,59 @@
 
 .seat-types {
     display: flex;
+    justify-content: center;
     flex-wrap: wrap;
     gap: 8px;
     width: 100%;
 }
 
 .seat-type-chip {
-    padding: 6px 12px;
-    background: var(--accent-gray);
+    padding: 8px 16px;
     border-radius: 999px;
-    font-size: 12px;
-    font-weight: 600;
-    border: 1px solid transparent;
+    font-size: 13px;
+    font-weight: 700;
+    border: 2px solid transparent;
     cursor: pointer;
+    transition: all 0.2s ease;
+    color: #4a4a4a;
+    opacity: 0.5;
 }
 
 .seat-type-chip-active {
-    background: #212529;
-    color: white;
+    opacity: 1 !important;
+    color: white !important;
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-1px);
 }
 
 .seat-type-actions {
-    margin-top: 12px;
+    margin-top: 15px;
     display: flex;
+    flex-direction: column;
     gap: 12px;
     align-items: center;
     width: 100%;
 }
 
+.seat-standard { 
+    background-color: #adb5bd !important; 
+}
+.seat-vip { 
+    background-color: #f59f00 !important; 
+}
+.seat-comfort { 
+    background-color: #339af0 !important; 
+}
+
+.seat-type-chip:hover:not(.seat-type-chip-active) {
+    opacity: 0.8;
+}
+
 .danger-btn-active {
-    background: var(--danger);
-    color: white;
-    border-color: var(--danger);
+    background: var(--danger) !important;
+    color: white !important;
+    border-color: var(--danger) !important;
+    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
 }
 
 .row-add-btn {

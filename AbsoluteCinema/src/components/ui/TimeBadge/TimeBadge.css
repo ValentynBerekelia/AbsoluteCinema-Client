@@ -1,31 +1,57 @@
-.time-badge {
-    width: 74px;
-    height: 40px;
-    background-color: #dedede;
-    border: 1px solid #aaaaaa;
-    font-size: 24px;
-    font-weight: 400;
+.session-badge {
+    display: inline-flex;
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    
+    padding: 4px 10px;
+    background: #ffffff;
+    border: 1px solid #e0e0e0;
+    border-radius: 6px;
+    cursor: pointer;
+    transition: all 0.2s ease-in-out;
+    
+    height: 32px; 
+    min-width: 75px;
+}
+
+.badge-time {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1a1a1a;
+    line-height: 1;
+}
+
+.badge-format {
+    font-size: 9px;
+    font-weight: 900;
+    padding: 1px 4px;
+    border-radius: 3px;
+    background: #e50914;
+    color: #fff;
     line-height: 1;
     display: flex;
-    justify-content: center;
     align-items: center;
-    cursor: pointer;
-    transition: 0.3s;
+    height: 14px;
 }
 
-.time-badge:hover:not(:disabled) {
-    background-color: #ffffff;
-    transform: scale(1.05);
+.session-badge:hover:not(:disabled) {
+    border-color: #e50914;
+    background: #fffafa;
+    transform: translateY(-1px);
+    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
 }
 
-.time-badge.past {
-    background-color: #e0e0e0;
-    color: #b0b0b0;
-    border-color: #cccccc;
-    cursor: not-allowed;
-    opacity: 0.7;
+.session-badge.is-past {
+    opacity: 0.5;
+    background: #f9f9f9;
+    border-color: #eee;
+    cursor: default;
+    filter: grayscale(1);
 }
 
-.time-badge:disabled {
+.session-badge.is-past:hover {
     transform: none;
+    box-shadow: none;
 }

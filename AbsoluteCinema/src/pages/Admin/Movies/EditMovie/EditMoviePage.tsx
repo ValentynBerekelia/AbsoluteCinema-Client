@@ -49,9 +49,7 @@ export const EditMoviePage = () => {
     // UI states
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
-    const [expandedSessionId, setExpandedSessionId] = useState<string | null>(null);
     const [stillInput, setStillInput] = useState('');
-    const [trailerInput, setTrailerInput] = useState('');
     const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
     const [loadingMovie, setLoadingMovie] = useState(false);
     const [genreOptions, setGenreOptions] = useState<string[]>([]);
@@ -104,12 +102,6 @@ export const EditMoviePage = () => {
                 seats: hallData.seats.map((s: any) => ({ ...s, seatTypeId: s.seatTypeId?.id || s.seatTypeId })),
                 availableSeatTypes
             } : h));
-
-            // Auto-enable all types for new hall selection
-            const defaultEnabled = availableSeatTypes.reduce((acc: any, t: any) => {
-                acc[t.id] = true;
-                return acc;
-            }, {});
 
             setSessions(prev => prev.map(s => {
                 if (s.id === sessionId) {

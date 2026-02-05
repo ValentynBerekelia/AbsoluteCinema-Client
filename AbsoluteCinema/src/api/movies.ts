@@ -73,13 +73,11 @@ export const getMovies = async (params?: MoviesQueryParameters) => {
 };
 
 export const getMovieById = async (id: string) => {
-  try {
-    const response = await axiosInstance.get(`/movies/${id}`);
-    return response.data?.movie ?? response.data;
-  } catch (error) {
-    const response = await axiosInstance.get(`/movie/${id}`);
-    return response.data?.movie ?? response.data;
-  }
+  const response = await axiosInstance.get(`/movie/${id}`);
+  
+  console.log("Full API Response:", response.data);
+  
+  return response.data;
 };
 
 export const getMovieFeatures = async () => {
