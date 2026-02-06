@@ -38,7 +38,7 @@ export const MovieAddForm = ({
             }
 
             if (name === 'rate') {
-                if (numValue > 10) finalValue = 10;
+                if (numValue > 9.9) finalValue = 9.9;
                 if (numValue < 0) finalValue = 0;
             }
 
@@ -98,7 +98,7 @@ export const MovieAddForm = ({
                                 type="number"
                                 step="0.1"
                                 min="0"
-                                max="10"
+                                max="9.9"
                                 value={formData.rate}
                                 onChange={handleInputChange}
                             />
