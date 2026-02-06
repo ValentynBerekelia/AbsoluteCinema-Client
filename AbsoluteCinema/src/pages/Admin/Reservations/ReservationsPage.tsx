@@ -6,7 +6,7 @@ import { createTicket, deleteTicket, getSessionTickets } from '@/api/tickets';
 import { mapHallDetailsFromApi, Seat, SeatType } from '@/types/hall';
 import { SortOrder } from '@/types/MoviesQueryParameters';
 import { getDynamicSeatColor } from '@/utils/colorGenerator';
-import './ReservationsPage.css';
+import styles from './ReservationsPage.module.css';
 
 interface SessionSummary {
     id: string;
@@ -40,11 +40,11 @@ const formatSessionDate = (dateTime: string) => {
 
 const normalizeTickets = (data: any): TicketInfo[] => {
     const ticketsArray = Array.isArray(data) ? data : data?.tickets ?? data?.data ?? [];
-    
+
     const normalized = ticketsArray.map((t: any) => {
         // The API returns deeply nested: seat.id.id
         let seatId = '';
-        
+
         // Try: seat.id.id (the actual nested structure)
         if (t.seat?.id?.id) {
             seatId = String(t.seat.id.id);
@@ -60,18 +60,18 @@ const normalizeTickets = (data: any): TicketInfo[] => {
         else if (t.seatId) {
             seatId = typeof t.seatId === 'string' ? t.seatId : String(t.seatId?.id ?? '');
         }
-        
+
         const ticket = {
             id: String(t.id?.id ?? t.id ?? t.ticketId ?? ''),
             sessionId: String(t.sessionId?.id ?? t.sessionId ?? t.session?.id?.id ?? ''),
             seatId: seatId,
             userId: String(t.userId?.id ?? t.userId ?? t.user?.id?.id ?? '')
         };
-        
+
         console.log(`✓ Ticket - SeatID: ${seatId}`);
         return ticket;
     }).filter((t: TicketInfo) => t.id && t.seatId);
-    
+
     console.log('✓ Tickets loaded:', normalized.length, '| SeatIDs:', normalized.map((t: TicketInfo) => t.seatId).join(', '));
     return normalized;
 };
@@ -288,25 +288,23 @@ export const ReservationsPage = () => {
     };
 
     return (
-        <div className="reservations-page">
-            <div className="sessions-panel">
-                <div className="panel-header">
+        <div className={styles["reservations-page"]}>
+            <div className={styles["sessions-panel"]}>
+                <div className={styles["panel-header"]}>
                     <h2>Sessions</h2>
-                    {loadingSessions && <span className="status-text">Loading...</span>}
+                    {loadingSessions && <span className={styles["status-text"]}>Loading...</span>}
                 </div>
 
-                {error && <div className="error-text">{error}</div>}
-
-                <div className="sessions-list">
+                <div className={styles["sessions-list"]}>
                     {sessions.map(session => (
                         <button
                             key={session.id}
-                            className={`session-item ${session.id === selectedSessionId ? 'active' : ''}`}
+                            className={`${styles['session-item']} ${session.id === selectedSessionId ? styles.active : ''}`}
                             onClick={() => setSelectedSessionId(session.id)}
                             type="button"
                         >
-                            <div className="session-title">{session.movieTitle || 'Unknown movie'}</div>
-                            <div className="session-meta">
+                            <div className={styles["session-title"]}>{session.movieTitle || 'Unknown movie'}</div>
+                            <div className={styles["session-meta"]}>
                                 <span>{session.hallName}</span>
                                 <span>{formatSessionDate(session.startDateTime)}</span>
                             </div>
@@ -315,15 +313,15 @@ export const ReservationsPage = () => {
                 </div>
             </div>
 
-            <div className="details-panel">
-                {!selectedSession && <div className="status-text">Select a session to view reservations</div>}
+            <div className={styles["details-panel"]}>
+                {!selectedSession && <div className={styles["status-text"]}>Select a session to view reservations</div>}
 
                 {selectedSession && (
                     <>
-                        <div className="details-header">
+                        <div className={styles["details-header"]}>
                             <div>
                                 <h2>{selectedSession.movieTitle}</h2>
-                                <div className="details-meta">
+                                <div className={styles["details-meta"]}>
                                     <span>{selectedSession.hallName}</span>
                                     <span>{formatSessionDate(selectedSession.startDateTime)}</span>
                                 </div>
@@ -331,16 +329,16 @@ export const ReservationsPage = () => {
                         </div>
 
                         {loadingDetails ? (
-                            <div className="status-text">Loading hall and reservations...</div>
+                            <div className={styles["status-text"]}>Loading hall and reservations...</div>
                         ) : (
-                            <div className="details-content">
-                                <div className="hall-wrapper">
-                                    <div className="screen-label">SCREEN</div>
-                                    <div className="hall-grid">
+                            <div className={styles["details-content"]}>
+                                <div className={styles["hall-wrapper"]}>
+                                    <div className={styles["screen-label"]}>SCREEN</div>
+                                    <div className={styles["hall-grid"]}>
                                         {groupedByRow.map(row => (
                                             <div key={`row-${row.rowNumber}`} className="seat-row">
-                                                <span className="row-label">{row.rowNumber}</span>
-                                                <div className="seat-row-grid">
+                                                <span className={styles["row-label"]}>{row.rowNumber}</span>
+                                                <div className={styles["seat-row-grid"]}>
                                                     {row.seats.map(seat => {
                                                         const isOccupied = occupiedSeatIds.includes(seat.seatId || '');
                                                         if (seat.row === 6 && seat.number === 9) {
@@ -353,8 +351,12 @@ export const ReservationsPage = () => {
                                                         return (
                                                             <button
                                                                 key={seat.seatId}
-                                                                className={`seat-cell ${isOccupied ? 'occupied' : ''} ${isSelected ? 'selected' : ''}`}
-                                                                style={{ 
+                                                                className={`
+                                                                    ${styles['seat-cell']} 
+                                                                    ${isOccupied ? styles.occupied : ''} 
+                                                                    ${isSelected ? styles.selected : ''}
+                                                                `}
+                                                                style={{
                                                                     backgroundColor: isOccupied ? '#f0f0f0' : seatColor,
                                                                     opacity: isOccupied ? 0.5 : 1
                                                                 }}
@@ -367,37 +369,37 @@ export const ReservationsPage = () => {
                                                         );
                                                     })}
                                                 </div>
-                                                <span className="row-label">{row.rowNumber}</span>
+                                                <span className={styles["row-label"]}>{row.rowNumber}</span>
                                             </div>
                                         ))}
                                     </div>
                                 </div>
 
-                                <div className="reservation-panel">
+                                <div className={styles["reservation-panel"]}>
                                     {!selectedSeatId && (
-                                        <div className="status-text">Select a seat to view reservation details</div>
+                                        <div className={styles["status-text"]}>Select a seat to view reservation details</div>
                                     )}
 
                                     {selectedSeatId && selectedSeat && (
-                                        <div className="reservation-details">
+                                        <div className={styles["reservation-details"]}>
                                             <h3>Seat {selectedSeat.row}-{selectedSeat.number}</h3>
 
                                             {selectedTicket ? (
                                                 <>
-                                                    <div className="detail-row">
+                                                    <div className={styles["detail-row"]}>
                                                         <span>Ticket ID:</span>
                                                         <span>{selectedTicket.id}</span>
                                                     </div>
-                                                    <div className="detail-row">
+                                                    <div className={styles["detail-row"]}>
                                                         <span>User ID:</span>
                                                         <span>{selectedTicket.userId || '—'}</span>
                                                     </div>
-                                                    <div className="detail-row">
+                                                    <div className={styles["detail-row"]}>
                                                         <span>Comment:</span>
                                                         <span>{reservationNotes[selectedSeatId] || '—'}</span>
                                                     </div>
                                                     <button
-                                                        className="action-btn danger"
+                                                        className={styles["action-btn danger"]}
                                                         onClick={handleCancelReservation}
                                                         disabled={actionLoading}
                                                         type="button"
@@ -407,7 +409,7 @@ export const ReservationsPage = () => {
                                                 </>
                                             ) : (
                                                 <>
-                                                    <div className="checkbox-group">
+                                                    <div className={styles["checkbox-group"]}>
                                                         <input
                                                             type="checkbox"
                                                             id="admin-reservation"
@@ -419,9 +421,9 @@ export const ReservationsPage = () => {
                                                                 }
                                                             }}
                                                         />
-                                                        <label htmlFor="admin-reservation">Admin Reservation</label>
+                                                        <label htmlFor={styles["admin-reservation"]}>Admin Reservation</label>
                                                     </div>
-                                                    <div className="input-group">
+                                                    <div className={styles["input-group"]}>
                                                         <label>User ID</label>
                                                         <input
                                                             type="text"
@@ -431,7 +433,7 @@ export const ReservationsPage = () => {
                                                             disabled={isAdminReservation}
                                                         />
                                                     </div>
-                                                    <div className="input-group">
+                                                    <div className={styles["input-group"]}>
                                                         <label>Comment</label>
                                                         <textarea
                                                             value={commentInput}
@@ -440,7 +442,7 @@ export const ReservationsPage = () => {
                                                         />
                                                     </div>
                                                     <button
-                                                        className="action-btn"
+                                                        className={styles["action-btn"]}
                                                         onClick={handleCreateReservation}
                                                         disabled={actionLoading || (!isAdminReservation && !userIdInput)}
                                                         type="button"
