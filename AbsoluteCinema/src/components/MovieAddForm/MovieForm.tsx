@@ -25,8 +25,29 @@ export const MovieAddForm = ({
     const [posterPreview, setPosterPreview] = useState<string | null>(null);
 
     const handleInputChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-        const { name, value } = e.target;
-        setFormData(prev => ({ ...prev, [name]: value }));
+        const { name, value, type } = e.target;
+
+        let finalValue: any = value;
+
+        if (type === 'number') {
+            const numValue = parseFloat(value);
+
+            if (value === '') {
+                setFormData(prev => ({ ...prev, [name]: '' }));
+                return;
+            }
+
+            if (name === 'rate') {
+                if (numValue > 10) finalValue = 10;
+                if (numValue < 0) finalValue = 0;
+            }
+
+            if ((name === 'ageLimit' || name === 'duration') && numValue < 0) {
+                finalValue = 0;
+            }
+        }
+
+        setFormData(prev => ({ ...prev, [name]: finalValue }));
     };
 
     const handleFileChange = (e: ChangeEvent<HTMLInputElement>) => {
@@ -71,39 +92,73 @@ export const MovieAddForm = ({
                 <div className="form-fields-section">
                     <div className="form-group-multi">
                         <div className="form-group">
-                            <label>Rate</label>
-                            <input name="rate" type="number" step="0.1" value={formData.rate} onChange={handleInputChange} />
+                            <label>Rate (0-10)</label>
+                            <input
+                                name="rate"
+                                type="number"
+                                step="0.1"
+                                min="0"
+                                max="10"
+                                value={formData.rate}
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="form-group">
                             <label>Age limit</label>
-                            <input name="ageLimit" type="number" value={formData.ageLimit} onChange={handleInputChange} />
+                            <input
+                                name="ageLimit"
+                                type="number"
+                                min="0"
+                                value={formData.ageLimit}
+                                onChange={handleInputChange}
+                            />
                         </div>
                     </div>
 
                     <div className="form-group-multi">
                         <div className="form-group">
-                            <label>Duration</label>
+                            <label>Duration (min)</label>
                             <input
                                 type="number"
                                 placeholder="Minutes"
                                 name="duration"
+                                min="1"
                                 value={formData.duration}
                                 onChange={handleInputChange}
                             />
                         </div>
                         <div className="form-group">
                             <label>Language</label>
-                            <input name="language" type="text" value={formData.language} onChange={handleInputChange} />
+                            <input
+                                name="language"
+                                type="text"
+                                maxLength={50}
+                                value={formData.language}
+                                onChange={handleInputChange}
+                            />
                         </div>
                     </div>
+
                     <div className="form-group-multi">
                         <div className="form-group">
                             <label>Country</label>
-                            <input name="country" type="text" value={formData.country} onChange={handleInputChange} />
+                            <input
+                                name="country"
+                                type="text"
+                                maxLength={100}
+                                value={formData.country}
+                                onChange={handleInputChange}
+                            />
                         </div>
                         <div className="form-group">
                             <label>Studio</label>
-                            <input name="studio" type="text" value={formData.studio} onChange={handleInputChange} />
+                            <input
+                                name="studio"
+                                type="text"
+                                maxLength={200}
+                                value={formData.studio}
+                                onChange={handleInputChange}
+                            />
                         </div>
                     </div>
                     <MultiSelectField

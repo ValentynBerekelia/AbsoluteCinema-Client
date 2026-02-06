@@ -123,3 +123,25 @@
     height: 120px;
     resize: vertical;
 }
+
+.form-group input:not(:placeholder-shown):invalid,
+.form-group textarea:not(:placeholder-shown):invalid {
+    border-color: #e50914 !important;
+    background-color: #fff0f0;
+    outline: none;
+    box-shadow: 0 0 5px rgba(229, 9, 20, 0.3);
+}
+
+.form-group input:out-of-range {
+    border-color: #e50914;
+    background-color: #fff0f0;
+}
+
+.form-group input:invalid:focus {
+    box-shadow: 0 0 8px rgba(229, 9, 20, 0.5);
+}
+
+.form-group input, 
+.form-group textarea {
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
