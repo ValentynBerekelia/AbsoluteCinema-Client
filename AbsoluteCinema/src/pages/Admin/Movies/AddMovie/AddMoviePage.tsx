@@ -193,13 +193,15 @@ export const AddMoviePage = () => {
                 const allGenres = await getGenres();
                 const genreList = Array.isArray(allGenres) ? allGenres : allGenres.genres || [];
 
-                for (const genreName of formData.genres) {
-                    const genre = genreList.find((g: any) => g.name === genreName);
-                    if (genre) {
+                for (const gRef of formData.genres) {
+                    const foundGenre = genreList.find((g: any) => g.name === gRef.name);
+
+                    if (foundGenre) {
                         try {
-                            await attachGenreToMovie(newMovieId, genre.id);
+                            await attachGenreToMovie(newMovieId, foundGenre.id);
                         } catch (err) {
-                            console.error(`Failed to attach genre ${genreName}:`, err);
+                            console.error(`Failed to attach genre ${foundGenre.name}:`, err);
+                            showToast('error', `Failed to attach genre ${foundGenre.name}`);
                         }
                     }
                 }
@@ -248,7 +250,7 @@ export const AddMoviePage = () => {
             navigate('/admin/movies');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to create movie');
-            showToast('error', err.response?.data?.message || 'Failed to create movie');
+            showToast('error', err.message || 'Failed to create movie');
         } finally {
             setSaving(false);
         }

@@ -2,6 +2,8 @@ import { useNavigate } from 'react-router-dom';
 import { MovieAdminCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import './AdminMovieCard.css';
+import { useMemo } from 'react';
+import { getHallById } from '@/api';
 
 interface AdminMovieCardProps {
     movie: MovieAdminCardInfo;
@@ -26,23 +28,20 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
-        if (window.confirm(`Видалити фільм "${movie.title}"?`)) {
+        if (window.confirm(`Delete film "${movie.title}"?`)) {
             onDelete(movie.id);
         }
     };
 
     return (
         <div className='admin-movie-container'>
-            <div className='admin-movie-header-row'>
-                <h2 className='admin-movie-title'>{movie.title}</h2>
-                <button 
-                    className='admin-delete-movie-btn' 
-                    onClick={handleDelete}
-                    title="Delete Movie"
-                >
-                    ✕
-                </button>
-            </div>
+            <button
+                className='admin-delete-movie-btn'
+                onClick={handleDelete}
+                title="Delete Movie"
+            >
+                ✕
+            </button>
 
             <div className='admin-movie-main-content'>
                 <div className='admin-left-column'>
@@ -50,34 +49,30 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                         <img src={movie.poster} alt={movie.title} className='admin-poster-img' />
                     </div>
 
-                    <div className='admin-status-block'>
-                        <div className='status-item'>
-                            <span>Ticket availability:</span>
-                            <div className='status-row'>
-                                <span className='status-box'>Add Text</span> / <span className='status-box'>Add Text</span>
-                            </div>
+                    <div className='admin-stats-badge'>
+                        <span className='stats-label'>Total Sales</span>
+                        <div className='stats-values'>
+                            <span className='stats-sold'>42</span>
+                            <span className='stats-divider'>/</span>
+                            <span className='stats-total'>120</span>
                         </div>
-                        <div className='status-item'>
-                            <span>Reserved tickets:</span>
-                            <div className='status-row'>
-                                <span className='status-box'>Add Text</span> / <span className='status-box'>Add Text</span>
-                            </div>
+                        <div className='stats-progress-bar'>
+                            <div className='stats-progress-fill' style={{ width: '35%' }}></div>
                         </div>
                     </div>
                 </div>
 
                 <div className='admin-right-column'>
-                    <div className='admin-details-section'>
-                        <h3>Description</h3>
-                        <div className='details-grid'>
-                            <div className='detail-entry'>Duration: <span className='detail-box'>{movie.duration}</span></div>
-                            <div className='detail-entry'>Format: <span className='detail-box'>{movie.format}</span></div>
-                            <div className='detail-entry'>Age limit: <span className='detail-box'>{movie.ageLimit}+</span></div>
+                    <div className='admin-movie-header-info'>
+                        <h2 className='admin-movie-title'>{movie.title}</h2>
+                        <div className='admin-quick-meta'>
+                            <span className='meta-tag duration'>{movie.duration}</span>
+                            <span className='meta-tag age'>{movie.ageLimit}+</span>
                         </div>
                     </div>
 
                     <div className='admin-sessions-section'>
-                        <h3>Sessions</h3>
+                        <h3>Upcoming Sessions</h3>
                         <div className='sessions-by-date-group'>
                             {sortedDates.length > 0 ? (
                                 sortedDates.map((date) => (
@@ -104,7 +99,7 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                         className='admin-action-btn'
                         onClick={() => navigate(`/admin/movies/edit/${movie.id}`)}
                     >
-                        Edit details
+                        Edit Details
                     </button>
                 </div>
             </div>

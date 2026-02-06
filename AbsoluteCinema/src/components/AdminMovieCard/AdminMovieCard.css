@@ -1,29 +1,36 @@
 .admin-movie-container {
-    margin-bottom: 20px;
+    position: relative;
+    margin-bottom: 25px;
     width: 100%;
-    background-color: #f1f1f1;
-    border: 2px solid #9a9a9a; 
-    border-radius: 8px;
+    background-color: #ffffff;
+    border: 1px solid #e0e0e0; 
+    border-radius: 12px;
     color: #333;
     font-size: 16px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    overflow: hidden;
+    transition: transform 0.2s ease;
 }
 
 .admin-movie-header-row {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    margin-top: 10px;
-    margin-left: 15px;
-    padding-right: 15px;
+    padding: 15px 20px 10px 20px;
 }
 
 .admin-movie-title {
-    font-size: 32px;
-    font-weight: 700;
+    font-size: 28px;
+    font-weight: 800;
     margin: 0;
+    letter-spacing: -0.5px;
+    color: #1a1a1a;
 }
 
 .admin-delete-movie-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
     width: 32px;
     height: 32px;
     border-radius: 50%;
@@ -38,7 +45,8 @@
     justify-content: center;
     line-height: 1;
     transition: all 0.2s ease;
-    opacity: 0.6;
+    opacity: 0.4;
+    z-index: 10;
 }
 
 .admin-movie-container:hover .admin-delete-movie-btn {
@@ -50,49 +58,70 @@
     color: white;
     border-color: #d32f2f;
     transform: scale(1.1) rotate(90deg);
-    box-shadow: 0 2px 8px rgba(211, 47, 47, 0.3);
-}
-
-.admin-halls-group {
-    display: flex;
-    gap: 8px;
-    justify-content: center;
-    align-items: center;
-}
-
-.admin-hall-badge {
-    background-color: #e8e8e8;
-    padding: 4px 8px;
-    border-radius: 12px;
-    margin-left: 10px;
-    font-size: 12px;
 }
 
 .admin-movie-main-content {
     display: flex;
-    gap: 20px;
-    padding: 15px;
+    gap: 25px;
+    padding: 0 20px 20px 20px;
 }
 
 .admin-left-column {
-    flex: 0 0 240px;
+    flex: 0 0 220px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
 }
 
 .admin-poster-img {
     width: 100%;
-    height: auto; 
-    border: 1px solid #777;
-    margin-bottom: 10px;
+    height: 310px;
+    object-fit: cover;
+    border-radius: 8px;
+    border: 1px solid #eee;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
-.status-box, .detail-box {
-    background-color: #e0e0e0;
-    border: 1px solid #bbb;
-    padding: 2px 6px;
-    min-width: 50px;
-    display: inline-block;
-    text-align: center;
-    font-size: 12px;
+.admin-stats-badge {
+    background: #f8f9fa;
+    padding: 12px;
+    border-radius: 10px;
+    border: 1px solid #eee;
+}
+
+.stats-label {
+    display: block;
+    font-size: 11px;
+    text-transform: uppercase;
+    color: #888;
+    margin-bottom: 6px;
+    font-weight: 700;
+}
+
+.stats-values {
+    font-size: 18px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    gap: 5px;
+}
+
+.stats-sold { color: #e50914; }
+.stats-divider { color: #ccc; }
+.stats-total { color: #333; }
+
+.stats-progress-bar {
+    height: 5px;
+    background: #e0e0e0;
+    border-radius: 3px;
+    margin-top: 10px;
+    overflow: hidden;
+}
+
+.stats-progress-fill {
+    height: 100%;
+    background: #e50914;
+    border-radius: 3px;
 }
 
 .admin-right-column {
@@ -101,36 +130,58 @@
     flex-direction: column;
 }
 
-.details-grid {
-    margin-top: 8px;
-    margin-bottom: 8px;
+.admin-movie-header-info {
+    margin-bottom: 15px;
 }
 
-.detail-entry {
-    margin-bottom: 6px;
-    font-size: 16px;
+.admin-quick-meta {
+    display: flex;
+    gap: 10px;
+    margin-top: 8px;
+}
+
+.meta-tag {
+    font-size: 12px;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-weight: 700;
+    text-transform: uppercase;
+}
+
+.meta-tag.duration { background: #e3f2fd; color: #1976d2; }
+.meta-tag.age { background: #fff3e0; color: #f57c00; }
+
+.admin-sessions-section h3 {
+    font-size: 14px;
+    text-transform: uppercase;
+    color: #999;
+    margin: 0 0 12px 0;
+    letter-spacing: 1px;
 }
 
 .sessions-by-date-group {
     display: flex;
     flex-direction: column;
-    gap: 10px;
-    max-height: 180px; 
+    gap: 15px;
+    max-height: 220px; 
     overflow-y: auto;
-    padding-right: 5px;
-    margin-top: 5px;
+    padding-right: 10px;
 }
 
 .date-block {
     display: flex;
     flex-direction: column;
-    gap: 4px;
+    gap: 8px;
 }
 
 .session-date-header {
     font-size: 13px;
-    font-weight: 700;
-    color: #555;
+    font-weight: 800;
+    color: #444;
+    background: #f0f0f0;
+    padding: 2px 8px;
+    border-radius: 4px;
+    width: fit-content;
 }
 
 .sessions-row {
@@ -142,34 +193,34 @@
 .admin-action-btn {
     margin-top: auto;
     width: 100%;
-    padding: 12px;
-    background-color: #dedede;
-    border: 1px solid #aaaaaa;
-    font-size: 24px;
+    padding: 14px;
+    background-color: #1a1a1a;
+    color: white;
+    border: none;
+    font-size: 16px;
     font-weight: 700;
     cursor: pointer;
-    transition: 0.2s;
-    border-radius: 4px;
+    transition: all 0.2s;
+    border-radius: 8px;
+    text-transform: uppercase;
+    letter-spacing: 1px;
 }
 
 .admin-action-btn:hover {
-    background-color: #fff;
+    background-color: #e50914;
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.2);
 }
 
 .sessions-by-date-group::-webkit-scrollbar {
-    width: 4px;
+    width: 5px;
 }
-
 .sessions-by-date-group::-webkit-scrollbar-track {
-    background: #f1f1f1;
-    border-radius: 4px;
+    background: #f9f9f9;
 }
-
 .sessions-by-date-group::-webkit-scrollbar-thumb {
-    background: #bbb;
-    border-radius: 4px;
+    background: #ddd;
+    border-radius: 10px;
 }
-
 .sessions-by-date-group::-webkit-scrollbar-thumb:hover {
-    background: #888;
+    background: #bbb;
 }
