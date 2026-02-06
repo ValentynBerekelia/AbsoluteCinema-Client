@@ -128,11 +128,20 @@ export const mapMovieFromApi = (data: any): any[] => {
             genre: (movie.genres || []).map((g: any) => g?.name ?? g).filter(Boolean).join(', '),
             duration: parseDuration(movie.duration),
             ageLimit: movie.ageLimit,
-            sessions: movie.sessions?.map((s: any) => ({
-                id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''),
-                ...convertIsoToDateTime(s.startDateTime),
-                movieType: s.format
-            })) ?? []
+            sessions: movie.sessions?.map((s: any) => {
+                console.log('Raw session from API:', s);
+                const hallId = s.hall?.id?.id || s.hall?.id || s.hallId?.id || s.hallId;
+                const hallName = s.hall?.name || s.hallName;
+                console.log('Extracted hallId:', hallId, 'hallName:', hallName);
+                
+                return {
+                    id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''),
+                    ...convertIsoToDateTime(s.startDateTime),
+                    movieType: s.format,
+                    hallId: hallId,
+                    hallName: hallName
+                };
+            }) ?? []
         };
     });
 };
@@ -171,12 +180,14 @@ export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
             id: String(id),
             title: m.name,
             image: m.bannerUrl,
-            sessions: m.todaySessions?.map((s: any) => {
+            sessions: (m.todaySessions || []).map((s: any) => {
                 const dateTime = convertIsoToDateTime(s.startDateTime);
-                const date = dateTime.date;
-                const time = dateTime.time;
-                return { id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''), date, time };
-            }) ?? []
+                return { 
+                    id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''), 
+                    date: dateTime.date, 
+                    time: dateTime.time 
+                };
+            })
         };
     });
 };

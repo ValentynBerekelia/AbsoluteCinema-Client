@@ -12,6 +12,9 @@ import { LoginPage } from './pages/Auth/Login/LoginPage'
 import { RegisterPage } from './pages/Auth/Register/RegisterPage'
 import { BookingPage } from './pages/Booking/BookingPage'
 import { MovieSessionsPage } from './pages/MovieSessions/MovieSessionsPage'
+import { ReservationsPage } from './pages/Admin/Reservations/ReservationsPage'
+import { AboutUs } from './pages/AboutUs/AboutUs'
+import { MoviesLibrary } from './pages/MoviesLibrary/MoviesLibrary'
 
 function App() {
 
@@ -22,6 +25,22 @@ function App() {
         element={
           <MainLayout>
             <Home />
+          </MainLayout>
+        }
+      />
+      <Route
+        path='/about'
+        element={
+          <MainLayout>
+            <AboutUs />
+          </MainLayout>
+        }
+      />
+      <Route
+        path='/movies'
+        element={
+          <MainLayout>
+            <MoviesLibrary />
           </MainLayout>
         }
       />
@@ -46,6 +65,14 @@ function App() {
         element={
           <AdminLayout>
             <HallsPage />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path='/admin/reservations'
+        element={
+          <AdminLayout>
+            <ReservationsPage />
           </AdminLayout>
         }
       />

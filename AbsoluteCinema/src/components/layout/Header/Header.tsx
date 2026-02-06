@@ -1,5 +1,4 @@
 import { useState } from 'react';
-import { HashLink } from 'react-router-hash-link';
 import { Link, useNavigate } from 'react-router-dom';
 import './Header.css';
 
@@ -31,10 +30,9 @@ export const Header = () => {
                 </Link>
                 <nav className={`nav ${isMenuOpen ? 'active' : ''}`}>
                     <ul className='nav-list'>
-                        <li><a href="#schedule">Schedule</a></li>
-                        <li><HashLink smooth to="/#coming-soon">Coming Soon</HashLink></li>
-                        <li><HashLink smooth to="/#promotion">Promotion</HashLink></li>
-                        <li><HashLink smooth to="/#about-us">About us</HashLink></li>
+                        <li><Link to="/" onClick={closeMenu}>Home</Link></li>
+                        <li><Link to="/movies" onClick={closeMenu}>Movies</Link></li>
+                        <li><Link to="/about" onClick={closeMenu}>About Us</Link></li>
                         <li className="mobile-only auth-buttons-mobile">
                             <button className="register-btn mobile" onClick={handleRegister}>Sign Up</button>
                             <button className="login-btn mobile" onClick={handleLogin}>Log in</button>
