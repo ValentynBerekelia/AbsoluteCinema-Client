@@ -49,6 +49,35 @@
     margin: 0;
 }
 
+.header-actions {
+    display: flex;
+    gap: 12px;
+    align-items: center;
+}
+
+.delete-btn {
+    padding: 12px 20px;
+    background: #fff;
+    color: #d32f2f; /* Червоний колір для попередження */
+    border: 1px solid #ffcdd2;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: var(--transition);
+}
+
+.delete-btn:hover:not(:disabled) {
+    background: #f44336;
+    color: #fff;
+    border-color: #f44336;
+    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.2);
+}
+
+.delete-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .back-btn {
     padding: 12px 24px;
     background: var(--secondary-color);
