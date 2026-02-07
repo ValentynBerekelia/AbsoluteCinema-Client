@@ -5,7 +5,7 @@ import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { MovieFormData } from '../../../../types/CreateMovieRequest';
 import { HallGrid } from '@/components/HallGrid/HallGrid';
 import { TicketPriceManager } from '@/components/TicketPriceManager/TicketPriceManager';
-import { getMovieById, updateMoviePartial, createAndAttachMedia, deleteMedia, MediaType, attachPersonToMovie, removePersonFromMovie, attachGenreToMovie, removeGenreFromMovie, getGenres } from '@/api/movies';
+import { getMovieById, updateMoviePartial, createAndAttachMedia, deleteMedia, MediaType, removePersonFromMovie, attachGenreToMovie, removeGenreFromMovie, getGenres, createGenre, attachPersonToMovie, createAndAttachPersonToMovie, CreatePersonRequestPayload } from '@/api/movies';
 import { getMovieSessions, updateSessionPartial, createSession, deleteSession } from '@/api/sessions';
 import { getHalls, getHallById } from '@/api/halls';
 import { Hall, SeatType } from '@/types/hall';
@@ -16,6 +16,8 @@ import { minutesToSeconds, timeSpanToMinutes } from '@/utils/dataTimeConverters'
 import { prepareSessionPayload } from '@/utils/prepareSessionPayload';
 import { Genre } from '@/types/Genre';
 import { useToast } from '@/context/ToastContext/ToastContext';
+import { GenreForm } from '@/components/GenreForm/GenreForm';
+import { PersonForm, PersonRole } from '@/components/PersonForm/PersonForm';
 
 interface SessionFormData {
     id: string;
@@ -50,6 +52,12 @@ export const EditMoviePage = () => {
     const [banner, setBanner] = useState<Media | null>(null);
     const [genreOptions, setGenreOptions] = useState<Genre[]>([]);
 
+    // Modal states
+    const [showGenreForm, setShowGenreForm] = useState(false);
+    const [showDirectorForm, setShowDirectorForm] = useState(false);
+    const [showActorForm, setShowActorForm] = useState(false);
+    const [creatingGenre, setCreatingGenre] = useState(false);
+    const [creatingPerson, setCreatingPerson] = useState(false);
 
     // UI states
     const [saving, setSaving] = useState(false);
@@ -211,6 +219,73 @@ export const EditMoviePage = () => {
         if (field === 'hall' && value) loadHallDetails(value, id);
     };
 
+    // Handle genre creation
+    const handleCreateGenre = async (genreName: string) => {
+        setCreatingGenre(true);
+        try {
+            await createGenre(genreName);
+            // Refresh genres list
+            const allGenres = await getGenres();
+            const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
+            const formattedGenres = genreList
+                .map((g: any) => ({
+                    id: g?.id ?? '',
+                    name: g?.name ?? g
+                }))
+                .filter((g: any) => g.name.trim().length > 0);
+            setGenreOptions(formattedGenres);
+            
+            // Auto-select the new genre
+            setFormData(prev => ({
+                ...prev,
+                genres: [...prev.genres, { id: '', name: genreName }]
+            }));
+            
+            setShowGenreForm(false);
+            showToast('success', `Genre "${genreName}" created successfully!`);
+        } catch (err: any) {
+            showToast('error', `Failed to create genre: ${err.message || err.response?.data?.message}`);
+        } finally {
+            setCreatingGenre(false);
+        }
+    };
+
+    // Handle person creation (Director)
+    const handleCreateDirector = async (personData: CreatePersonRequestPayload) => {
+        setCreatingPerson(true);
+        try {
+            // For now, just add to local list since we need to attach with attach endpoint
+            setFormData(prev => ({
+                ...prev,
+                directors: [...prev.directors, personData.fullName]
+            }));
+            setShowDirectorForm(false);
+            showToast('success', `Director "${personData.fullName}" will be added!`);
+        } catch (err: any) {
+            showToast('error', `Failed to add director: ${err.message}`);
+        } finally {
+            setCreatingPerson(false);
+        }
+    };
+
+    // Handle person creation (Actor)
+    const handleCreateActor = async (personData: CreatePersonRequestPayload) => {
+        setCreatingPerson(true);
+        try {
+            // For now, just add to local list since we need to attach with attach endpoint
+            setFormData(prev => ({
+                ...prev,
+                starring: [...prev.starring, personData.fullName]
+            }));
+            setShowActorForm(false);
+            showToast('success', `Actor "${personData.fullName}" will be added!`);
+        } catch (err: any) {
+            showToast('error', `Failed to add actor: ${err.message}`);
+        } finally {
+            setCreatingPerson(false);
+        }
+    };
+
     const handleSaveMovieDetailsOnly = async () => {
         setSaving(true);
         try {
@@ -270,9 +345,16 @@ export const EditMoviePage = () => {
 
             for (const directorName of addedDirectors) {
                 try {
-                    await attachPersonToMovie(safeMovieId, directorName, 1); // 1 = Director
+                    // Create director with API and attach to movie
+                    const personData: CreatePersonRequestPayload = {
+                        fullName: directorName,
+                        bio: '',
+                        birthDate: new Date('1990-01-01').toISOString(),
+                        role: 1 // Director role
+                    };
+                    await createAndAttachPersonToMovie(safeMovieId, personData);
                 } catch (err) {
-                    console.error(`Failed to attach director ${directorName}:`, err);
+                    console.error(`Failed to create/attach director ${directorName}:`, err);
                 }
             }
 
@@ -295,9 +377,16 @@ export const EditMoviePage = () => {
 
             for (const actorName of addedActors) {
                 try {
-                    await attachPersonToMovie(safeMovieId, actorName, 2); // 2 = Actor
+                    // Create actor with API and attach to movie
+                    const personData: CreatePersonRequestPayload = {
+                        fullName: actorName,
+                        bio: '',
+                        birthDate: new Date('1990-01-01').toISOString(),
+                        role: 2 // Actor role
+                    };
+                    await createAndAttachPersonToMovie(safeMovieId, personData);
                 } catch (err) {
-                    console.error(`Failed to attach actor ${actorName}:`, err);
+                    console.error(`Failed to create/attach actor ${actorName}:`, err);
                 }
             }
 
@@ -374,6 +463,9 @@ export const EditMoviePage = () => {
                         formData={formData}
                         setFormData={setFormData}
                         genreOptions={genreOptions}
+                        onAddGenre={() => setShowGenreForm(true)}
+                        onAddDirector={() => setShowDirectorForm(true)}
+                        onAddActor={() => setShowActorForm(true)}
                     />
                     <div className={styles["details-save-actions"]}>
                         <button
@@ -479,6 +571,35 @@ export const EditMoviePage = () => {
                             )
                         }>+ Add Session</button>
                 </div>
+
+                {/* Genre Form Modal */}
+                {showGenreForm && (
+                    <GenreForm
+                        onSubmit={handleCreateGenre}
+                        onCancel={() => setShowGenreForm(false)}
+                        isLoading={creatingGenre}
+                    />
+                )}
+
+                {/* Director Form Modal */}
+                {showDirectorForm && (
+                    <PersonForm
+                        role={PersonRole.Director}
+                        onSubmit={handleCreateDirector}
+                        onCancel={() => setShowDirectorForm(false)}
+                        isLoading={creatingPerson}
+                    />
+                )}
+
+                {/* Actor Form Modal */}
+                {showActorForm && (
+                    <PersonForm
+                        role={PersonRole.Actor}
+                        onSubmit={handleCreateActor}
+                        onCancel={() => setShowActorForm(false)}
+                        isLoading={creatingPerson}
+                    />
+                )}
             </div>
         </div>
     );

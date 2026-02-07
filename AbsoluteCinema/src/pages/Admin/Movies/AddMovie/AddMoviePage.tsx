@@ -3,7 +3,7 @@ import { data, useNavigate } from 'react-router-dom';
 import styles from './AddMoviePage.module.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
-import { createMovie, attachPersonToMovie, attachGenreToMovie, getGenres } from '../../../../api/movies';
+import { createMovie, attachPersonToMovie, attachGenreToMovie, getGenres, createGenre, createAndAttachPersonToMovie, CreatePersonRequestPayload } from '../../../../api/movies';
 import { SessionManager } from '@/components/SessionManager/SessionManager';
 import { getDatesInRange } from '@/utils/getDatesInRange';
 import { createSession, getHallById, getHalls } from '@/api';
@@ -12,6 +12,8 @@ import { prepareSessionPayload } from '@/utils/prepareSessionPayload';
 import { Genre } from '@/types/Genre';
 import { minutesToTimeSpan } from '@/utils/dataTimeConverters';
 import { useToast } from '@/context/ToastContext/ToastContext';
+import { GenreForm } from '@/components/GenreForm/GenreForm';
+import { PersonForm, PersonRole } from '@/components/PersonForm/PersonForm';
 
 interface SessionFormData {
     id: string;
@@ -33,6 +35,13 @@ export const AddMoviePage = () => {
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
     const [genreOptions, setGenreOptions] = useState<Genre[]>([]);
+
+    // Modal states
+    const [showGenreForm, setShowGenreForm] = useState(false);
+    const [showDirectorForm, setShowDirectorForm] = useState(false);
+    const [showActorForm, setShowActorForm] = useState(false);
+    const [creatingGenre, setCreatingGenre] = useState(false);
+    const [creatingPerson, setCreatingPerson] = useState(false);
 
     const [formData, setFormData] = useState<MovieFormData>({
         movieName: 'Add Movie Title',
@@ -126,6 +135,7 @@ export const AddMoviePage = () => {
     }, []);
 
     const loadHallDetails = async (hallId: string, sessionId: string) => {
+        setLoadingHalls(prev => ({ ...prev, [hallId]: true }));
         try {
             const data = await getHallById(hallId);
             const { seats, availableSeatTypes } = mapHallDetailsFromApi(data);
@@ -165,7 +175,74 @@ export const AddMoviePage = () => {
         if (field === 'hall' && value) {
             loadHallDetails(value, id);
         }
-    }, [loadHallDetails]);
+    }, []);
+
+    // Handle genre creation
+    const handleCreateGenre = async (genreName: string) => {
+        setCreatingGenre(true);
+        try {
+            await createGenre(genreName);
+            // Refresh genres list
+            const allGenres = await getGenres();
+            const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
+            const formattedGenres = genreList
+                .map((g: any) => ({
+                    id: g?.id ?? '',
+                    name: g?.name ?? g
+                }))
+                .filter((g: any) => g.name.trim().length > 0);
+            setGenreOptions(formattedGenres);
+            
+            // Auto-select the new genre
+            setFormData(prev => ({
+                ...prev,
+                genres: [...prev.genres, { id: '', name: genreName }]
+            }));
+            
+            setShowGenreForm(false);
+            showToast('success', `Genre "${genreName}" created successfully!`);
+        } catch (err: any) {
+            showToast('error', `Failed to create genre: ${err.message || err.response?.data?.message}`);
+        } finally {
+            setCreatingGenre(false);
+        }
+    };
+
+    // Handle person creation (Director)
+    const handleCreateDirector = async (personData: CreatePersonRequestPayload) => {
+        setCreatingPerson(true);
+        try {
+            // For now, just add to local list since we need a movie ID to attach
+            setFormData(prev => ({
+                ...prev,
+                directors: [...prev.directors, personData.fullName]
+            }));
+            setShowDirectorForm(false);
+            showToast('success', `Director "${personData.fullName}" will be added!`);
+        } catch (err: any) {
+            showToast('error', `Failed to add director: ${err.message}`);
+        } finally {
+            setCreatingPerson(false);
+        }
+    };
+
+    // Handle person creation (Actor)
+    const handleCreateActor = async (personData: CreatePersonRequestPayload) => {
+        setCreatingPerson(true);
+        try {
+            // For now, just add to local list since we need a movie ID to attach
+            setFormData(prev => ({
+                ...prev,
+                starring: [...prev.starring, personData.fullName]
+            }));
+            setShowActorForm(false);
+            showToast('success', `Actor "${personData.fullName}" will be added!`);
+        } catch (err: any) {
+            showToast('error', `Failed to add actor: ${err.message}`);
+        } finally {
+            setCreatingPerson(false);
+        }
+    };
 
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
@@ -193,11 +270,12 @@ export const AddMoviePage = () => {
                 const allGenres = await getGenres();
                 const genreList = Array.isArray(allGenres) ? allGenres : allGenres.genres || [];
 
-                for (const genreName of formData.genres) {
-                    const genre = genreList.find((g: any) => g.name === genreName);
-                    if (genre) {
+                for (const genre of formData.genres) {
+                    const genreName = typeof genre === 'string' ? genre : genre.name;
+                    const genreObj = genreList.find((g: any) => g.name === genreName);
+                    if (genreObj) {
                         try {
-                            await attachGenreToMovie(newMovieId, genre.id);
+                            await attachGenreToMovie(newMovieId, genreObj.id);
                         } catch (err) {
                             console.error(`Failed to attach genre ${genreName}:`, err);
                         }
@@ -205,24 +283,38 @@ export const AddMoviePage = () => {
                 }
             }
 
-            // Attach Directors to Movie
+            // Create and Attach Directors to Movie
             if (formData.directors && formData.directors.length > 0) {
                 for (const directorName of formData.directors) {
                     try {
-                        await attachPersonToMovie(newMovieId, directorName, 1); // 1 = Director
+                        // Create director with API
+                        const personData: CreatePersonRequestPayload = {
+                            fullName: directorName,
+                            bio: '',
+                            birthDate: new Date('1990-01-01').toISOString(),
+                            role: 1 // Director role
+                        };
+                        await createAndAttachPersonToMovie(newMovieId, personData);
                     } catch (err) {
-                        console.error(`Failed to attach director ${directorName}:`, err);
+                        console.error(`Failed to create/attach director ${directorName}:`, err);
                     }
                 }
             }
 
-            // Attach Actors (Starring) to Movie
+            // Create and Attach Actors (Starring) to Movie
             if (formData.starring && formData.starring.length > 0) {
                 for (const actorName of formData.starring) {
                     try {
-                        await attachPersonToMovie(newMovieId, actorName, 2); // 2 = Actor
+                        // Create actor with API
+                        const personData: CreatePersonRequestPayload = {
+                            fullName: actorName,
+                            bio: '',
+                            birthDate: new Date('1990-01-01').toISOString(),
+                            role: 2 // Actor role
+                        };
+                        await createAndAttachPersonToMovie(newMovieId, personData);
                     } catch (err) {
-                        console.error(`Failed to attach actor ${actorName}:`, err);
+                        console.error(`Failed to create/attach actor ${actorName}:`, err);
                     }
                 }
             }
@@ -270,6 +362,9 @@ export const AddMoviePage = () => {
                     formData={formData}
                     setFormData={setFormData}
                     genreOptions={genreOptions}
+                    onAddGenre={() => setShowGenreForm(true)}
+                    onAddDirector={() => setShowDirectorForm(true)}
+                    onAddActor={() => setShowActorForm(true)}
                 />
 
                 {/* Sessions Section */}
@@ -298,6 +393,35 @@ export const AddMoviePage = () => {
                     </button>
                 </div>
             </form>
+
+            {/* Genre Form Modal */}
+            {showGenreForm && (
+                <GenreForm
+                    onSubmit={handleCreateGenre}
+                    onCancel={() => setShowGenreForm(false)}
+                    isLoading={creatingGenre}
+                />
+            )}
+
+            {/* Director Form Modal */}
+            {showDirectorForm && (
+                <PersonForm
+                    role={PersonRole.Director}
+                    onSubmit={handleCreateDirector}
+                    onCancel={() => setShowDirectorForm(false)}
+                    isLoading={creatingPerson}
+                />
+            )}
+
+            {/* Actor Form Modal */}
+            {showActorForm && (
+                <PersonForm
+                    role={PersonRole.Actor}
+                    onSubmit={handleCreateActor}
+                    onCancel={() => setShowActorForm(false)}
+                    isLoading={creatingPerson}
+                />
+            )}
         </div>
     );
 };
