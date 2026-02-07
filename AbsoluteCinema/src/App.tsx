@@ -15,129 +15,30 @@ import { MovieSessionsPage } from './pages/MovieSessions/MovieSessionsPage'
 import { ReservationsPage } from './pages/Admin/Reservations/ReservationsPage'
 import { AboutUs } from './pages/AboutUs/AboutUs'
 import { MoviesLibrary } from './pages/MoviesLibrary/MoviesLibrary'
+import { ProtectedRoute } from './components/ProtectedRoute' // Імпортуємо твій захисник
 
 function App() {
-
   return (
     <Routes>
-      <Route
-        path='/'
-        element={
-          <MainLayout>
-            <Home />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/about'
-        element={
-          <MainLayout>
-            <AboutUs />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/movies'
-        element={
-          <MainLayout>
-            <MoviesLibrary />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/admin'
-        element={
-          <AdminLayout>
-            <AdminMainPage />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path='/admin/movies'
-        element={
-          <AdminLayout>
-            <AdminMainPage />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path='/admin/halls'
-        element={
-          <AdminLayout>
-            <HallsPage />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path='/admin/reservations'
-        element={
-          <AdminLayout>
-            <ReservationsPage />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path='/admin/movies/add'
-        element={
-          <AdminLayout>
-            <AddMoviePage />
-          </AdminLayout>
-        }
-      />
-      <Route
-        path='/movie/:id'
-        element={
-          <MainLayout>
-            <MovieDetailsPage />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/movie/:id/sessions'
-        element={
-          <MainLayout>
-            <MovieSessionsPage />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/booking/:movieId/:sessionId'
-        element={
-          <MainLayout>
-            <BookingPage />
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/login'
-        element={
-          <MainLayout>
-            <>
-              <Home />
-              <LoginPage />
-            </>
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/register'
-        element={
-          <MainLayout>
-            <>
-              <Home />
-              <RegisterPage />
-            </>
-          </MainLayout>
-        }
-      />
-      <Route
-        path='/admin/movies/edit/:movieId'
-        element={
-          <AdminLayout>
-            <EditMoviePage />
-          </AdminLayout>
-        }
-      />
+      <Route path='/' element={<MainLayout><Home /></MainLayout>} />
+      <Route path='/about' element={<MainLayout><AboutUs /></MainLayout>} />
+      <Route path='/movies' element={<MainLayout><MoviesLibrary /></MainLayout>} />
+      <Route path='/movie/:id' element={<MainLayout><MovieDetailsPage /></MainLayout>} />
+      <Route path='/movie/:id/sessions' element={<MainLayout><MovieSessionsPage /></MainLayout>} />
+      <Route path='/booking/:movieId/:sessionId' element={<MainLayout><BookingPage /></MainLayout>} />
+
+      <Route path='/login' element={<MainLayout><><Home /><LoginPage /></></MainLayout>} />
+      <Route path='/register' element={<MainLayout><><Home /><RegisterPage /></></MainLayout>} />
+
+      <Route element={<ProtectedRoute requiredRole="Admin" />}>
+        <Route path='/admin' element={<AdminLayout><AdminMainPage /></AdminLayout>} />
+        <Route path='/admin/movies' element={<AdminLayout><AdminMainPage /></AdminLayout>} />
+        <Route path='/admin/halls' element={<AdminLayout><HallsPage /></AdminLayout>} />
+        <Route path='/admin/reservations' element={<AdminLayout><ReservationsPage /></AdminLayout>} />
+        <Route path='/admin/movies/add' element={<AdminLayout><AddMoviePage /></AdminLayout>} />
+        <Route path='/admin/movies/edit/:movieId' element={<AdminLayout><EditMoviePage /></AdminLayout>} />
+      </Route>
+      
     </Routes>
   )
 }

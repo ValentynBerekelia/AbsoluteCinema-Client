@@ -3,6 +3,7 @@ import { MovieCardInfo } from '../../types/Movie';
 import './ScheduleMovieCard.css';
 import { convertDuration, formatTime } from '@/utils/dataTimeConverters';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
+import { NO_POSTER_URL } from '@/constans/movieMetadata';
 
 interface ScheduleMovieCardProps {
     movie: MovieCardInfo;
@@ -21,7 +22,7 @@ export const ScheduleMovieCard = ({ movie }: ScheduleMovieCardProps) => {
     return (
         <article className="schedule-card">
             <Link to={`/movie/${movie.id}`} className="schedule-card__poster">
-                <img src={movie.image} alt={movie.title} />
+                <img src={movie.image || NO_POSTER_URL} alt={movie.title} />
             </Link>
 
             <div className="schedule-card__content">

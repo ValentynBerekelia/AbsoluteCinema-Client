@@ -54,9 +54,12 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
             setAccessToken(res.accessToken);
             setAuthHeader(res.accessToken);
 
-            const userData = await getMe();
-            setUser(userData);
-            showToast('success', `Welcome back, ${data.userName}!`);
+            const profileData = await getMe();
+            setUser({
+                ...profileData,
+                userName: res.userName
+            });
+            showToast('success', `Welcome back, ${data.email}!`);
         } catch (error: any) {
             const message = error.message || "Invalid username or password";
             showToast('error', message);
@@ -67,11 +70,16 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const registerUser = async (data: RegisterRequest) => {
         try {
             const res = await register(data);
+
             setAccessToken(res.accessToken);
             setAuthHeader(res.accessToken);
 
             const userData = await getMe();
-            setUser(userData);
+            setUser({
+                ...userData,
+                userName: data.userName
+            });
+
             showToast('success', "Registration successful!");
         } catch (error: any) {
             const message = error.message || "Registration failed";

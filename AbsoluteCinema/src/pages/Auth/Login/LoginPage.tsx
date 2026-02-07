@@ -7,7 +7,7 @@ export const LoginPage = () => {
     const navigate = useNavigate();
     const { loginUser } = useAuth();
     const [formData, setFormData] = useState({
-        userName: '',
+        email: '',
         password: '',
         rememberMe: false
     });
@@ -19,7 +19,7 @@ export const LoginPage = () => {
 
         try {
             await loginUser({
-                userName: formData.userName,
+                email: formData.email,
                 password: formData.password
             });
 
@@ -45,11 +45,11 @@ export const LoginPage = () => {
                 <form onSubmit={handleSubmit} className={styles.authForm}>
 
                     <div className={styles.formGroup}>
-                        <label htmlFor="email">Username</label>
+                        <label htmlFor="email">Email</label>
                         <input
                             id="email"
                             type="email"
-                            value={formData.userName}
+                            value={formData.email}
                             onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                             placeholder="your.email@example.com"
                             required

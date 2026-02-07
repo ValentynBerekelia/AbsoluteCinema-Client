@@ -1,5 +1,7 @@
 export interface User {
     userId: string;
+    userName?: string;
+    email?: string;
     roles: string[];
     permissions: string[];
 }
@@ -17,14 +19,14 @@ export interface RegisterResponse {
 }
 
 export interface LoginRequest {
-    userName: string;
+    email: string;
     password: string;
 }
 
 export interface LoginResponse {
     userId: string;
     userName: string;
-    token: string;
+    email: string;
     accessToken: string;
     refreshToken: string;
 }
@@ -33,6 +35,7 @@ export type AuthData = LoginResponse;
 
 export interface GetCurrentUserResponse {
     userId: string;
+    userName?: string;
     roles: string[];
     permissions: string[];
 }
