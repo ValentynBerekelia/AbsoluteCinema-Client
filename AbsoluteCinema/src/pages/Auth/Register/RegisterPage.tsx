@@ -1,43 +1,52 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './RegisterPage.module.css';
+import { useAuth } from '@/context/AuthContext/AuthContext';
+import { useToast } from '@/context/ToastContext/ToastContext'; // Додаємо для валідації
 
 export const RegisterPage = () => {
     const navigate = useNavigate();
+    const { registerUser } = useAuth();
+    const { showToast } = useToast();
+    
     const [formData, setFormData] = useState({
+        userName: '', // Важливо: бекенд очікує саме це поле
         email: '',
         password: '',
         confirmPassword: '',
-        firstName: '',
-        lastName: ''
     });
-    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        setError(null);
 
-        // Validation
+        // 1. Валідація паролів на фронті
         if (formData.password !== formData.confirmPassword) {
-            setError('Passwords do not match');
+            showToast('error', 'Passwords do not match');
             return;
         }
 
         if (formData.password.length < 6) {
-            setError('Password must be at least 6 characters');
+            showToast('error', 'Password must be at least 6 characters');
             return;
         }
 
         setLoading(true);
 
         try {
-            // TODO: Implement API call for registration
-            console.log('Registration attempt:', formData);
-            // await register(formData);
-            // navigate('/login');
+            // 2. Викликаємо метод з контексту (він сам покаже тост успіху або помилки бека)
+            await registerUser({
+                userName: formData.userName,
+                email: formData.email,
+                password: formData.password
+            });
+
+            // 3. Після успішної реєстрації AuthContext оновить юзера, 
+            // і ми можемо редиректнути на головну
+            navigate('/');
         } catch (err: any) {
-            setError(err.message || 'Registration failed');
+            // Помилку з бекенда вже показав AuthContext через showToast
+            console.error('Registration failed:', err);
         } finally {
             setLoading(false);
         }
@@ -55,79 +64,52 @@ export const RegisterPage = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} className={styles.authForm}>
-                    {error && <div className={styles.errorMessage}>{error}</div>}
-
-                    <div className={styles.formRow}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="firstName">First Name</label>
-                            <input
-                                id="firstName"
-                                type="text"
-                                value={formData.firstName}
-                                onChange={(e) => setFormData(prev => ({ ...prev, firstName: e.target.value }))}
-                                placeholder="John"
-                                required
-                            />
-                        </div>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="userName">Username</label>
+                        <input
+                            id="userName"
+                            type="text"
+                            value={formData.userName}
+                            onChange={(e) => setFormData(prev => ({ ...prev, userName: e.target.value }))}
+                            placeholder="johndoe123"
+                            required
+                        />
                     </div>
 
-                    <div className={styles.formRow}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="lastName">Last Name</label>
-                            <input
-                                id="lastName"
-                                type="text"
-                                value={formData.lastName}
-                                onChange={(e) => setFormData(prev => ({ ...prev, lastName: e.target.value }))}
-                                placeholder="Doe"
-                                required
-                            />
-                        </div>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="email">Email</label>
+                        <input
+                            id="email"
+                            type="email"
+                            value={formData.email}
+                            onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                            placeholder="your.email@example.com"
+                            required
+                        />
                     </div>
 
-                    <div className={styles.formRow}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="email">Email</label>
-                            <input
-                                id="email"
-                                type="email"
-                                value={formData.email}
-                                onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
-                                placeholder="your.email@example.com"
-                                required
-                                autoComplete="email"
-                            />
-                        </div>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="password">Password</label>
+                        <input
+                            id="password"
+                            type="password"
+                            value={formData.password}
+                            onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
+                            placeholder="At least 6 characters"
+                            required
+                        />
                     </div>
 
-                    <div className={styles.formRow}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="password">Password</label>
-                            <input
-                                id="password"
-                                type="password"
-                                value={formData.password}
-                                onChange={(e) => setFormData(prev => ({ ...prev, password: e.target.value }))}
-                                placeholder="At least 6 characters"
-                                required
-                                autoComplete="new-password"
-                            />
-                        </div>
-                    </div>
-
-                    <div className={styles.formRow}>
-                        <div className={styles.formGroup}>
-                            <label htmlFor="confirmPassword">Confirm Password</label>
-                            <input
-                                id="confirmPassword"
-                                type="password"
-                                value={formData.confirmPassword}
-                                onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                                placeholder="Re-enter your password"
-                                required
-                                autoComplete="new-password"
-                            />
-                        </div>
+                    <div className={styles.formGroup}>
+                        <label htmlFor="confirmPassword">Confirm Password</label>
+                        <input
+                            id="confirmPassword"
+                            type="password"
+                            value={formData.confirmPassword}
+                            onChange={(e) => setFormData(prev => ({ ...prev, confirmPassword: e.target.value }))}
+                            placeholder="Re-enter your password"
+                            required
+                        />
                     </div>
 
                     <button
