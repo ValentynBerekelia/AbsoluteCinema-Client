@@ -116,13 +116,8 @@ export const getGenres = async (movieId?: string) => {
 };
 
 export const createGenre = async (genreName: string) => {
-  // POST /genres endpoint (without /api prefix according to OpenAPI spec)
-  const response = await axios.post('/genres', { 
+  const response = await axiosInstance.post('/genres', { 
     genreName: genreName 
-  }, {
-    headers: {
-      'Content-Type': 'application/json',
-    }
   });
   return response.data;
 };
