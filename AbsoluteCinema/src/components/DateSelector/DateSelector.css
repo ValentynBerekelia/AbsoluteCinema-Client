@@ -1,5 +1,6 @@
 .date-selector {
     display: flex;
+    justify-content: center;
     gap: 10px;
     overflow-x: auto;
     padding-bottom: 16px;
