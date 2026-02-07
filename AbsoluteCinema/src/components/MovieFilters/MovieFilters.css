@@ -1,64 +1,192 @@
 .filters-container {
-    padding: 10px 0 20px 0;
     display: flex;
     flex-direction: column;
     gap: 15px;
-    margin-bottom: 10px;
+    margin-bottom: 20px;
+    padding: 10px 0;
 }
 
-.filters-group {
+.filters-row {
     display: flex;
     align-items: center;
     gap: 15px;
+    min-height: 40px;
+    width: 100%;
 }
 
 .filters-label {
-    font-weight: 600;
-    color: #e0e0e0;
+    font-weight: 700;
+    color: #ddd;
     min-width: 60px;
-    font-size: 14px;
+    font-size: 16px;
 }
 
-.filters-scroll-area, .filters-list {
+/* --- LOGIC FOR GENRES --- */
+.genre-wrapper {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    flex-wrap: wrap;
+}
+
+.dropdown-container {
+    position: relative;
+}
+
+.dropdown-btn {
+    background-color: #2b2b2b;
+    color: white;
+    border: 1px solid #444;
+    padding: 8px 26px;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    transition: 0.2s;
+    width: 170px;
+    justify-content: space-between;
+    font-weight: 600;
+    gap: 10px;
+}
+
+.dropdown-btn:hover {
+    background-color: #3a3a3a;
+    border-color: #666;
+}
+
+.arrow {
+    font-size: 10px;
+}
+
+.dropdown-list {
+    position: absolute;
+    top: 110%;
+    left: 0;
+    width: 170px;
+    max-height: 300px;
+    overflow-y: auto;
+    background-color: #1f1f1f;
+    border: 1px solid #444;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.5);
+    z-index: 1000;
+    padding: 5px 0;
+}
+
+.dropdown-item {
+    padding: 8px 12px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    cursor: pointer;
+    color: #eee;
+    font-size: 14px;
+    transition: background 0.2s;
+}
+
+.dropdown-item:hover {
+    background-color: #333;
+}
+
+.dropdown-item input[type="checkbox"] {
+    accent-color: #e50914;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+}
+
+/* Chips with (X) button */
+.selected-chips-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}
+
+.genre-chip {
+    background-color: #e50914;
+    color: white;
+    padding: 6px 12px;
+    border-radius: 20px;
+    font-size: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    animation: fadeIn 0.2s ease;
+}
+
+.remove-chip-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: bold;
+    font-size: 16px;
+    cursor: pointer;
+    padding: 0;
+    line-height: 1;
+    opacity: 0.8;
+}
+
+.remove-chip-btn:hover {
+    opacity: 1;
+}
+
+/* --- LOGIC FOR FORMATS (2D/3D) --- */
+.formats-list {
     display: flex;
     gap: 10px;
-    overflow-x: auto;
-    padding-bottom: 5px;
-    scrollbar-width: thin;
-    scrollbar-color: #555 transparent;
 }
 
-.filter-chip {
-    padding: 6px 14px;
+.format-chip {
+    padding: 6px 16px;
     border: 1px solid #444;
-    background-color: #2a2a2a;
+    background-color: #2b2b2b;
     color: #fff;
     border-radius: 20px;
     cursor: pointer;
     font-size: 14px;
     transition: all 0.2s ease;
-    white-space: nowrap;
+    font-weight: 600;
 }
 
-.filter-chip:hover {
+.format-chip:hover {
     background-color: #3a3a3a;
     border-color: #666;
 }
 
-.filter-chip.active {
-    background-color: #e50914; 
-    color: white;
+.format-chip.active {
+    background-color: #e50914;
     border-color: #e50914;
-    font-weight: bold;
+    color: white;
 }
 
-@media (max-width: 768px) {
-    .filters-group {
-        flex-direction: column;
-        align-items: flex-start;
-        gap: 8px;
-    }
-    .filters-scroll-area {
-        width: 100%;
-    }
+@keyframes fadeIn {
+    from { opacity: 0; transform: scale(0.9); }
+    to { opacity: 1; transform: scale(1); }
+}
+
+.more-genres-badge {
+    background-color: #444;
+    color: #fff;
+    font-size: 12px;
+    font-weight: bold;
+    padding: 6px 10px;
+    border-radius: 20px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid #666;
+}
+
+.selected-chips-area {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    max-width: 600px;
+}
+
+.formats-row {
+    justify-content: center; 
+    margin-top: 10px;
 }
