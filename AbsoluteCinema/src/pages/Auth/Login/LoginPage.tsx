@@ -1,29 +1,31 @@
 import { useState, FormEvent } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './LoginPage.module.css';
+import { useAuth } from '@/context/AuthContext/AuthContext';
 
 export const LoginPage = () => {
     const navigate = useNavigate();
+    const { loginUser } = useAuth();
     const [formData, setFormData] = useState({
-        email: '',
+        userName: '',
         password: '',
         rememberMe: false
     });
-    const [error, setError] = useState<string | null>(null);
     const [loading, setLoading] = useState(false);
 
     const handleSubmit = async (e: FormEvent) => {
         e.preventDefault();
-        setError(null);
         setLoading(true);
 
         try {
-            // TODO: Implement API call for login
-            console.log('Login attempt:', formData);
-            // await login(formData);
-            // navigate('/');
+            await loginUser({
+                userName: formData.userName,
+                password: formData.password
+            });
+
+            navigate('/');
         } catch (err: any) {
-            setError(err.message || 'Login failed');
+            console.error('Login error in component:', err);
         } finally {
             setLoading(false);
         }
@@ -41,14 +43,13 @@ export const LoginPage = () => {
                 </div>
 
                 <form onSubmit={handleSubmit} className={styles.authForm}>
-                    {error && <div className={styles.errorMessage}>{error}</div>}
 
                     <div className={styles.formGroup}>
-                        <label htmlFor="email">Email</label>
+                        <label htmlFor="email">Username</label>
                         <input
                             id="email"
                             type="email"
-                            value={formData.email}
+                            value={formData.userName}
                             onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
                             placeholder="your.email@example.com"
                             required
