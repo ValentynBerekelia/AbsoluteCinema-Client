@@ -1,16 +1,7 @@
+import { useEffect, useState, useRef } from 'react';
 import { getFormatLabel, SessionFormat } from '@/types/Session';
+import { getGenres, Genre } from '@/api/genres';
 import './MovieFilters.css';
-
-// Genre stub (to be replaced with backend data in the future)
-const GENRES = [
-    "Action",
-    "Comedy",
-    "Drama",
-    "Sci-Fi",
-    "Horror",
-    "Cartoon",
-    "Adventure"
-];
 
 const FORMATS = [SessionFormat.TwoD, SessionFormat.ThreeD];
 
@@ -27,12 +18,34 @@ export const MovieFilters = ({
     onSelectGenre, 
     onSelectFormat 
 }: MovieFiltersProps) => {
+    
+    const [genresList, setGenresList] = useState<Genre[]>([]);
+    const [isDropdownOpen, setIsDropdownOpen] = useState(false);
+    const dropdownRef = useRef<HTMLDivElement>(null);
 
-const handleGenreClick = (genre: string) => {
-        if (selectedGenres.includes(genre)) {
-            onSelectGenre(selectedGenres.filter(g => g !== genre));
+    useEffect(() => {
+        const fetch = async () => {
+            const data = await getGenres();
+            setGenresList(data);
+        };
+        fetch();
+    }, []);
+
+    useEffect(() => {
+        const handleClickOutside = (event: MouseEvent) => {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setIsDropdownOpen(false);
+            }
+        };
+        document.addEventListener("mousedown", handleClickOutside);
+        return () => document.removeEventListener("mousedown", handleClickOutside);
+    }, []);
+
+    const toggleGenre = (genreName: string) => {
+        if (selectedGenres.includes(genreName)) {
+            onSelectGenre(selectedGenres.filter(g => g !== genreName));
         } else {
-            onSelectGenre([...selectedGenres, genre]);
+            onSelectGenre([...selectedGenres, genreName]);
         }
     };
 
@@ -42,30 +55,75 @@ const handleGenreClick = (genre: string) => {
 
     return (
         <div className="filters-container">
-            {/* Genre Group */}
-            <div className="filters-group">
-                <span className="filters-label">Genre:</span>
-                <div className="filters-scroll-area">
-                    {GENRES.map(genre => (
-                        <button
-                            key={genre}
-                            className={`filter-chip ${selectedGenres.includes(genre) ? 'active' : ''}`}
-                            onClick={() => handleGenreClick(genre)}
+            
+            {/* --- GENRE ROW --- */}
+            <div className="filters-row">
+                
+                <div className="genre-wrapper">
+                    {/* Dropdown menu */}
+                    <div className="dropdown-container" ref={dropdownRef}>
+                        <button 
+                            className="dropdown-btn"
+                            onClick={() => setIsDropdownOpen(!isDropdownOpen)}
                         >
-                            {genre}
+                            Select Genres <span className="arrow">▼</span>
                         </button>
-                    ))}
+
+                        {isDropdownOpen && (
+                            <div className="dropdown-list">
+                                {genresList.length > 0 ? (
+                                    genresList.map(genre => (
+                                        <div 
+                                            key={genre.id} 
+                                            className="dropdown-item"
+                                            onClick={() => toggleGenre(genre.name)}
+                                        >
+                                            <input 
+                                                type="checkbox" 
+                                                checked={selectedGenres.includes(genre.name)}
+                                                readOnly 
+                                            />
+                                            <span>{genre.name}</span>
+                                        </div>
+                                    ))
+                                ) : (
+                                    <div className="dropdown-empty"> No genres loaded</div>
+                                )}
+                            </div>
+                        )}
+                    </div>
+
+                    {/* Selected genres (chips) on the right */}
+                    <div className="selected-chips-area">
+                        {selectedGenres.slice(0, 8).map(genre => (
+                            <span key={genre} className="genre-chip">
+                                {genre}
+                                <button 
+                                    className="remove-chip-btn"
+                                    onClick={() => toggleGenre(genre)}
+                                >
+                                    ×
+                                </button>
+                            </span>
+                        ))}
+
+                        {selectedGenres.length > 8 && (
+                            <span className="more-genres-badge">
+                                +{selectedGenres.length - 8}
+                            </span>
+                        )}
+                    </div>
                 </div>
             </div>
 
-            {/* Formats Group */}
-            <div className="filters-group">
-                <span className="filters-label">Format:</span>
-                <div className="filters-list">
+            {/* --- FORMAT ROW --- */}
+            <div className="filters-row">
+                <div className="filters-row formats-row"></div>
+                <div className="formats-list">
                     {FORMATS.map(format => (
                         <button
                             key={format}
-                            className={`filter-chip ${selectedFormat === format ? 'active' : ''}`}
+                            className={`format-chip ${selectedFormat === format ? 'active' : ''}`}
                             onClick={() => handleFormatClick(format)}
                         >
                             {getFormatLabel(format)}
