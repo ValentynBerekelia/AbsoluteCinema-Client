@@ -1,0 +1,423 @@
+.container {
+    padding: 20px;
+    max-width: 1400px;
+    margin: 0 auto;
+}
+
+.container h2 {
+    font-size: 28px;
+    margin-bottom: 30px;
+    color: #1a1a1a;
+}
+
+.actionBar {
+    margin-bottom: 30px;
+    display: flex;
+    gap: 10px;
+}
+
+.button {
+    padding: 10px 20px;
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.button:hover:not(:disabled) {
+    background-color: #45a049;
+}
+
+.button:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.cancelBtn {
+    padding: 10px 20px;
+    background-color: #999;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 500;
+    transition: background-color 0.3s;
+}
+
+.cancelBtn:hover {
+    background-color: #777;
+}
+
+.formSection {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    margin-bottom: 30px;
+    border: 1px solid #e0e0e0;
+}
+
+.formSection h3 {
+    margin-top: 0;
+    margin-bottom: 20px;
+    color: #333;
+}
+
+.formGrid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 15px;
+}
+
+.formGroupFull {
+    grid-column: 1 / -1;
+}
+
+.formGroup {
+    display: flex;
+    flex-direction: column;
+}
+
+.formGroup label {
+    font-weight: 600;
+    margin-bottom: 5px;
+    color: #333;
+    font-size: 14px;
+}
+
+.input,
+.textarea {
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    font-family: inherit;
+    transition: border-color 0.3s;
+}
+
+.input:focus,
+.textarea:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 4px rgba(76, 175, 80, 0.2);
+}
+
+.textarea {
+    resize: vertical;
+}
+
+.formActions {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 10px;
+    margin-top: 10px;
+}
+
+.listSection {
+    background: #f9f9f9;
+    padding: 20px;
+    border-radius: 8px;
+    border: 1px solid #e0e0e0;
+}
+
+.listSection h3 {
+    margin-top: 0;
+    margin-bottom: 15px;
+    color: #333;
+}
+
+.searchContainer {
+    margin-bottom: 20px;
+    display: flex;
+    gap: 10px;
+}
+
+.searchInput {
+    flex: 1;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 4px;
+    font-size: 14px;
+    transition: border-color 0.3s;
+    min-width: 200px;
+}
+
+.searchInput:focus {
+    outline: none;
+    border-color: #4CAF50;
+    box-shadow: 0 0 4px rgba(76, 175, 80, 0.2);
+}
+
+.empty {
+    text-align: center;
+    padding: 60px 20px;
+    color: #999;
+    font-size: 16px;
+}
+
+.personsGrid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 20px;
+}
+
+.personCard {
+    background: white;
+    border: 1px solid #e0e0e0;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: box-shadow 0.3s, transform 0.3s;
+}
+
+.personCard:hover {
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.15);
+    transform: translateY(-2px);
+}
+
+.cardImage {
+    width: 100%;
+    height: 200px;
+    overflow: hidden;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cardImage img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.editForm {
+    padding: 20px;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.cardHeader {
+    padding: 16px;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    color: white;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 10px;
+}
+
+.cardHeader h4 {
+    margin: 0;
+    font-size: 18px;
+    word-break: break-word;
+}
+
+.role {
+    display: inline-block;
+    padding: 4px 10px;
+    border-radius: 20px;
+    font-size: 12px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.roleDirector {
+    background-color: rgba(255, 255, 255, 0.3);
+    color: white;
+}
+
+.roleActor {
+    background-color: rgba(255, 255, 255, 0.2);
+    color: white;
+}
+
+.cardContent {
+    padding: 16px;
+}
+
+.birthDate {
+    margin: 0 0 10px 0;
+    color: #666;
+    font-size: 14px;
+}
+
+.birthDate strong {
+    color: #333;
+}
+
+.bio {
+    margin: 0;
+    color: #666;
+    font-size: 14px;
+    line-height: 1.5;
+    display: -webkit-box;
+    line-clamp: 3;
+    -webkit-line-clamp: 3;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.cardActions {
+    padding: 12px 16px;
+    border-top: 1px solid #e0e0e0;
+    display: flex;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.editBtn,
+.deleteBtn,
+.saveBtn {
+    flex: 1;
+    padding: 8px 12px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: all 0.3s;
+}
+
+.editBtn {
+    background-color: #2196F3;
+    color: white;
+}
+
+.editBtn:hover {
+    background-color: #0b7dda;
+}
+
+.imageBtn {
+    padding: 8px 12px;
+    background-color: #FF9800;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 14px;
+    transition: background-color 0.3s;
+}
+
+.imageBtn:hover {
+    background-color: #e68900;
+}
+
+.deleteBtn {
+    background-color: #f44336;
+    color: white;
+}
+
+.deleteBtn:hover:not(:disabled) {
+    background-color: #da190b;
+}
+
+.deleteBtn:disabled {
+    background-color: #ccc;
+    cursor: not-allowed;
+}
+
+.saveBtn {
+    background-color: #4CAF50;
+    color: white;
+}
+
+.saveBtn:hover {
+    background-color: #45a049;
+}
+
+@media (max-width: 768px) {
+    .formGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .personsGrid {
+        grid-template-columns: 1fr;
+    }
+
+    .cardHeader {
+        flex-direction: column;
+        align-items: flex-start;
+    }
+
+    .searchInput {
+        min-width: auto;
+    }
+}
+
+.imageUploadArea {
+    border: 2px dashed #ddd;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    background: #fafafa;
+    transition: all 0.3s;
+}
+
+.imageUploadArea:hover {
+    border-color: #4CAF50;
+    background: #f5f5f5;
+}
+
+.uploadLabel {
+    display: block;
+    cursor: pointer;
+    color: #666;
+    font-size: 14px;
+    user-select: none;
+}
+
+.uploadLabel:hover {
+    color: #4CAF50;
+}
+
+.uploadedImagePreview,
+.editImagePreview {
+    position: relative;
+    display: inline-block;
+    width: 100%;
+    max-width: 200px;
+}
+
+.uploadedImagePreview img,
+.editImagePreview img {
+    width: 100%;
+    height: auto;
+    border-radius: 6px;
+    display: block;
+}
+
+.removeImageBtn {
+    position: absolute;
+    top: 5px;
+    right: 5px;
+    background-color: rgba(244, 67, 54, 0.9);
+    color: white;
+    border: none;
+    border-radius: 50%;
+    width: 30px;
+    height: 30px;
+    cursor: pointer;
+    font-size: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: background-color 0.3s;
+}
+
+.removeImageBtn:hover {
+    background-color: rgba(218, 25, 11, 0.9);
+}
+
+.imageEditSection {
+    padding: 15px;
+    border-bottom: 1px solid #e0e0e0;
+    text-align: center;
+}

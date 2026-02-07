@@ -10,6 +10,9 @@ interface Props {
     genreOptions?: Genre[];
     directorOptions?: string[];
     actorOptions?: string[];
+    onAddGenre?: () => void;
+    onAddDirector?: () => void;
+    onAddActor?: () => void;
 }
 
 const DIRECTORS_LIST = ['Christopher Nolan', 'James Cameron', 'Quentin Tarantino', 'Denis Villeneuve'];
@@ -20,7 +23,10 @@ export const MovieAddForm = ({
     setFormData,
     genreOptions,
     directorOptions,
-    actorOptions
+    actorOptions,
+    onAddGenre,
+    onAddDirector,
+    onAddActor
 }: Props) => {
     const [posterPreview, setPosterPreview] = useState<string | null>(null);
 
@@ -174,6 +180,8 @@ export const MovieAddForm = ({
                             setFormData(p => ({ ...p, genres: updatedGenres }));
                         }}
                         placeholder="Select Genres"
+                        onAddNew={onAddGenre}
+                        showAddButton={!!onAddGenre}
                     />
                     <MultiSelectField
                         label="Directors"
@@ -181,6 +189,8 @@ export const MovieAddForm = ({
                         selectedValues={formData.directors || []}
                         onChange={(vals) => setFormData(p => ({ ...p, directors: vals }))}
                         placeholder="Select Directors"
+                        onAddNew={onAddDirector}
+                        showAddButton={!!onAddDirector}
                     />
                     <MultiSelectField
                         label="Starring"
@@ -188,6 +198,8 @@ export const MovieAddForm = ({
                         selectedValues={formData.starring || []}
                         onChange={(vals) => setFormData(p => ({ ...p, starring: vals }))}
                         placeholder="Select Actors"
+                        onAddNew={onAddActor}
+                        showAddButton={!!onAddActor}
                     />
 
                     <div className="form-group description-row">

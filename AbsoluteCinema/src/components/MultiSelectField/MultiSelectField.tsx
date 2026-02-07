@@ -7,9 +7,11 @@ interface MultiSelectProps {
     selectedValues: string[];
     onChange: (values: string[]) => void;
     placeholder?: string;
+    onAddNew?: () => void;
+    showAddButton?: boolean;
 }
 
-export const MultiSelectField = ({ label, options, selectedValues, onChange, placeholder }: MultiSelectProps) => {
+export const MultiSelectField = ({ label, options, selectedValues, onChange, placeholder, onAddNew, showAddButton }: MultiSelectProps) => {
     const [isOpen, setIsOpen] = useState(false);
     const containerRef = useRef<HTMLDivElement>(null);
 
@@ -32,7 +34,14 @@ export const MultiSelectField = ({ label, options, selectedValues, onChange, pla
 
     return (
         <div className="form-group multi-select-group" ref={containerRef}>
-            <label>{label}</label>
+            <div className="label-with-button">
+                <label>{label}</label>
+                {showAddButton && onAddNew && (
+                    <button type="button" className="add-button" onClick={onAddNew} title={`Add new ${label}`}>
+                        + Add New
+                    </button>
+                )}
+            </div>
             <div className="multi-select-container">
                 <div
                     className={`selected-tags-box ${isOpen ? 'active-border' : ''}`}

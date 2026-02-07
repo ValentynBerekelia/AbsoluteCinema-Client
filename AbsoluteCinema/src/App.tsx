@@ -15,6 +15,8 @@ import { MovieSessionsPage } from './pages/MovieSessions/MovieSessionsPage'
 import { ReservationsPage } from './pages/Admin/Reservations/ReservationsPage'
 import { AboutUs } from './pages/AboutUs/AboutUs'
 import { MoviesLibrary } from './pages/MoviesLibrary/MoviesLibrary'
+import { AdminGenresPage } from './pages/Admin/Genres/AdminGenresPage'
+import { AdminPersonsPage } from './pages/Admin/Persons/AdminPersonsPage'
 
 function App() {
 
@@ -135,6 +137,22 @@ function App() {
         element={
           <AdminLayout>
             <EditMoviePage />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path='/admin/genres'
+        element={
+          <AdminLayout>
+            <AdminGenresPage />
+          </AdminLayout>
+        }
+      />
+      <Route
+        path='/admin/persons'
+        element={
+          <AdminLayout>
+            <AdminPersonsPage />
           </AdminLayout>
         }
       />
