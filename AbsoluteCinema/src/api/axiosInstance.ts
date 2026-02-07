@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 const axiosInstance = axios.create({
-  baseURL: import.meta.env.PROD ? 'https://localhost:7191/api' : '/api',
+  baseURL: import.meta.env.PROD ? 'http://localhost:5134/api' : '/api',
   timeout: 10000,
   headers: {
     'Content-Type': 'application/json',
