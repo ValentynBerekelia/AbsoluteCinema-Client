@@ -1,7 +1,6 @@
 import { defaultMoviesQueryParams, MoviesQueryParameters } from '@/types/MoviesQueryParameters';
 import { CreateMovieRequest } from '../types/CreateMovieRequest';
 import axiosInstance from './axiosInstance';
-import axios from 'axios';
 
 // Media Type Enum - matches backend API
 export enum MediaType {
@@ -116,14 +115,7 @@ export const getGenres = async (movieId?: string) => {
 };
 
 export const createGenre = async (genreName: string) => {
-  // POST /genres endpoint (without /api prefix according to OpenAPI spec)
-  const response = await axios.post('/genres', { 
-    genreName: genreName 
-  }, {
-    headers: {
-      'Content-Type': 'application/json',
-    }
-  });
+  const response = await axiosInstance.post('/genres', { genreName });
   return response.data;
 };
 
@@ -144,34 +136,15 @@ export interface Person {
   personRole: number; // 1 = Director, 2 = Actor
 }
 
-export interface CreatePersonRequestPayload {
-  fullName: string;
-  bio: string;
-  birthDate: string;
-  role: number; // 1 = Director, 2 = Actor
-}
-
 export interface AttachPersonRequest {
-  personId: string;
-  role: number; // 1 = Director, 2 = Actor
+  personName: string;
+  personRole: number; // 1 = Director, 2 = Actor
 }
 
-// Create a new person and attach to movie in one call
-export const createAndAttachPersonToMovie = async (movieId: string, personData: CreatePersonRequestPayload) => {
+export const attachPersonToMovie = async (movieId: string, personName: string, personRole: number) => {
   const response = await axiosInstance.post(`/admin/movies/${movieId}/persons`, {
-    fullName: personData.fullName,
-    bio: personData.bio,
-    birthDate: personData.birthDate,
-    role: personData.role
-  });
-  return response.data;
-};
-
-// Attach an existing person to a movie
-export const attachPersonToMovie = async (movieId: string, personId: string, role: number) => {
-  const response = await axiosInstance.post(`/admin/movies/${movieId}/persons/attach`, {
-    personId,
-    role
+    personName,
+    personRole
   });
   return response.data;
 };
