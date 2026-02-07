@@ -5,7 +5,7 @@ import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
 import { MovieFormData } from '../../../../types/CreateMovieRequest';
 import { HallGrid } from '@/components/HallGrid/HallGrid';
 import { TicketPriceManager } from '@/components/TicketPriceManager/TicketPriceManager';
-import { getMovieById, updateMoviePartial, createAndAttachMedia, deleteMedia, MediaType, removePersonFromMovie, attachGenreToMovie, removeGenreFromMovie, getGenres, createGenre, attachPersonToMovie, createAndAttachPersonToMovie, CreatePersonRequestPayload } from '@/api/movies';
+import { getMovieById, updateMoviePartial, createAndAttachMedia, deleteMedia, MediaType, removePersonFromMovie, attachGenreToMovie, removeGenreFromMovie, getGenres, createGenre, attachPersonToMovie, createAndAttachPersonToMovie, CreatePersonRequestPayload, deleteMovie } from '@/api/movies';
 import { getMovieSessions, updateSessionPartial, createSession, deleteSession } from '@/api/sessions';
 import { getHalls, getHallById } from '@/api/halls';
 import { Hall, SeatType } from '@/types/hall';
@@ -400,6 +400,24 @@ export const EditMoviePage = () => {
         finally { setSaving(false); }
     };
 
+    const handleDeleteMovie = async () => {
+        if (!window.confirm(`Are you sure you want to delete "${formData.movieName}"? This action cannot be undone.`)) {
+            return;
+        }
+
+        setSaving(true);
+        try {
+            await deleteMovie(safeMovieId);
+            showToast('success', "Movie deleted successfully");
+            navigate('/admin/movies');
+        } catch (err) {
+            console.error("Delete failed", err);
+            showToast('error', "Failed to delete movie");
+        } finally {
+            setSaving(false);
+        }
+    };
+
     const handleSaveSession = async (sessionId: string) => {
         const session = sessions.find(s => s.id === sessionId);
         if (!session) return;
@@ -427,9 +445,9 @@ export const EditMoviePage = () => {
                 });
             }
             showToast('success', "Session updated successfully!");
-        } catch (err) { 
+        } catch (err) {
             showToast('error', "Session save failed");
-            setError("Session save failed"); 
+            setError("Session save failed");
         }
     };
 
@@ -455,7 +473,17 @@ export const EditMoviePage = () => {
         <div className={styles["edit-movie-page"]}>
             <div className={styles["edit-movie-header"]}>
                 <h2>Edit Movie</h2>
-                <button onClick={() => navigate('/admin/movies')} className={styles['back-btn']}>← Back</button>
+                <div className={styles["header-actions"]}>
+                    <button
+                        onClick={handleDeleteMovie}
+                        className={styles['delete-btn']}
+                        disabled={saving}
+                        title="Delete Movie"
+                    >
+                        🗑 Delete Movie
+                    </button>
+                    <button onClick={() => navigate('/admin/movies')} className={styles['back-btn']}>← Back</button>
+                </div>
             </div>
             <div className={styles["edit-movie-form"]}>
                 <div className={styles["movie-details-section"]}>

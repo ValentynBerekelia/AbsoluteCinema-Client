@@ -2,6 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
+import { formatDate } from '@/utils/dataTimeConverters';
 import './Hero.css'
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import { HeroBannerInfo } from '@/types/Movie';
@@ -9,14 +10,6 @@ import { HeroBannerInfo } from '@/types/Movie';
 interface HeroProps {
     movies: HeroBannerInfo[]
 }
-
-const formatDate = (dateString: string): string => {
-    const date = new Date(dateString);
-    const day = date.getDate();
-    const month = date.toLocaleDateString('en-US', { month: 'long' });
-    const year = date.getFullYear();
-    return `${day} ${month}, ${year}`;
-};
 
 const isMovieAvailable = (movie: HeroBannerInfo): boolean => {
     if (!movie.sessions || movie.sessions.length === 0) return false;

@@ -277,7 +277,8 @@ export const AddMoviePage = () => {
                         try {
                             await attachGenreToMovie(newMovieId, genreObj.id);
                         } catch (err) {
-                            console.error(`Failed to attach genre ${genreName}:`, err);
+                            console.error(`Failed to attach genre ${genreObj.name}:`, err);
+                            showToast('error', `Failed to attach genre ${genreObj.name}`);
                         }
                     }
                 }
@@ -340,7 +341,7 @@ export const AddMoviePage = () => {
             navigate('/admin/movies');
         } catch (err: any) {
             setError(err.response?.data?.message || 'Failed to create movie');
-            showToast('error', err.response?.data?.message || 'Failed to create movie');
+            showToast('error', err.message || 'Failed to create movie');
         } finally {
             setSaving(false);
         }
