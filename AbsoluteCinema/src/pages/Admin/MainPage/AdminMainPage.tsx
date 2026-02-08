@@ -4,12 +4,13 @@ import { useEffect, useState } from "react";
 import { MoviesQueryParameters, SortOrder } from "@/types/MoviesQueryParameters";
 import { deleteMovie, getMovies } from "@/api";
 import { mapMoviesForAdmin } from "@/types/Movie";
-import { useSearchParams } from "react-router-dom";
+import { useSearchParams, useNavigate } from "react-router-dom";
 import { AdminSearch } from "../../../components/layout/AdminSearch/AdminSearch";
 import { useToast } from "@/context/ToastContext/ToastContext";
 
 export const AdminMainPage = () => {
         const { showToast } = useToast();
+        const navigate = useNavigate();
 
     const [movies, setMovies] = useState(ADMIN_MOVIES_DATA);
     const [loading, setLoading] = useState(true);
@@ -19,17 +20,17 @@ export const AdminMainPage = () => {
 
     const [queryParams, setQueryParams] = useState<MoviesQueryParameters>(() => {
         const today = new Date();
-        const tenDaysLater = new Date();
-        tenDaysLater.setDate(today.getDate() + 10);
+        const threeMonthsLater = new Date();
+        threeMonthsLater.setMonth(today.getMonth() + 3);
 
         return {
             pageNumber: 1,
-            pageSize: 10,
+            pageSize: 50,
             sortColumn: 'rate',
             sortOrder: SortOrder.Asc,
             searchTerm: searchTermFromUrl,
             firstDate: today.toISOString().split('T')[0],
-            secondDate: tenDaysLater.toISOString().split('T')[0],
+            secondDate: threeMonthsLater.toISOString().split('T')[0],
         };
     });
 
@@ -77,7 +78,34 @@ export const AdminMainPage = () => {
 
     return (
         <>
-            <AdminSearch />
+            <div style={{
+                display: 'flex',
+                justifyContent: 'space-between',
+                alignItems: 'center',
+                marginBottom: '24px',
+                paddingLeft: '20px',
+                paddingRight: '20px',
+                gap: '20px'
+            }}>
+                <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
+                    <AdminSearch />
+                </div>
+                <button 
+                    onClick={() => navigate('/admin/movies/add')}
+                    style={{
+                        padding: '10px 20px',
+                        backgroundColor: '#333',
+                        color: '#fff',
+                        border: 'none',
+                        borderRadius: '4px',
+                        cursor: 'pointer',
+                        fontSize: '16px',
+                        whiteSpace: 'nowrap'
+                    }}
+                >
+                    + Add
+                </button>
+            </div>
 
             <div
                 className="admin-cards-list"

@@ -1,7 +1,7 @@
 .admin-search-container {
     display: flex;
     justify-content: flex-end;
-    margin-bottom: 24px;
+    margin-bottom: 0;
     width: 100%;
 }
 

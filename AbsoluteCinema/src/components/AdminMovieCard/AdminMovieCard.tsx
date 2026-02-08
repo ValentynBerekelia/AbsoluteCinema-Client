@@ -2,8 +2,9 @@ import { useNavigate } from 'react-router-dom';
 import { MovieAdminCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import './AdminMovieCard.css';
-import { useMemo } from 'react';
+import { useEffect, useMemo, useState } from 'react';
 import { getHallById } from '@/api';
+import { getSessionTickets } from '@/api/tickets';
 
 interface AdminMovieCardProps {
     movie: MovieAdminCardInfo;
@@ -12,6 +13,8 @@ interface AdminMovieCardProps {
 
 export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
     const navigate = useNavigate();
+    const [totalTickets, setTotalTickets] = useState(0);
+    const [totalSeats, setTotalSeats] = useState(0);
 
     const groupedSessions = movie.sessions.reduce((acc, session) => {
         const date = session.date;
@@ -25,6 +28,49 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
     const sortedDates = Object.keys(groupedSessions).sort((a, b) => {
         return new Date(a).getTime() - new Date(b).getTime();
     });
+
+    // Fetch sales data
+    useEffect(() => {
+        const fetchSalesData = async () => {
+            try {
+                let tickets = 0;
+                let seats = 0;
+
+                for (const session of movie.sessions) {
+                    // Get tickets for this session
+                    try {
+                        const ticketsResponse = await getSessionTickets(session.id);
+                        const ticketsArray = Array.isArray(ticketsResponse) ? ticketsResponse : ticketsResponse?.tickets ?? [];
+                        tickets += ticketsArray.length;
+                    } catch (err) {
+                        console.error(`Failed to fetch tickets for session ${session.id}:`, err);
+                    }
+
+                    // Get hall capacity
+                    try {
+                        const hallResponse = await getHallById(session.hallName || '');
+                        if (hallResponse) {
+                            const seatsArray = Array.isArray(hallResponse.seats) ? hallResponse.seats : hallResponse.seats?.seats ?? [];
+                            seats += seatsArray.length;
+                        }
+                    } catch (err) {
+                        console.error(`Failed to fetch hall for session ${session.id}:`, err);
+                    }
+                }
+
+                setTotalTickets(tickets);
+                setTotalSeats(seats);
+            } catch (err) {
+                console.error('Failed to fetch sales data:', err);
+            }
+        };
+
+        if (movie.sessions.length > 0) {
+            fetchSalesData();
+        }
+    }, [movie.sessions]);
+
+    const salesPercentage = totalSeats > 0 ? Math.round((totalTickets / totalSeats) * 100) : 0;
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -52,12 +98,12 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                     <div className='admin-stats-badge'>
                         <span className='stats-label'>Total Sales</span>
                         <div className='stats-values'>
-                            <span className='stats-sold'>42</span>
+                            <span className='stats-sold'>{totalTickets}</span>
                             <span className='stats-divider'>/</span>
-                            <span className='stats-total'>120</span>
+                            <span className='stats-total'>{totalSeats}</span>
                         </div>
                         <div className='stats-progress-bar'>
-                            <div className='stats-progress-fill' style={{ width: '35%' }}></div>
+                            <div className='stats-progress-fill' style={{ width: `${salesPercentage}%` }}></div>
                         </div>
                     </div>
                 </div>
@@ -84,6 +130,7 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                                                     key={`${date}-${idx}`}
                                                     session={session}
                                                     showPastDisabled={false}
+                                                    movieId={movie.id}
                                                 />
                                             ))}
                                         </div>
