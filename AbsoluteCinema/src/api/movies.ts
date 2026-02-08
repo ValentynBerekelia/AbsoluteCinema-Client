@@ -115,7 +115,9 @@ export const getGenres = async (movieId?: string) => {
 };
 
 export const createGenre = async (genreName: string) => {
-  const response = await axiosInstance.post('/genres', { genreName });
+  const response = await axiosInstance.post('/genres', { 
+    genreName
+  });
   return response.data;
 };
 
@@ -136,15 +138,50 @@ export interface Person {
   personRole: number; // 1 = Director, 2 = Actor
 }
 
-export interface AttachPersonRequest {
-  personName: string;
-  personRole: number; // 1 = Director, 2 = Actor
+export interface CreatePersonRequestPayload {
+  fullName: string;
+  bio: string;
+  birthDate: string;
+  role: number; // 1 = Director, 2 = Actor
 }
 
-export const attachPersonToMovie = async (movieId: string, personName: string, personRole: number) => {
+export interface AttachPersonRequest {
+  personId: string;
+  role: number; // 1 = Director, 2 = Actor
+}
+
+export interface CreatePersonMediaRequestPayload {
+  url: string;
+}
+
+const normalizePersonBirthDate = (birthDate: string) => {
+  if (!birthDate) return birthDate;
+  if (/^\d{4}-\d{2}-\d{2}$/.test(birthDate)) {
+    return `${birthDate}T00:00:00.000Z`;
+  }
+  if (birthDate.endsWith('Z') || /[+-]\d{2}:?\d{2}$/.test(birthDate)) {
+    return birthDate;
+  }
+  const parsed = new Date(birthDate);
+  return Number.isNaN(parsed.getTime()) ? birthDate : parsed.toISOString();
+};
+
+// Create a new person and attach to movie in one call
+export const createAndAttachPersonToMovie = async (movieId: string, personData: CreatePersonRequestPayload) => {
   const response = await axiosInstance.post(`/admin/movies/${movieId}/persons`, {
-    personName,
-    personRole
+    fullName: personData.fullName,
+    bio: personData.bio,
+    birthDate: normalizePersonBirthDate(personData.birthDate),
+    role: personData.role
+  });
+  return response.data;
+};
+
+// Attach an existing person to a movie
+export const attachPersonToMovie = async (movieId: string, personId: string, role: number) => {
+  const response = await axiosInstance.post(`/admin/movies/${movieId}/persons/attach`, {
+    personId,
+    role
   });
   return response.data;
 };
@@ -163,5 +200,53 @@ export const removePersonFromMovie = async (movieId: string, personId: string) =
 
 export const removeGenreFromMovie = async (movieId: string, genreId: string) => {
   const response = await axiosInstance.delete(`/admin/movies/${movieId}/genre/${genreId}`);
+  return response.data;
+};
+
+// Additional Person API Functions
+export const searchPersons = async (searchTerm?: string, role?: number, limit?: number) => {
+  const params: Record<string, any> = {};
+  if (searchTerm) params.Search = searchTerm;
+  if (role) params.Role = role;
+  if (limit) params.Limit = limit;
+  
+  const response = await axiosInstance.get('/persons', { params });
+  return response.data;
+};
+
+export const getPersonById = async (personId: string) => {
+  const response = await axiosInstance.get(`/persons/${personId}`);
+  return response.data;
+};
+
+export const createPerson = async (personData: CreatePersonRequestPayload) => {
+  const response = await axiosInstance.post('/admin/persons', {
+    fullName: personData.fullName,
+    bio: personData.bio,
+    birthDate: normalizePersonBirthDate(personData.birthDate),
+    role: personData.role
+  });
+  return response.data;
+};
+
+export const updatePerson = async (personId: string, personData: Partial<CreatePersonRequestPayload>) => {
+  const response = await axiosInstance.put(`/admin/persons/${personId}`, {
+    fullName: personData.fullName,
+    bio: personData.bio,
+    birthDate: personData.birthDate ? normalizePersonBirthDate(personData.birthDate) : personData.birthDate,
+    role: personData.role
+  });
+  return response.data;
+};
+
+export const deletePerson = async (personId: string) => {
+  const response = await axiosInstance.delete(`/admin/persons/${personId}`);
+  return response.data;
+};
+
+export const attachMediaToPerson = async (personId: string, url: string | null) => {
+  const response = await axiosInstance.post(`/admin/persons/${personId}/media`, {
+    url
+  });
   return response.data;
 };

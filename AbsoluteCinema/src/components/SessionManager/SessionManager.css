@@ -136,7 +136,8 @@
     border: 1px dashed var(--border-color);
     border-radius: var(--radius);
     margin: 20px 0;
-    overflow: hidden;
+    overflow: visible;
+    padding: 20px;
 }
 
 .hall-loader {
