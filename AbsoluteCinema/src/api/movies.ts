@@ -1,5 +1,4 @@
 import { defaultMoviesQueryParams, MoviesQueryParameters } from '@/types/MoviesQueryParameters';
-import { CreateMovieRequest } from '../types/CreateMovieRequest';
 import axiosInstance from './axiosInstance';
 
 // Media Type Enum - matches backend API
@@ -13,8 +12,9 @@ export enum MediaType {
 
 // Interfaces
 export interface CreateMediaRequest {
-  url: string;
+  url?: string;
   type: MediaType;
+  file?: File | null;
 }
 
 export interface AttachMediaRequest {
@@ -26,33 +26,37 @@ export interface CreateAndAttachMediaResponse {
   mediaId: string;
 }
 
-export const createMovie = async (movieData: CreateMovieRequest) => {
-    const response = await axiosInstance.post('admin/movies', movieData);
-    return response.data;
+export const createMovie = async (formData: FormData) => {
+  const response = await axiosInstance.post('/admin/movies', formData, {
+    headers: {
+      'Content-Type': 'multipart/form-data',
+    },
+  });
+  return response.data;
 };
 
 export const updateMovie = async (id: string | number, movieData: any) => {
-    console.log('📡 updateMovie called with ID:', id);
-    console.log('📦 Request payload:', movieData);
-    try {
-        const response = await axiosInstance.put(`/admin/movies/${id}`, movieData);
-        console.log('✅ Update successful:', response.data);
-        return response.data;
-    } catch (error: any) {
-        console.error('❌ Update failed. Status:', error.response?.status);
-        console.error('❌ Error response:', error.response?.data);
-        throw error;
-    }
+  console.log('📡 updateMovie called with ID:', id);
+  console.log('📦 Request payload:', movieData);
+  try {
+    const response = await axiosInstance.put(`/admin/movies/${id}`, movieData);
+    console.log('✅ Update successful:', response.data);
+    return response.data;
+  } catch (error: any) {
+    console.error('❌ Update failed. Status:', error.response?.status);
+    console.error('❌ Error response:', error.response?.data);
+    throw error;
+  }
 };
 
 export const updateMoviePartial = async (id: string | number, movieData: any) => {
-    const response = await axiosInstance.patch(`/admin/movies/${id}`, movieData);
-    return response.data;
+  const response = await axiosInstance.patch(`/admin/movies/${id}`, movieData);
+  return response.data;
 };
 
 export const deleteMovie = async (id: string | number) => {
-    const response = await axiosInstance.delete(`/admin/movies/${id}`);
-    return response.data;
+  const response = await axiosInstance.delete(`/admin/movies/${id}`);
+  return response.data;
 };
 
 export const getMovies = async (params?: MoviesQueryParameters) => {
@@ -75,9 +79,9 @@ export const getMovies = async (params?: MoviesQueryParameters) => {
 
 export const getMovieById = async (id: string) => {
   const response = await axiosInstance.get(`/movie/${id}`);
-  
+
   console.log("Full API Response:", response.data);
-  
+
   return response.data;
 };
 
@@ -86,13 +90,28 @@ export const getMovieFeatures = async () => {
   console.log("OPA", response);
   return response.data;
 }
+
 // Media API Functions
 export const createAndAttachMedia = async (movieId: string, mediaData: CreateMediaRequest) => {
-  const response = await axiosInstance.post(`/admin/movies/${movieId}/media`, {
-    url: mediaData.url,
-    type: mediaData.type
-  });
-  return response.data as CreateAndAttachMediaResponse;
+  const formData = new FormData();
+
+  formData.append('Type', mediaData.type.toString());
+
+  if (mediaData.file) {
+    formData.append('File', mediaData.file);
+  } else if (mediaData.url) {
+    formData.append('Url', mediaData.url);
+  }
+
+  const response = await axiosInstance.post<CreateAndAttachMediaResponse>(
+    `/admin/movies/${movieId}/media`,
+    formData,
+    {
+      headers: { 'Content-Type': 'multipart/form-data' }
+    }
+  );
+
+  return response.data;
 };
 
 export const attachMedia = async (movieId: string, mediaId: string) => {

@@ -1,9 +1,9 @@
 import { useCallback, useEffect, useState } from 'react';
-import { data, useNavigate } from 'react-router-dom';
+import { useNavigate } from 'react-router-dom';
 import styles from './AddMoviePage.module.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
-import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
-import { createMovie, attachPersonToMovie, attachGenreToMovie, getGenres } from '../../../../api/movies';
+import { MovieFormData } from '../../../../types/CreateMovieRequest';
+import { createMovie, attachPersonToMovie, getGenres } from '../../../../api/movies';
 import { SessionManager } from '@/components/SessionManager/SessionManager';
 import { getDatesInRange } from '@/utils/getDatesInRange';
 import { createSession, getHallById, getHalls } from '@/api';
@@ -25,13 +25,12 @@ interface SessionFormData {
 
 export const AddMoviePage = () => {
     const { showToast } = useToast();
+    const navigate = useNavigate();
 
     const [halls, setHalls] = useState<Hall[]>([]);
     const [seatTypes, setSeatTypes] = useState<SeatType[]>([]);
     const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
-    const navigate = useNavigate();
     const [saving, setSaving] = useState(false);
-    const [error, setError] = useState<string | null>(null);
     const [genreOptions, setGenreOptions] = useState<Genre[]>([]);
 
     const [formData, setFormData] = useState<MovieFormData>({
@@ -62,50 +61,13 @@ export const AddMoviePage = () => {
         }
     ]);
 
-    const handlePosterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setFormData(prev => ({
-                ...prev,
-                poster: file
-            }));
-        }
-    };
-
-    const addSession = () => {
-        const newSession: SessionFormData = {
-            id: Date.now().toString(),
-            dateFrom: '',
-            dateTo: '',
-            time: '11:00',
-            hall: '',
-            seatPrices: {},
-            enabledTypes: {},
-        };
-        setSessions(prev => [...prev, newSession]);
-    };
-
-    const removeSession = (id: string) => {
-        if (sessions.length > 1) {
-            setSessions(prev => prev.filter(session => session.id !== id));
-        }
-    };
-
     useEffect(() => {
-        const fetchHalls = async () => {
+        const fetchData = async () => {
             try {
-                const data = await getHalls();
-                setHalls(mapHallsListFromApi(data));
-            } catch (err) {
-                console.error('Failed to fetch halls:', err);
-                setError('Failed to load halls');
-                showToast('error', 'Failed to load halls');
-            }
-        };
+                const [hallsData, allGenres] = await Promise.all([getHalls(), getGenres()]);
+                
+                setHalls(mapHallsListFromApi(hallsData));
 
-        const fetchGenres = async () => {
-            try {
-                const allGenres = await getGenres();
                 const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
                 const formattedGenres = genreList
                     .map((g: any) => ({
@@ -115,24 +77,23 @@ export const AddMoviePage = () => {
                     .filter((g: any) => g.name.trim().length > 0);
                 setGenreOptions(formattedGenres);
             } catch (err) {
-                console.error('Failed to fetch genres:', err);
-                showToast('error', 'Failed to fetch genres');
-
+                console.error('Initialization error:', err);
+                showToast('error', 'Failed to load initial data');
             }
         };
+        fetchData();
+    }, [showToast]);
 
-        fetchHalls();
-        fetchGenres();
-    }, []);
-
-    const loadHallDetails = async (hallId: string, sessionId: string) => {
+    const loadHallDetails = useCallback(async (hallId: string, sessionId: string) => {
         try {
+            setLoadingHalls(prev => ({ ...prev, [hallId]: true }));
             const data = await getHallById(hallId);
             const { seats, availableSeatTypes } = mapHallDetailsFromApi(data);
 
             setHalls(prev => prev.map(h =>
                 h.id === hallId ? { ...h, seats, availableSeatTypes } : h
             ));
+
             const defaultEnabled = availableSeatTypes.reduce((acc: Record<string, boolean>, type: SeatType) => {
                 acc[type.id] = true;
                 return acc;
@@ -142,20 +103,17 @@ export const AddMoviePage = () => {
                 if (session.id !== sessionId) return session;
                 const mergedPrices = { ...session.seatPrices };
                 availableSeatTypes.forEach((type: SeatType) => {
-                    if (mergedPrices[type.id] === undefined) {
-                        mergedPrices[type.id] = '';
-                    }
+                    if (mergedPrices[type.id] === undefined) mergedPrices[type.id] = '';
                 });
                 return { ...session, enabledTypes: defaultEnabled, seatPrices: mergedPrices };
             }));
-
         } catch (err) {
             console.error('Failed to load hall details:', err);
             showToast('error', 'Failed to load hall details');
         } finally {
             setLoadingHalls(prev => ({ ...prev, [hallId]: false }));
         }
-    };
+    }, [showToast]);
 
     const handleSessionChange = useCallback((id: string, field: keyof SessionFormData, value: any) => {
         setSessions(prev => prev.map(session =>
@@ -167,90 +125,93 @@ export const AddMoviePage = () => {
         }
     }, [loadHallDetails]);
 
+    const addSession = () => {
+        setSessions(prev => [...prev, {
+            id: Date.now().toString(),
+            dateFrom: '',
+            dateTo: '',
+            time: '11:00',
+            hall: '',
+            seatPrices: {},
+            enabledTypes: {},
+        }]);
+    };
+
+    const removeSession = (id: string) => {
+        if (sessions.length > 1) {
+            setSessions(prev => prev.filter(session => session.id !== id));
+        }
+    };
+
     const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
         setSaving(true);
-        setError(null);
 
         try {
-            const moviePayload: CreateMovieRequest = {
-                movieName: formData.movieName,
-                description: formData.description,
-                rate: Number(formData.rate),
-                ageLimit: Number(formData.ageLimit),
-                duration: minutesToTimeSpan(Number(formData.duration)),
-                country: formData.country,
-                studio: formData.studio,
-                language: formData.language,
-                genres: []
-            };
+            const bodyFormData = new FormData();
+            bodyFormData.append('MovieName', formData.movieName);
+            bodyFormData.append('Description', formData.description);
+            bodyFormData.append('Rate', formData.rate.toString());
+            bodyFormData.append('AgeLimit', formData.ageLimit.toString());
+            bodyFormData.append('Duration', minutesToTimeSpan(Number(formData.duration)));
+            bodyFormData.append('Country', formData.country);
+            bodyFormData.append('Studio', formData.studio);
+            bodyFormData.append('Language', formData.language);
 
-            const movieResult = await createMovie(moviePayload as any);
-            const newMovieId = movieResult.movieId?.id ?? movieResult.id;
+            if (formData.poster) {
+                bodyFormData.append('poster', formData.poster);
+            }
 
-            // Attach Genres to Movie
             if (formData.genres && formData.genres.length > 0) {
-                const allGenres = await getGenres();
-                const genreList = Array.isArray(allGenres) ? allGenres : allGenres.genres || [];
-
-                for (const gRef of formData.genres) {
-                    const foundGenre = genreList.find((g: any) => g.name === gRef.name);
-
-                    if (foundGenre) {
-                        try {
-                            await attachGenreToMovie(newMovieId, foundGenre.id);
-                        } catch (err) {
-                            console.error(`Failed to attach genre ${foundGenre.name}:`, err);
-                            showToast('error', `Failed to attach genre ${foundGenre.name}`);
-                        }
-                    }
-                }
+                formData.genres.forEach(genre => {
+                    bodyFormData.append('Genres', genre.name);
+                });
             }
 
-            // Attach Directors to Movie
-            if (formData.directors && formData.directors.length > 0) {
-                for (const directorName of formData.directors) {
-                    try {
-                        await attachPersonToMovie(newMovieId, directorName, 1); // 1 = Director
-                    } catch (err) {
-                        console.error(`Failed to attach director ${directorName}:`, err);
-                    }
-                }
-            }
+            const movieResult = await createMovie(bodyFormData);
+            const newMovieId = movieResult.movieId?.id || movieResult.id || movieResult;
 
-            // Attach Actors (Starring) to Movie
-            if (formData.starring && formData.starring.length > 0) {
-                for (const actorName of formData.starring) {
-                    try {
-                        await attachPersonToMovie(newMovieId, actorName, 2); // 2 = Actor
-                    } catch (err) {
-                        console.error(`Failed to attach actor ${actorName}:`, err);
-                    }
-                }
+            const personPromises: Promise<any>[] = [];
+            
+            if (formData.directors?.length) {
+                formData.directors.forEach(name => 
+                    personPromises.push(attachPersonToMovie(newMovieId, name, 1))
+                );
+            }
+            if (formData.starring?.length) {
+                formData.starring.forEach(name => 
+                    personPromises.push(attachPersonToMovie(newMovieId, name, 2))
+                );
+            }
+            
+            if (personPromises.length > 0) {
+                await Promise.allSettled(personPromises);
             }
 
             const sessionPromises: Promise<any>[] = [];
-
             for (const sessionCard of sessions) {
-                if (!sessionCard.hall) continue;
+                if (!sessionCard.hall || !sessionCard.dateFrom) continue;
 
-                const dates = getDatesInRange(sessionCard.dateFrom, sessionCard.dateTo);
+                const dates = getDatesInRange(sessionCard.dateFrom, sessionCard.dateTo || sessionCard.dateFrom);
                 dates.forEach(date => {
                     const payload = prepareSessionPayload(sessionCard, date, newMovieId);
-
                     if (payload.prices.length > 0) {
                         sessionPromises.push(createSession(payload));
                     }
                 });
             }
+
             if (sessionPromises.length > 0) {
                 await Promise.all(sessionPromises);
             }
 
+            showToast('success', 'Movie and sessions created successfully!');
             navigate('/admin/movies');
+
         } catch (err: any) {
-            setError(err.response?.data?.message || 'Failed to create movie');
-            showToast('error', err.message || 'Failed to create movie');
+            console.error(err);
+            const message = err.response?.data?.message || err.message || 'Failed to create movie';
+            showToast('error', message);
         } finally {
             setSaving(false);
         }
@@ -265,8 +226,6 @@ export const AddMoviePage = () => {
                 </button>
             </div>
 
-            {error && <div className={styles["error-message"]}>{error}</div>}
-
             <form onSubmit={handleSubmit} className="add-movie-form">
                 <MovieAddForm
                     formData={formData}
@@ -274,7 +233,6 @@ export const AddMoviePage = () => {
                     genreOptions={genreOptions}
                 />
 
-                {/* Sessions Section */}
                 <SessionManager
                     sessions={sessions}
                     halls={halls}
@@ -285,10 +243,9 @@ export const AddMoviePage = () => {
                     onSessionChange={handleSessionChange}
                 />
 
-                {/* Submit */}
                 <div className={styles["form-actions"]}>
                     <button type="submit" className={styles["submit-btn"]} disabled={saving}>
-                        {saving ? 'Creating Movie...' : 'Create Movie'}
+                        {saving ? 'Creating...' : 'Create Movie'}
                     </button>
                     <button
                         type="button"

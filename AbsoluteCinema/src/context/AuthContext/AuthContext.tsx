@@ -2,7 +2,7 @@ import { axiosInstance } from "@/api";
 import { getMe, login, logout, refresh, register, revokeAll } from "@/api/auth";
 import { LoginRequest, RegisterRequest, User } from "@/types/Auth";
 import { createContext, useContext, useEffect, useState } from "react";
-import { useToast } from "@/context/ToastContext/ToastContext"; // Імпортуємо тости
+import { useToast } from "@/context/ToastContext/ToastContext";
 
 interface AuthContextType {
     user: User | null;
@@ -34,10 +34,13 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         const initAuth = async () => {
             try {
                 const res = await refresh();
-                setAccessToken(res.accessToken);
-                setAuthHeader(res.accessToken);
+                const token = res.accessToken;
+                setAccessToken(token);
+                setAuthHeader(token);
 
-                const userData = await getMe();
+                const userData = await axiosInstance.get('auth/me', {
+                    headers: { Authorization: `Bearer ${token}` }
+                }).then(r => r.data);
                 setUser(userData);
             } catch (error) {
                 console.log("Not authenticated or session expired");

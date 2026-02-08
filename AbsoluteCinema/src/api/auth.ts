@@ -1,4 +1,4 @@
-import { GetCurrentUserResponse, LoginRequest, LoginResponse, RefreshTokenRequest, RefreshTokenResponse, RegisterRequest, RegisterResponse, RevokeAllRefreshTokenRequest } from "@/types/Auth";
+import { GetCurrentUserResponse, LoginRequest, LoginResponse, RefreshTokenResponse, RegisterRequest, RegisterResponse } from "@/types/Auth";
 import axiosInstance from "./axiosInstance";
 
 export const register = async (data: RegisterRequest): Promise<RegisterResponse> => {
