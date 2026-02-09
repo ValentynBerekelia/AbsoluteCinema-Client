@@ -2,9 +2,7 @@ import { useNavigate } from 'react-router-dom';
 import { MovieAdminCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import './AdminMovieCard.css';
-import { useEffect, useMemo, useState } from 'react';
-import { getHallById } from '@/api';
-import { getSessionTickets } from '@/api/tickets';
+import { Session } from '@/types/Session';
 
 interface AdminMovieCardProps {
     movie: MovieAdminCardInfo;
@@ -13,79 +11,28 @@ interface AdminMovieCardProps {
 
 export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
     const navigate = useNavigate();
-    const [totalTickets, setTotalTickets] = useState(0);
-    const [totalSeats, setTotalSeats] = useState(0);
+    const totalTickets = movie.totalTicketSold;
+    const totalSeats = movie.totalCapacity;
+    
+    const salesPercentage = totalSeats > 0 ? Math.round((totalTickets / totalSeats) * 100) : 0;
+
+    const getProgressColor = () => {
+        if (totalSeats === 0) return '#bdc3c7';
+        if (salesPercentage > 75) return '#4caf50';
+        if (salesPercentage > 30) return '#ffc107';
+        return '#f44336';
+    };
 
     const groupedSessions = movie.sessions.reduce((acc, session) => {
         const date = session.date;
-        if (!acc[date]) {
-            acc[date] = [];
-        }
+        if (!acc[date]) acc[date] = [];
         acc[date].push(session);
         return acc;
-    }, {} as Record<string, typeof movie.sessions>);
+    }, {} as Record<string, Session[]>);
 
-    const sortedDates = Object.keys(groupedSessions).sort((a, b) => {
-        return new Date(a).getTime() - new Date(b).getTime();
-    });
-
-    // Fetch sales data
-    useEffect(() => {
-        const fetchSalesData = async () => {
-            try {
-                let totalSold = 0;
-                let totalCapacity = 0;
-
-                // 1. Створюємо масив промісів для квитків (паралельно)
-                const ticketPromises = movie.sessions.map(s =>
-                    getSessionTickets(s.id).catch(() => []) // ігноруємо помилки окремих сесій
-                );
-
-                const uniqueHallIds = Array.from(new Set(movie.sessions.map(s => s.hallId || s.hallName).filter(Boolean))) as string[];
-                const hallPromises = uniqueHallIds.map(id =>
-                    getHallById(id).catch(() => null)
-                );
-
-                const [allTicketsResults, allHallsResults] = await Promise.all([
-                    Promise.all(ticketPromises),
-                    Promise.all(hallPromises)
-                ]);
-
-                // 3. Рахуємо продані квитки
-                allTicketsResults.forEach(res => {
-                    const arr = Array.isArray(res) ? res : res?.tickets ?? [];
-                    totalSold += arr.length;
-                });
-
-                // 4. Рахуємо загальну місткість
-                // Створюємо карту залів для швидкого доступу
-                const hallsMap = new Map();
-                allHallsResults.forEach(h => {
-                    if (h) {
-                        const id = h.id?.id || h.id;
-                        const seats = Array.isArray(h.seats) ? h.seats.length : (h.seats?.seats?.length || 0);
-                        hallsMap.set(id, seats);
-                    }
-                });
-
-                movie.sessions.forEach(s => {
-                    const hallId = s.hallId || s.hallName;
-                    totalCapacity += hallsMap.get(hallId) || 0;
-                });
-
-                setTotalTickets(totalSold);
-                setTotalSeats(totalCapacity);
-            } catch (err) {
-                console.error('Failed to aggregate sales data:', err);
-            }
-        };
-
-        if (movie.sessions?.length > 0) {
-            fetchSalesData();
-        }
-    }, [movie.sessions]);
-
-    const salesPercentage = totalSeats > 0 ? Math.round((totalTickets / totalSeats) * 100) : 0;
+    const sortedDates = Object.keys(groupedSessions).sort((a, b) =>
+        new Date(a).getTime() - new Date(b).getTime()
+    );
 
     const handleDelete = (e: React.MouseEvent) => {
         e.stopPropagation();
@@ -96,13 +43,7 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
 
     return (
         <div className='admin-movie-container'>
-            <button
-                className='admin-delete-movie-btn'
-                onClick={handleDelete}
-                title="Delete Movie"
-            >
-                ✕
-            </button>
+            <button className='admin-delete-movie-btn' onClick={handleDelete} title="Delete Movie">✕</button>
 
             <div className='admin-movie-main-content'>
                 <div className='admin-left-column'>
@@ -111,14 +52,26 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                     </div>
 
                     <div className='admin-stats-badge'>
-                        <span className='stats-label'>Total Sales</span>
+                        <div className='stats-header'>
+                            <span className='stats-label'>Occupancy</span>
+                            <span className='stats-percentage' style={{ color: getProgressColor() }}>
+                                {salesPercentage}%
+                            </span>
+                        </div>
                         <div className='stats-values'>
                             <span className='stats-sold'>{totalTickets}</span>
                             <span className='stats-divider'>/</span>
-                            <span className='stats-total'>{totalSeats}</span>
+                            <span className='stats-total'>{totalSeats || '—'}</span>
                         </div>
-                        <div className='stats-progress-bar'>
-                            <div className='stats-progress-fill' style={{ width: `${salesPercentage}%` }}></div>
+                        <div className='stats-progress-bar' style={{ backgroundColor: 'rgba(255,255,255,0.1)' }}>
+                            <div 
+                                className='stats-progress-fill' 
+                                style={{ 
+                                    width: `${salesPercentage}%`, 
+                                    backgroundColor: getProgressColor(),
+                                    boxShadow: `0 0 10px ${getProgressColor()}44` 
+                                }}
+                            ></div>
                         </div>
                     </div>
                 </div>
@@ -127,7 +80,10 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                     <div className='admin-movie-header-info'>
                         <h2 className='admin-movie-title'>{movie.title}</h2>
                         <div className='admin-quick-meta'>
-                            <span className='meta-tag duration'>{movie.duration}</span>
+                            {/* Якщо duration приходить як 02:49:00, прибираємо зайві нулі */}
+                            <span className='meta-tag duration'>
+                                {movie.duration.replace(/^00:/, '').replace(/:00$/, '')}
+                            </span>
                             <span className='meta-tag age'>{movie.ageLimit}+</span>
                         </div>
                     </div>
@@ -138,7 +94,9 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                             {sortedDates.length > 0 ? (
                                 sortedDates.map((date) => (
                                     <div key={date} className='date-block'>
-                                        <span className='session-date-header'>{date}</span>
+                                        <span className='session-date-header'>
+                                            {new Date(date).toLocaleDateString('uk-UA', { day: 'numeric', month: 'short' })}
+                                        </span>
                                         <div className='sessions-row'>
                                             {groupedSessions[date].map((session, idx) => (
                                                 <TimeBadge
@@ -152,7 +110,7 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                                     </div>
                                 ))
                             ) : (
-                                <p className="no-sessions">No sessions scheduled</p>
+                                <p className="no-sessions">No active sessions</p>
                             )}
                         </div>
                     </div>
@@ -161,7 +119,7 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
                         className='admin-action-btn'
                         onClick={() => navigate(`/admin/movies/edit/${movie.id}`)}
                     >
-                        Edit Details
+                        Edit Details & Schedule
                     </button>
                 </div>
             </div>

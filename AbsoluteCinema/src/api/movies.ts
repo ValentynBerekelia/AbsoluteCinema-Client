@@ -26,6 +26,26 @@ export interface CreateAndAttachMediaResponse {
   mediaId: string;
 }
 
+export interface AdminMovieStats {
+    id: string;
+    name: string;
+    posterUrl: string;
+    duration: string;
+    ageLimit: number;
+    totalTicketSold: number;
+    totalCapacity: number;
+    sessions: {
+        id: string;
+        startDateTime: string;
+        format: number;
+    }[];
+}
+
+interface AdminStatsResponse {
+    movies: AdminMovieStats[];
+    nextCursor: string | null;
+}
+
 export const createMovie = async (formData: FormData) => {
   const response = await axiosInstance.post('/admin/movies', formData, {
     headers: {
@@ -269,3 +289,13 @@ export const attachMediaToPerson = async (personId: string, url: string | null) 
   });
   return response.data;
 };
+
+export const getAdminMoviesStats = async (searchTerm?: string, pageSize: number = 50) => {
+    const response = await axiosInstance.get<AdminStatsResponse>('/admin/movies/stats', {
+        params: {
+            SearchTerm: searchTerm,
+            PageSize: pageSize
+        }
+    });
+    return response.data; 
+}

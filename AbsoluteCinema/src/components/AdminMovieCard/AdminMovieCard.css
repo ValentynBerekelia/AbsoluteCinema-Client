@@ -9,7 +9,12 @@
     font-size: 16px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
     overflow: hidden;
-    transition: transform 0.2s ease;
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.admin-movie-container:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
 }
 
 .admin-movie-header-row {
@@ -63,7 +68,7 @@
 .admin-movie-main-content {
     display: flex;
     gap: 25px;
-    padding: 0 20px 20px 20px;
+    padding: 20px;
 }
 
 .admin-left-column {
@@ -82,48 +87,80 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.1);
 }
 
+/* Stats Section */
 .admin-stats-badge {
-    background: #f8f9fa;
-    padding: 12px;
+    background: #ffffff; /* Змінено для контрасту з доріжкою бару */
+    padding: 14px;
     border-radius: 10px;
-    border: 1px solid #eee;
+    border: 1px solid #e0e0e0;
+    display: flex;
+    flex-direction: column;
+    box-shadow: inset 0 2px 4px rgba(0,0,0,0.02);
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
 }
 
 .stats-label {
-    display: block;
     font-size: 11px;
     text-transform: uppercase;
     color: #888;
-    margin-bottom: 6px;
     font-weight: 700;
+    letter-spacing: 0.5px;
+}
+
+.stats-percentage {
+    font-size: 14px;
+    font-weight: 800;
+    transition: color 0.3s ease;
 }
 
 .stats-values {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
     display: flex;
-    align-items: center;
-    gap: 5px;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 10px;
 }
 
-.stats-sold { color: #e50914; }
-.stats-divider { color: #ccc; }
-.stats-total { color: #333; }
+.stats-sold { 
+    color: #1a1a1a; 
+}
 
+.stats-divider { 
+    color: #ccc; 
+    font-weight: 400;
+    margin: 0 2px;
+}
+
+.stats-total { 
+    color: #7f8c8d; 
+    font-size: 15px;
+    font-weight: 600;
+}
+
+/* Progress Bar */
 .stats-progress-bar {
-    height: 5px;
-    background: #e0e0e0;
-    border-radius: 3px;
-    margin-top: 10px;
+    height: 8px;
+    background: #dcdde1; /* Доріжка, яку видно ЗАВЖДИ */
+    border-radius: 10px;
     overflow: hidden;
+    position: relative;
 }
 
 .stats-progress-fill {
     height: 100%;
-    background: #e50914;
-    border-radius: 3px;
+    border-radius: 10px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+    min-width: 4px; /* Мінімальна видима частина */
 }
 
+/* Right Column & Meta */
 .admin-right-column {
     flex: 1;
     display: flex;
@@ -151,6 +188,7 @@
 .meta-tag.duration { background: #e3f2fd; color: #1976d2; }
 .meta-tag.age { background: #fff3e0; color: #f57c00; }
 
+/* Sessions Section */
 .admin-sessions-section h3 {
     font-size: 14px;
     text-transform: uppercase;
@@ -190,6 +228,7 @@
     gap: 8px;
 }
 
+/* Action Button */
 .admin-action-btn {
     margin-top: auto;
     width: 100%;
@@ -197,7 +236,7 @@
     background-color: #1a1a1a;
     color: white;
     border: none;
-    font-size: 16px;
+    font-size: 14px;
     font-weight: 700;
     cursor: pointer;
     transition: all 0.2s;
@@ -209,8 +248,10 @@
 .admin-action-btn:hover {
     background-color: #e50914;
     box-shadow: 0 4px 12px rgba(229, 9, 20, 0.2);
+    transform: translateY(-1px);
 }
 
+/* Scrollbar */
 .sessions-by-date-group::-webkit-scrollbar {
     width: 5px;
 }

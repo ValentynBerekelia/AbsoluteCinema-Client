@@ -2,15 +2,15 @@ import { AdminMovieCard } from "../../../components/AdminMovieCard/AdminMovieCar
 import { ADMIN_MOVIES_DATA } from "../../../data/adminMovies";
 import { useEffect, useState } from "react";
 import { MoviesQueryParameters, SortOrder } from "@/types/MoviesQueryParameters";
-import { deleteMovie, getMovies } from "@/api";
+import { deleteMovie, getAdminMoviesStats, getMovies } from "@/api";
 import { mapMoviesForAdmin, MovieAdminCardInfo, MovieDetails } from "@/types/Movie";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AdminSearch } from "../../../components/layout/AdminSearch/AdminSearch";
 import { useToast } from "@/context/ToastContext/ToastContext";
 
 export const AdminMainPage = () => {
-        const { showToast } = useToast();
-        const navigate = useNavigate();
+    const { showToast } = useToast();
+    const navigate = useNavigate();
 
     const [movies, setMovies] = useState<MovieAdminCardInfo[]>([]);
     const [loading, setLoading] = useState(true);
@@ -46,23 +46,19 @@ export const AdminMainPage = () => {
         const fetchMovies = async () => {
             try {
                 setLoading(true);
-                const rawData = await getMovies(queryParams);
-                const mappedMovies = mapMoviesForAdmin(rawData);
-                setMovies(mappedMovies);
+                const data = await getAdminMoviesStats(searchTermFromUrl);
+                setMovies(mapMoviesForAdmin(data.movies));
             } catch (error) {
-                console.error('Failed to fetch movies: ', error);
-                setMovies(ADMIN_MOVIES_DATA);
+                console.error('Failed to fetch stats:', error);
+                showToast('error', 'Could not load admin stats');
             } finally {
                 setLoading(false);
             }
         };
 
-        const timeoutId = setTimeout(() => {
-            fetchMovies();
-        }, 500);
-
+        const timeoutId = setTimeout(fetchMovies, 500);
         return () => clearTimeout(timeoutId);
-    }, [queryParams]);
+    }, [searchTermFromUrl]);
 
     const handleDelete = async (id: string) => {
         if (!window.confirm("Delete this movie and all his sessions?")) return;
@@ -90,7 +86,7 @@ export const AdminMainPage = () => {
                 <div style={{ flex: 1, display: 'flex', alignItems: 'center' }}>
                     <AdminSearch />
                 </div>
-                <button 
+                <button
                     onClick={() => navigate('/admin/movies/add')}
                     style={{
                         padding: '10px 20px',
@@ -118,7 +114,7 @@ export const AdminMainPage = () => {
             >
                 {movies.length > 0 ? (
                     movies.map(movie => (
-                        <AdminMovieCard key={movie.id} movie={movie} onDelete={handleDelete}/>
+                        <AdminMovieCard key={movie.id} movie={movie} onDelete={handleDelete} />
                     ))
                 ) : (
                     <div style={{
