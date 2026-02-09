@@ -7,18 +7,34 @@ export interface CreateTicketPayload {
 }
 
 export const getSessionTickets = async (sessionId: string) => {
-    const response = await axiosInstance.get(`/sessions/${sessionId}/tickets`);
+    const response = await axiosInstance.get(`sessions/${sessionId}/tickets`);
+    return response.data;
+};
+
+export const getSessionTicketsShort = async (sessionId: string) => {
+    const response = await axiosInstance.get(`sessions/${sessionId}/tickets/short`);
     return response.data;
 };
 
 export const getTicketById = async (ticketId: string) => {
-    const response = await axiosInstance.get(`ticket/${ticketId}`);
+    const response = await axiosInstance.get(`ticket${ticketId}`);
     return response.data;
 };
 
 export const createTicket = async (payload: CreateTicketPayload) => {
     const response = await axiosInstance.post('ticket', payload);
     return response.data;
+};
+
+export const createMultipleTickets = async (sessionId: string, seatIds: string[], userId: string) => {
+    const promises = seatIds.map(seatId =>
+        createTicket({
+            sessionId,
+            seatId,
+            userId
+        })
+    );
+    return Promise.all(promises);
 };
 
 export const updateTicket = async (ticketId: string, payload: CreateTicketPayload) => {

@@ -10,6 +10,7 @@ import { getDynamicSeatColor } from '@/utils/colorGenerator';
 import styles from './ReservationsPage.module.css';
 import { useAuth } from '@/context/AuthContext/AuthContext';
 import { useToast } from '@/context/ToastContext/ToastContext';
+import { convertIsoToDateTime } from '@/utils/dataTimeConverters';
 
 interface SessionSummary {
     id: string;
@@ -30,15 +31,17 @@ interface TicketInfo {
 
 const formatSessionDate = (dateTime: string) => {
     if (!dateTime) return '';
+
     const date = new Date(dateTime);
-    return date.toLocaleString('en-US', {
-        weekday: 'short',
-        month: 'short',
-        day: 'numeric',
-        hour: '2-digit',
-        minute: '2-digit'
-    });
+    const { time } = convertIsoToDateTime(dateTime);
+
+    const weekday = date.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' });
+    const day = date.getUTCDate();
+    const month = date.toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' });
+
+    return `${weekday}, ${month} ${day}, ${time}`;
 };
+
 
 const normalizeTickets = (data: any): TicketInfo[] => {
     const ticketsArray = Array.isArray(data) ? data : data?.tickets ?? data?.data ?? [];

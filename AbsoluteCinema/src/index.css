@@ -17,7 +17,7 @@ body {
 }
 
 :root {
-  --bg-start: #050816;
+  --bg-start: #110003;
   --bg-end: #0b1330;
   --primary: #0f1630;
   --accent: #e50914;
@@ -45,6 +45,7 @@ html,
 
 body {
   background: #0d26a3;
-  background: radial-gradient(circle, rgb(12, 19, 59) 9%, rgb(44, 0, 9) 79%);
+  background: linear-gradient(83deg, var(--bg-start), var(--bg-end), var(--bg-start));
   color: var(--text);
+  background-attachment: fixed;
 }
