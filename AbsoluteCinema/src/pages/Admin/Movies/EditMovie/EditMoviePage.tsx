@@ -28,7 +28,7 @@ interface SessionFormData {
     id: string;
     date: string;
     time: string;
-    hall: string;
+    hallId: string;
     seatPrices: Record<string, string>;
     enabledTypes: Record<string, boolean>;
 }
@@ -73,7 +73,7 @@ export const EditMoviePage = () => {
     const [loadingMovie, setLoadingMovie] = useState(false);
     const [loadingHalls, setLoadingHalls] = useState<Record<string, boolean>>({});
 
-    // 1. Loading genres, directors, actors
+    // 1. Loading reference data (halls, genres, people)
     useEffect(() => {
         const fetchReferenceData = async () => {
             try {
@@ -84,11 +84,14 @@ export const EditMoviePage = () => {
                     searchPersons(undefined, 2, 100)
                 ]);
 
-                setHalls((hallsData?.halls || hallsData).map((h: any) => ({
-                    id: h.id?.id || h.id,
-                    name: h.name,
-                    seats: []
-                })));
+                setHalls((hallsData?.halls || hallsData).map((h: any) => {
+                    const rawId = h.id?.id || h.id;
+                    return {
+                        id: String(rawId),
+                        name: h.name,
+                        seats: []
+                    };
+                }));
 
                 setGenreOptions((Array.isArray(allGenres) ? allGenres : allGenres?.genres || [])
                     .map((g: any) => ({ id: g?.id || '', name: g?.name || g }))
@@ -111,19 +114,25 @@ export const EditMoviePage = () => {
         fetchReferenceData();
     }, []);
 
-    // 2. Loading hall details
+    // 2. Function to load seats for a specific hall
     const loadHallDetails = useCallback(async (hallId: string, sessionId: string) => {
-        setLoadingHalls(prev => ({ ...prev, [hallId]: true }));
+        if (!hallId) return;
+        const targetHallId = String(hallId);
+        setLoadingHalls(prev => ({ ...prev, [targetHallId]: true }));
         try {
-            const hallData = await getHallById(hallId);
+            const hallData = await getHallById(targetHallId);
+
             const availableSeatTypes = hallData.availableSeatTypes?.map((t: any) => ({
-                id: t.seatTypeId?.id || t.seatTypeId,
+                id: String(t.seatTypeId?.id || t.seatTypeId),
                 name: t.name
             })) || [];
 
-            setHalls(prev => prev.map(h => h.id === hallId ? {
+            setHalls(prev => prev.map(h => h.id === targetHallId ? {
                 ...h,
-                seats: hallData.seats.map((s: any) => ({ ...s, seatTypeId: s.seatTypeId?.id || s.seatTypeId })),
+                seats: hallData.seats.map((s: any) => ({
+                    ...s,
+                    seatTypeId: String(s.seatTypeId?.id || s.seatTypeId)
+                })),
                 availableSeatTypes
             } : h));
 
@@ -131,25 +140,28 @@ export const EditMoviePage = () => {
                 if (s.id === sessionId) {
                     const newPrices = { ...s.seatPrices };
                     const newEnabled = { ...s.enabledTypes };
+
                     availableSeatTypes.forEach((type: any) => {
-                        const id = type.id;
-                        if (!newPrices[id]) newPrices[id] = "0";
-                        if (newEnabled[id] === undefined) newEnabled[id] = true;
+                        const tid = type.id;
+                        if (!newPrices[tid]) newPrices[tid] = "0";
+                        if (newEnabled[tid] === undefined) newEnabled[tid] = true;
                     });
-                    return { ...s, seatPrices: newPrices, enabledTypes: newEnabled };
+
+                    return { ...s, seatPrices: newPrices, enabledTypes: newEnabled, hallId: targetHallId };
                 }
                 return s;
             }));
         } catch (err) {
             console.error("Hall details failed", err);
         } finally {
-            setLoadingHalls(prev => ({ ...prev, [hallId]: false }));
+            setLoadingHalls(prev => ({ ...prev, [targetHallId]: false }));
         }
     }, []);
 
-    // 3. Load movie details
+    // 3. Load movie and its sessions
     useEffect(() => {
-        if (!safeMovieId) return;
+        if (!safeMovieId || halls.length === 0) return;
+        
         const loadMovieData = async () => {
             setLoadingMovie(true);
             try {
@@ -179,11 +191,18 @@ export const EditMoviePage = () => {
                 setTrailers(mapMediaToGallery(movieData.trailers, MediaType.Video));
                 if (movieData.banner) setBanner({ id: movieData.banner.id, url: movieData.banner.url, type: MediaType.BannerImage });
 
+                // Sessions
                 const sessionsData = await getMovieSessions(safeMovieId);
                 const sessionsArray = Array.isArray(sessionsData) ? sessionsData : sessionsData?.sessions || [];
                 const mappedSessions = sessionsArray.map(mapApiSessionToForm);
+                
                 setSessions(mappedSessions);
-                mappedSessions.forEach((s: any) => s.hall && loadHallDetails(s.hall, s.id));
+
+                mappedSessions.forEach((s: any) => {
+                    if (s.hallId) {
+                        loadHallDetails(s.hallId, s.id);
+                    }
+                });
 
             } catch (err) {
                 showToast('error', "Failed to load movie data");
@@ -192,7 +211,7 @@ export const EditMoviePage = () => {
             }
         };
         loadMovieData();
-    }, [safeMovieId, loadHallDetails, showToast]);
+    }, [safeMovieId, halls.length > 0]);
 
     const resolvePersonId = async (name: string, role: 1 | 2) => {
         const options = role === 1 ? directorOptions : actorOptions;
@@ -202,7 +221,7 @@ export const EditMoviePage = () => {
         return results[0]?.personId || results[0]?.id || '';
     };
 
-    // Movie
+    // Save Logic
     const handleSaveMovieDetailsOnly = async () => {
         setSaving(true);
         try {
@@ -213,7 +232,6 @@ export const EditMoviePage = () => {
             };
             await updateMoviePartial(safeMovieId, payload);
 
-            // Poster
             if (formData.poster instanceof File) {
                 const currentMovie = await getMovieById(safeMovieId);
                 if (currentMovie.poster?.id) await deleteMedia(safeMovieId, currentMovie.poster.id);
@@ -221,59 +239,41 @@ export const EditMoviePage = () => {
                 showToast('success', "Poster updated");
             }
 
-            // Genres
             const removedGenres = originalFormData.genres.filter(og => !formData.genres.find(g => g.id === og.id));
             const addedGenres = formData.genres.filter(g => !originalFormData.genres.find(og => og.id === g.id));
-
             for (const g of removedGenres) await removeGenreFromMovie(safeMovieId, g.id);
             for (const g of addedGenres) await attachGenreToMovie(safeMovieId, g.id);
-            if (addedGenres.length > 0 || removedGenres.length > 0) showToast('success', "Genres updated");
 
-            // Persons
-            const currentMovieData = await getMovieById(safeMovieId); // Refresh tracking
+            const currentMovieData = await getMovieById(safeMovieId);
             const currentPersonIds = new Set(currentMovieData.persons?.map((p: any) => p.personId || p.id));
 
             for (const name of formData.directors) {
                 const id = await resolvePersonId(name, 1);
-                if (id && !currentPersonIds.has(id)) {
-                    await attachPersonToMovie(safeMovieId, id, 1);
-                    showToast('success', `Director ${name} attached`);
-                }
+                if (id && !currentPersonIds.has(id)) await attachPersonToMovie(safeMovieId, id, 1);
             }
             for (const name of formData.starring) {
                 const id = await resolvePersonId(name, 2);
-                if (id && !currentPersonIds.has(id)) {
-                    await attachPersonToMovie(safeMovieId, id, 2);
-                    showToast('success', `Actor ${name} attached`);
-                }
-            }
-
-            const allCurrentNames = [...formData.directors, ...formData.starring];
-            const toRemove = currentMovieData.persons?.filter((p: any) => !allCurrentNames.includes(p.personName || p.fullName));
-            for (const p of toRemove || []) {
-                await removePersonFromMovie(safeMovieId, p.id || p.personId);
+                if (id && !currentPersonIds.has(id)) await attachPersonToMovie(safeMovieId, id, 2);
             }
 
             setOriginalFormData(formData);
-            showToast('success', "All movie details saved successfully!");
+            showToast('success', "Saved successfully!");
         } catch (err) {
-            showToast('error', "Some updates failed. Check console.");
-            console.error(err);
+            showToast('error', "Update failed");
         } finally {
             setSaving(false);
         }
     };
 
-    // Sessions
     const handleSaveSession = async (sessionId: string) => {
         const session = sessions.find(s => s.id === sessionId);
         if (!session) return;
-
         const payload = prepareSessionPayload(session, session.date, safeMovieId);
-
+        
         const prices = Object.keys(session.enabledTypes)
             .filter(tid => session.enabledTypes[tid])
             .map(tid => ({ seatTypeId: tid, price: Number(session.seatPrices[tid] || 0) }));
+        
         const seatPrices = prices.reduce((acc: Record<string, number>, p) => {
             acc[p.seatTypeId] = p.price;
             return acc;
@@ -286,48 +286,37 @@ export const EditMoviePage = () => {
             } else {
                 await updateSessionPartial(sessionId, {
                     movieID: { id: safeMovieId },
-                    hallId: { id: session.hall },
+                    hallId: { id: session.hallId },
                     startDateTime: `${session.date}T${session.time}:00Z`,
                     seatPrices
                 });
             }
-            showToast('success', "Session updated successfully!");
+            showToast('success', "Session updated!");
         } catch (err) {
             showToast('error', "Session save failed");
         }
     };
 
-    const handleDeleteSession = async (sessionId: string) => {
-        if (!window.confirm("Are you sure you want to delete this session?")) return;
-
-        try {
-            const isRealSession = sessionId.length > 15;
-
-            if (isRealSession) {
-                await deleteSession(sessionId);
-                console.log(`Session ${sessionId} deleted from DB`);
-            }
-
-            setSessions(prev => prev.filter(s => s.id !== sessionId));
-            showToast('success', 'Session deleted successfully');
-        } catch (err) {
-            console.error("Delete failed: ", err);
-        }
-    };
-
     const handleSessionChange = (id: string, field: keyof SessionFormData, value: any) => {
         setSessions(prev => prev.map(s => s.id === id ? { ...s, [field]: value } : s));
-        if (field === 'hall' && value) loadHallDetails(value, id);
+        if (field === 'hallId' && value) loadHallDetails(value, id);
     };
 
-    // Modals
+    const handleDeleteSession = async (sessionId: string) => {
+        if (!window.confirm("Delete this session?")) return;
+        try {
+            if (sessionId.length > 15) await deleteSession(sessionId);
+            setSessions(prev => prev.filter(s => s.id !== sessionId));
+            showToast('success', 'Session removed');
+        } catch (err) { console.error(err); }
+    };
+
     const handleCreatePerson = async (personData: PersonFormModalData) => {
         setCreatingPerson(true);
         try {
             const res = await createPerson(personData);
             const newId = res.personId || res.id;
             if (personData.photoUrl && newId) await attachMediaToPerson(newId, personData.photoUrl);
-
             const newOpt = { id: newId, name: personData.fullName };
             if (personData.role === 1) {
                 setDirectorOptions(p => [...p, newOpt]);
@@ -337,9 +326,7 @@ export const EditMoviePage = () => {
                 setFormData(f => ({ ...f, starring: [...f.starring, newOpt.name] }));
             }
             setShowPersonModal(false);
-            showToast('success', "New person created and added");
-        } catch (err) { showToast('error', "Failed to create person"); }
-        finally { setCreatingPerson(false); }
+        } finally { setCreatingPerson(false); }
     };
 
     const handleCreateGenre = async (name: string) => {
@@ -350,12 +337,10 @@ export const EditMoviePage = () => {
             setGenreOptions(p => [...p, newG]);
             setFormData(f => ({ ...f, genres: [...f.genres, newG] }));
             setShowGenreModal(false);
-            showToast('success', "Genre created");
-        } catch (err) { showToast('error', "Genre creation failed"); }
-        finally { setCreatingGenre(false); }
+        } finally { setCreatingGenre(false); }
     };
 
-    if (loadingMovie) return <div className={styles.loading}>Loading movie details...</div>;
+    if (loadingMovie) return <div className={styles.loading}>Loading...</div>;
 
     return (
         <div className={styles["edit-movie-page"]}>
@@ -363,7 +348,7 @@ export const EditMoviePage = () => {
                 <h2>Edit: {originalFormData.movieName}</h2>
                 <div className={styles["header-actions"]}>
                     <button onClick={async () => {
-                        if (window.confirm("Delete this movie?")) {
+                        if (window.confirm("Delete movie?")) {
                             await deleteMovie(safeMovieId);
                             navigate('/admin/movies');
                         }
@@ -386,7 +371,7 @@ export const EditMoviePage = () => {
 
                 <div className={styles["details-save-actions"]}>
                     <button onClick={handleSaveMovieDetailsOnly} className={styles["save-details-btn"]} disabled={saving}>
-                        {saving ? '💾 Saving Changes...' : '💾 Save General Info'}
+                        {saving ? '💾 Saving...' : '💾 Save General Info'}
                     </button>
                 </div>
 
@@ -399,15 +384,21 @@ export const EditMoviePage = () => {
                             <div className={styles["session-controls-row"]}>
                                 <input type="date" value={s.date} onChange={e => handleSessionChange(s.id, 'date', e.target.value)} className="form-input" />
                                 <input type="time" value={s.time} onChange={e => handleSessionChange(s.id, 'time', e.target.value)} className="form-input" />
-                                <select value={s.hall} onChange={e => handleSessionChange(s.id, 'hall', e.target.value)} className="form-input">
+                                <select value={s.hallId} onChange={e => handleSessionChange(s.id, 'hallId', e.target.value)} className="form-input">
                                     <option value="">Select Hall</option>
                                     {halls.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}
                                 </select>
                             </div>
-                            <HallGrid seats={halls.find(h => h.id === s.hall)?.seats || []} seatTypes={halls.find(h => h.id === s.hall)?.availableSeatTypes || []} enabledTypes={s.enabledTypes} />
+                            
+                            <HallGrid 
+                                seats={halls.find(h => h.id === s.hallId)?.seats || []} 
+                                seatTypes={halls.find(h => h.id === s.hallId)?.availableSeatTypes || []} 
+                                enabledTypes={s.enabledTypes} 
+                            />
+                            
                             <TicketPriceManager
                                 sessionId={s.id}
-                                seatTypes={halls.find(h => h.id === s.hall)?.availableSeatTypes || []}
+                                seatTypes={halls.find(h => h.id === s.hallId)?.availableSeatTypes || []}
                                 enabledTypes={s.enabledTypes}
                                 seatPrices={s.seatPrices}
                                 onPriceChange={(tid, field, val) => {
@@ -421,7 +412,7 @@ export const EditMoviePage = () => {
                             </div>
                         </div>
                     ))}
-                    <button className={styles['add-session-btn']} onClick={() => setSessions(p => [...p, { id: Date.now().toString(), date: '', time: '12:00', hall: '', seatPrices: {}, enabledTypes: {} }])}>
+                    <button className={styles['add-session-btn']} onClick={() => setSessions(p => [...p, { id: Date.now().toString(), date: '', time: '12:00', hallId: '', seatPrices: {}, enabledTypes: {} }])}>
                         + Add New Session
                     </button>
                 </div>
