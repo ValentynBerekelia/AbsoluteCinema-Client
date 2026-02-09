@@ -1,8 +1,9 @@
 import { useState, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
-import { getMovieSessions, createMockBooking } from '@/api/sessions';
+import { getMovieSessions, createBooking } from '@/api/sessions';
 import { getMovieById } from '@/api/movies';
 import { getHallById } from '@/api/halls';
+import { getMe } from '@/api/auth';
 import { SeatSelection } from '@/components/SeatSelection/SeatSelection';
 import { mapHallDetailsFromApi } from '@/types/hall';
 import { convertIsoToDateTime } from '@/utils/dataTimeConverters';
@@ -41,6 +42,7 @@ export const BookingPage = () => {
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
     const [bookingInProgress, setBookingInProgress] = useState(false);
+    const [userId, setUserId] = useState<string>('');
 
     useEffect(() => {
         const fetchSessionAndHall = async () => {
@@ -117,6 +119,20 @@ export const BookingPage = () => {
         fetchSessionAndHall();
     }, [sessionId, movieId]);
 
+    useEffect(() => {
+        const fetchUserId = async () => {
+            try {
+                const userData = await getMe();
+                setUserId(userData.userId);
+            } catch (err) {
+                console.error('Failed to fetch user data:', err);
+                // Continue without userId - booking can be done anonymously if needed
+            }
+        };
+
+        fetchUserId();
+    }, []);
+
     const handleSelectionChange = (seats: string[]) => {
         setSelectedSeats(seats);
     };
@@ -132,20 +148,21 @@ export const BookingPage = () => {
         try {
             setBookingInProgress(true);
             
-            const result = (await createMockBooking({
+            const result = await createBooking({
                 sessionId,
-                seatIds: selectedSeats
-            })) as BookingResult;
+                seatIds: selectedSeats,
+                userId: userId || undefined
+            });
 
             console.log('Booking result:', result);
             
-            alert(`Booking successful!\nBooking ID: ${result.bookingId}\nSeats: ${selectedSeats.length}\n\nThis is a mock booking. In production, tickets would be created in the system.`);
+            alert(`Booking successful!\nBooking ID: ${result.bookingId}\nSeats: ${selectedSeats.length}`);
             
-            // Повертаємося на головну сторінку
+            // Return to home page
             navigate('/');
-        } catch (err) {
+        } catch (err: any) {
             console.error('Booking failed:', err);
-            alert('Booking failed. Please try again.');
+            alert('Booking failed: ' + (err.message || 'Please try again.'));
         } finally {
             setBookingInProgress(false);
         }

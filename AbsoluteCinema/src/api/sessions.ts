@@ -29,21 +29,44 @@ export const getMovieSessions = async (movieId: string) => {
 export interface BookingRequest {
     sessionId: string;
     seatIds: string[];
+    userId?: string;
 }
 
-export const createMockBooking = async (bookingData: BookingRequest) => {
-    // Mock implementation - в реальності це має бути POST до /bookings або /tickets
-    console.log('Mock booking created:', bookingData);
-    // Симулюємо успішну відповідь
-    return new Promise((resolve) => {
-        setTimeout(() => {
-            resolve({
-                success: true,
-                bookingId: `BOOKING-${Date.now()}`,
-                sessionId: bookingData.sessionId,
-                seats: bookingData.seatIds,
-                timestamp: new Date().toISOString()
-            });
-        }, 500);
-    });
+export interface BookingResult {
+    success: boolean;
+    bookingId: string;
+    sessionId: string;
+    seats: string[];
+    timestamp: string;
+}
+
+export const createBooking = async (bookingData: BookingRequest): Promise<BookingResult> => {
+    const { createMultipleTickets } = await import('./tickets');
+    
+    try {
+        const userId = bookingData.userId || 'anonymous';
+        
+        // Create tickets for each selected seat using the API
+        const ticketsResponse = await createMultipleTickets(
+            bookingData.sessionId,
+            bookingData.seatIds,
+            userId
+        );
+        
+        return {
+            success: true,
+            bookingId: `BOOKING-${Date.now()}`,
+            sessionId: bookingData.sessionId,
+            seats: bookingData.seatIds,
+            timestamp: new Date().toISOString()
+        };
+    } catch (error) {
+        console.error('Booking failed:', error);
+        throw new Error('Failed to create booking. Please try again.');
+    }
 };
+
+/**
+ * @deprecated Use createBooking instead
+ */
+export const createMockBooking = createBooking;
