@@ -5,48 +5,48 @@
     justify-content: center;
     gap: 6px;
     
-    padding: 4px 10px;
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    border-radius: 6px;
+    padding: 6px 12px;
+    background: rgba(6, 12, 34, 0.9);
+    border: 1px solid rgba(200, 220, 255, 0.2);
+    border-radius: 10px;
+    box-shadow: 0 6px 16px rgba(2, 6, 23, 0.35);
     cursor: pointer;
     transition: all 0.2s ease-in-out;
     
-    height: 32px; 
-    min-width: 75px;
+    height: 36px; 
+    min-width: 86px;
 }
 
 .badge-time {
-    font-size: 14px;
+    font-size: 15px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--text);
     line-height: 1;
 }
 
 .badge-format {
-    font-size: 9px;
+    font-size: 10px;
     font-weight: 900;
-    padding: 1px 4px;
+    padding: 2px 5px;
     border-radius: 3px;
     background: #e50914;
     color: #fff;
     line-height: 1;
     display: flex;
     align-items: center;
-    height: 14px;
+    height: 16px;
 }
 
 .session-badge:hover:not(:disabled) {
-    border-color: #e50914;
-    background: #fffafa;
-    transform: translateY(-1px);
-    box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+    border-color: rgba(229, 9, 20, 0.8);
+    background: rgba(6, 12, 34, 0.95);
+    box-shadow: 0 8px 18px rgba(2, 6, 23, 0.45);
 }
 
 .session-badge.is-past {
     opacity: 0.5;
-    background: #f9f9f9;
-    border-color: #eee;
+    background: rgba(6, 12, 34, 0.6);
+    border-color: rgba(200, 220, 255, 0.1);
     cursor: default;
     filter: grayscale(1);
 }

@@ -2,16 +2,16 @@
 
 /* Основні змінні залишаємо для глобальної синхронізації */
 :root {
-    --primary-color: #1a1a1a;
-    --secondary-color: #4a4a4a;
-    --bg-light: #f8f9fa;
-    --bg-card: #ffffff;
-    --border-color: #dee2e6;
-    --text-main: #212529;
-    --text-muted: #6c757d;
-    --accent-gray: #e9ecef;
-    --danger: #dc3545;
-    --success: #198754;
+    --primary-color: #0f1726;
+    --secondary-color: #1b2442;
+    --bg-light: rgba(6, 12, 34, 0.92);
+    --bg-card: rgba(10, 15, 35, 0.9);
+    --border-color: rgba(200, 220, 255, 0.2);
+    --text-main: var(--text);
+    --text-muted: var(--muted);
+    --accent-gray: rgba(255, 255, 255, 0.06);
+    --danger: #e50914;
+    --success: #1f9e6c;
     --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.05);
     --radius: 6px;
 }
@@ -44,7 +44,7 @@
 
 .back-btn {
     padding: 10px 20px;
-    background: white;
+    background: rgba(6, 12, 34, 0.9);
     color: var(--text-main);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
@@ -58,17 +58,17 @@
 }
 
 .back-btn:hover {
-    background: var(--accent-gray);
-    border-color: #adb5bd;
+    background: rgba(6, 12, 34, 0.95);
+    border-color: rgba(229, 9, 20, 0.6);
 }
 
 /* Error Message */
 .error-message {
     padding: 16px 20px;
     margin-bottom: 30px;
-    background: #fff3cd;
+    background: rgba(229, 9, 20, 0.08);
     border-left: 5px solid var(--danger);
-    color: #c62828;
+    color: var(--text);
     border-radius: var(--radius);
     font-weight: 500;
 }
@@ -96,7 +96,7 @@
 
 .submit-btn {
     padding: 15px 40px;
-    background: var(--primary-color);
+    background: var(--accent);
     color: white;
     border: none;
     border-radius: var(--radius);
@@ -107,7 +107,7 @@
 }
 
 .submit-btn:hover:not(:disabled) {
-    background: #333;
+    background: #b8070f;
 }
 
 .submit-btn:disabled {
@@ -127,7 +127,7 @@
 }
 
 .cancel-btn:hover {
-    background: var(--bg-light);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 /* Responsive adjustments for the page container */

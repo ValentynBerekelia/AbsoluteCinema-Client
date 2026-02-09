@@ -1,22 +1,29 @@
 :root {
-    --primary-color: #1a1a1a;
-    --secondary-color: #4a4a4a;
-    --bg-light: #f8f9fa;
-    --bg-card: #ffffff;
-    --border-color: #dee2e6;
-    --text-main: #212529;
-    --text-muted: #6c757d;
-    --accent-gray: #e9ecef;
-    --danger: #dc3545;
-    --success: #198754;
-    --shadow-subtle: 0 2px 8px rgba(0, 0, 0, 0.05);
+    --primary-color: #0f1726;
+    --secondary-color: #1b2442;
+    --bg-light: rgba(6, 12, 34, 0.92);
+    --bg-card: rgba(10, 15, 35, 0.9);
+    --border-color: rgba(200, 220, 255, 0.2);
+    --text-main: var(--text);
+    --text-muted: var(--muted);
+    --accent-gray: rgba(255, 255, 255, 0.06);
+    --danger: #e50914;
+    --success: #1f9e6c;
+    --shadow-subtle: 0 2px 8px rgba(2, 6, 23, 0.35);
     --radius: 6px;
 }
 
 .hall-item {
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
-    background: white;
+    background: var(--bg-card);
+    color: var(--text-main);
+    box-shadow: 0 0 20px rgba(139, 154, 196, 0.2);
+    transition: all 0.3s ease;
+}
+
+.hall-item:hover {
+    box-shadow: 0 0 40px rgba(139, 154, 196, 0.35);
 }
 
 .hall-summary {
@@ -77,6 +84,12 @@
     align-items: center;
     width: 100%;
     overflow-x: auto;
+    box-shadow: 0 0 20px rgba(139, 154, 196, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.detail-card:hover {
+    box-shadow: 0 0 40px rgba(139, 154, 196, 0.35);
 }
 
 .detail-card h4 {
@@ -100,7 +113,18 @@
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     font-size: 14px;
-    background: white;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text-main);
+    box-shadow: 0 0 15px rgba(139, 154, 196, 0.15);
+    transition: all 0.3s ease;
+}
+
+.text-input:focus,
+.number-input:focus,
+.select-input:focus {
+    outline: none;
+    border-color: rgba(200, 220, 255, 0.4);
+    box-shadow: 0 0 30px rgba(139, 154, 196, 0.35);
 }
 
 .text-input {
@@ -130,14 +154,15 @@
 }
 
 .primary-btn {
-    background: var(--primary-color);
+    background: rgba(6, 12, 34, 0.92);
     color: white;
-    border-color: var(--primary-color);
+    border-color: var(--border-color);
 }
 
 .primary-btn:hover:not(:disabled) {
-    background: var(--secondary-color);
-    border-color: var(--secondary-color);
+    background: rgba(229, 9, 20, 0.15);
+    border-color: #e50914;
+    color: #e50914;
 }
 
 .primary-btn:disabled {
@@ -146,7 +171,7 @@
 }
 
 .danger-btn {
-    background: white;
+    background: transparent;
     color: var(--danger);
     border-color: var(--danger);
 }
@@ -162,25 +187,25 @@
 }
 
 .refresh-btn {
-    background: var(--secondary-color);
-    color: white;
-    border-color: var(--secondary-color);
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text-main);
+    border-color: var(--border-color);
 }
 
 .refresh-btn:hover:not(:disabled) {
-    background: var(--primary-color);
-    border-color: var(--primary-color);
+    background: rgba(255, 255, 255, 0.04);
 }
 
 .expand-btn {
-    background: white;
-    color: var(--primary-color);
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text-main);
     border-color: var(--border-color);
     padding: 8px 16px;
 }
 
 .expand-btn:hover {
-    border-color: var(--primary-color);
+    border-color: #e50914;
+    color: #e50914;
 }
 
 .seat-types {
@@ -199,7 +224,7 @@
     border: 2px solid transparent;
     cursor: pointer;
     transition: all 0.2s ease;
-    color: #4a4a4a;
+    color: var(--text-muted);
     opacity: 0.5;
 }
 
@@ -228,19 +253,19 @@
     background: var(--danger) !important;
     color: white !important;
     border-color: var(--danger) !important;
-    box-shadow: 0 0 0 3px rgba(220, 53, 69, 0.2);
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.2);
 }
 
 .row-add-btn {
     height: 28px;
     background: repeating-linear-gradient(
         45deg,
-        #198754,
-        #198754 10px,
-        rgba(25, 135, 84, 0.5) 10px,
-        rgba(25, 135, 84, 0.5) 20px
+        #e50914,
+        #e50914 10px,
+        rgba(229, 9, 20, 0.5) 10px,
+        rgba(229, 9, 20, 0.5) 20px
     );
-    border: 1px solid #198754;
+    border: 1px solid #e50914;
     border-radius: var(--radius);
     cursor: pointer;
     font-weight: 600;

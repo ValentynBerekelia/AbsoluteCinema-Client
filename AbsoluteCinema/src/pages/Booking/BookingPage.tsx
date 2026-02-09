@@ -5,6 +5,7 @@ import { getMovieById } from '@/api/movies';
 import { getHallById } from '@/api/halls';
 import { SeatSelection } from '@/components/SeatSelection/SeatSelection';
 import { mapHallDetailsFromApi } from '@/types/hall';
+import { convertIsoToDateTime } from '@/utils/dataTimeConverters';
 import './BookingPage.css';
 
 interface SessionData {
@@ -183,14 +184,14 @@ export const BookingPage = () => {
     const formatDateTime = (dateTimeStr: string) => {
         if (!dateTimeStr) return '';
         const date = new Date(dateTimeStr);
-        return date.toLocaleString('en-US', {
-            weekday: 'short',
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
+        const { date: dateStr, time } = convertIsoToDateTime(dateTimeStr);
+        
+        const weekday = date.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' });
+        const day = date.getUTCDate();
+        const month = date.toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' });
+        const year = date.getUTCFullYear();
+        
+        return `${weekday}, ${month} ${day}, ${year}, ${time}`;
     };
 
     if (loading) {

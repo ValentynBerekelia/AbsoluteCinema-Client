@@ -1,20 +1,20 @@
 /* EditMoviePage.css - Layout and Session Management */
 :root {
-    --primary-color: #1a1a1a;
-    --secondary-color: #2d2d2d;
-    --tertiary-color: #404040;
-    --border-color: #e0e0e0;
-    --text-primary: #1a1a1a;
-    --text-secondary: #666;
-    --text-tertiary: #999;
-    --bg-light: #fafafa;
-    --bg-card: #ffffff;
-    --accent-color: #ff6b6b;
-    --success-color: #4caf50;
+    --primary-color: #0f1726;
+    --secondary-color: #1b2442;
+    --tertiary-color: #2b3354;
+    --border-color: rgba(200, 220, 255, 0.2);
+    --text-primary: var(--text);
+    --text-secondary: var(--muted);
+    --text-tertiary: rgba(207, 207, 207, 0.7);
+    --bg-light: rgba(6, 12, 34, 0.92);
+    --bg-card: rgba(10, 15, 35, 0.9);
+    --accent-color: #e50914;
+    --success-color: #1f9e6c;
     --warning-color: #ff9800;
-    --shadow-sm: 0 2px 4px rgba(0, 0, 0, 0.1);
-    --shadow-md: 0 4px 12px rgba(0, 0, 0, 0.15);
-    --shadow-lg: 0 8px 24px rgba(0, 0, 0, 0.2);
+    --shadow-sm: 0 2px 8px rgba(2, 6, 23, 0.35);
+    --shadow-md: 0 4px 12px rgba(2, 6, 23, 0.45);
+    --shadow-lg: 0 8px 24px rgba(2, 6, 23, 0.55);
     --transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
@@ -57,9 +57,9 @@
 
 .delete-btn {
     padding: 12px 20px;
-    background: #fff;
-    color: #d32f2f; /* Червоний колір для попередження */
-    border: 1px solid #ffcdd2;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--accent-color);
+    border: 1px solid rgba(229, 9, 20, 0.6);
     border-radius: 8px;
     cursor: pointer;
     font-weight: 600;
@@ -67,10 +67,10 @@
 }
 
 .delete-btn:hover:not(:disabled) {
-    background: #f44336;
+    background: rgba(229, 9, 20, 0.9);
     color: #fff;
-    border-color: #f44336;
-    box-shadow: 0 4px 8px rgba(244, 67, 54, 0.2);
+    border-color: rgba(229, 9, 20, 0.9);
+    box-shadow: 0 4px 8px rgba(229, 9, 20, 0.2);
 }
 
 .delete-btn:disabled {
@@ -108,14 +108,19 @@
 .movie-details-section {
     background: var(--bg-card);
     border-radius: 12px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm), 0 0 20px rgba(139, 154, 196, 0.2);
     border: 1px solid var(--border-color);
     overflow: hidden;
+    transition: box-shadow 0.3s ease;
+}
+
+.movie-details-section:hover {
+    box-shadow: var(--shadow-md), 0 0 40px rgba(139, 154, 196, 0.35);
 }
 
 .details-save-actions {
     padding: 24px;
-    background: linear-gradient(135deg, #f5f5f5 0%, #fafafa 100%);
+    background: rgba(6, 12, 34, 0.92);
     border-top: 1px solid var(--border-color);
     display: flex;
     align-items: center;
@@ -125,7 +130,7 @@
 .save-details-btn {
     position: relative;
     padding: 12px 28px;
-    background: var(--success-color);
+    background: var(--accent-color);
     color: white;
     border: none;
     border-radius: 8px;
@@ -135,13 +140,13 @@
     letter-spacing: 0.5px;
     overflow: hidden;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: 0 4px 6px rgba(76, 175, 80, 0.2);
+    box-shadow: 0 4px 6px rgba(229, 9, 20, 0.2);
 }
 
 .save-details-btn:hover:not(:disabled) {
-    background: #43a047;
+    background: #b8070f;
     transform: translateY(-2px);
-    box-shadow: 0 6px 12px rgba(76, 175, 80, 0.3);
+    box-shadow: 0 6px 12px rgba(229, 9, 20, 0.3);
 }
 
 .save-details-btn:active {
@@ -169,7 +174,12 @@
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm), 0 0 20px rgba(139, 154, 196, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.sessions-section:hover {
+    box-shadow: var(--shadow-md), 0 0 40px rgba(139, 154, 196, 0.35);
 }
 
 .sessions-section h3 {
@@ -189,7 +199,7 @@
 
 /* Individual Session Card */
 .session-card {
-    background: #fff;
+    background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     padding: 0;
@@ -197,11 +207,12 @@
     transition: var(--transition);
     display: flex;
     flex-direction: column;
+    box-shadow: 0 0 20px rgba(139, 154, 196, 0.2);
 }
 
 .session-card:hover {
-    border-color: var(--secondary-color);
-    box-shadow: var(--shadow-md);
+    border-color: rgba(229, 9, 20, 0.6);
+    box-shadow: var(--shadow-md), 0 0 50px rgba(139, 154, 196, 0.4), 0 0 20px rgba(229, 9, 20, 0.2);
 }
 
 /* Row for Date, Time and Hall */
@@ -221,13 +232,14 @@
     border: 1.5px solid var(--border-color);
     border-radius: 6px;
     font-size: 14px;
-    background: #fff;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text-primary);
 }
 
 /* Hall Grid Container inside Session */
 .session-card .hall-grid-container {
     padding: 20px;
-    background: #fff;
+    background: rgba(6, 12, 34, 0.92);
     display: flex;
     justify-content: center;
     border-bottom: 1px solid var(--border-color);
@@ -252,13 +264,13 @@
     justify-content: flex-end;
     gap: 12px;
     padding: 15px 25px;
-    background: #fcfcfc;
+    background: rgba(6, 12, 34, 0.92);
 }
 
 .save-session-btn {
     padding: 10px 20px;
     font-size: 13px;
-    background: var(--primary-color);
+    background: var(--accent-color);
     color: #fff;
     border: none;
     border-radius: 6px;
@@ -274,8 +286,8 @@
 .remove-session-btn {
     padding: 8px 12px;
     background: transparent;
-    color: #d32f2f;
-    border: 1px solid #ffcdd2;
+    color: var(--accent-color);
+    border: 1px solid rgba(229, 9, 20, 0.6);
     border-radius: 6px;
     font-weight: 600;
     cursor: pointer;
@@ -284,8 +296,8 @@
 }
 
 .remove-session-btn:hover {
-    background: #ffebee;
-    border-color: #d32f2f;
+    background: rgba(229, 9, 20, 0.08);
+    border-color: rgba(229, 9, 20, 0.8);
 }
 
 .add-session-btn {
@@ -313,9 +325,9 @@
 }
 
 .add-session-btn:hover {
-    background-color: #fff;
-    border-color: var(--secondary-color);
-    color: var(--primary-color);
+    background-color: rgba(6, 12, 34, 0.95);
+    border-color: rgba(229, 9, 20, 0.6);
+    color: var(--text-primary);
     box-shadow: var(--shadow-sm);
     transform: translateY(-2px);
 }
@@ -358,6 +370,8 @@
     border-radius: 8px;
     font-size: 15px;
     transition: var(--transition);
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text-primary);
 }
 
 .form-input:focus {
@@ -367,8 +381,8 @@
 }
 
 .form-input:disabled {
-    background-color: #f5f5f5;
-    color: #999;
+    background-color: rgba(10, 15, 35, 0.6);
+    color: var(--text-secondary);
     cursor: not-allowed;
 }
 

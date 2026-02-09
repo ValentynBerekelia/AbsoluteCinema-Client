@@ -1,8 +1,12 @@
 .movie-schedule__title {
     font-size: 32px;
     font-weight: 700;
-    color: #1a1a1a;
+    color: var(--text);
     padding: 24px 0px;
+}
+
+.movie-schedule {
+    margin-top: 36px; /* space between hero/banner and schedule */
 }
 
 .movie-schedule__content {
@@ -11,19 +15,48 @@
 
 .movie-schedule__grid {
     display: grid;
-    grid-template-columns: repeat(2, 1fr);
+    /* Mobile: 1 column */
+    grid-template-columns: 1fr;
     gap: 24px;
+    justify-content: center;
+    justify-items: center;
+    max-width: 1800px;
+    margin: 0 auto;
+}
+
+/* Tablet: 2 columns */
+@media (min-width: 768px) {
+    .movie-schedule__grid {
+        grid-template-columns: repeat(auto-fit, minmax(280px, 380px));
+        gap: 32px;
+    }
+}
+
+/* Medium screens: 3 columns */
+@media (min-width: 1100px) {
+    .movie-schedule__grid {
+        grid-template-columns: repeat(auto-fit, minmax(340px, 440px));
+        gap: 40px;
+    }
+}
+
+/* Large screens: 4 columns */
+@media (min-width: 1600px) {
+    .movie-schedule__grid {
+        grid-template-columns: repeat(auto-fit, minmax(360px, 450px));
+        gap: 48px;
+    }
 }
 
 .movie-schedule__status {
     text-align: center;
     padding: 60px 20px;
     font-size: 18px;
-    color: #666;
+    color: var(--muted);
 }
 
 .movie-schedule__status--error {
-    color: #e50914;
+    color: var(--accent);
 }
 
 /* Tablet */

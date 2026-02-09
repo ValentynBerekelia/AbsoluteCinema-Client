@@ -2,16 +2,17 @@
     display: flex;
     flex-direction: column;
     height: 100vh;
-    width: 100%;
+    width: 80%;
     max-width: 100vw;
-    background-color: #f8f9fa;
+    background-color: rgba(6, 12, 34, 0.92);
     overflow: hidden;
+    color: var(--text);
 }
 
 .sessions-panel {
-    background: white;
+    background: rgba(10, 15, 35, 0.9);
     padding: 15px 20px;
-    border-bottom: 1px solid #e0e0e0;
+    border-bottom: 1px solid rgba(200, 220, 255, 0.2);
     flex-shrink: 0;
     width: 100%; 
     max-width: 100vw; 
@@ -28,20 +29,39 @@
     width: 100%;
 }
 
+.sessions-list::-webkit-scrollbar {
+    height: 8px;
+}
+
+.sessions-list::-webkit-scrollbar-track {
+    background: rgba(200, 220, 255, 0.08);
+    border-radius: 999px;
+}
+
+.sessions-list::-webkit-scrollbar-thumb {
+    background: rgba(200, 220, 255, 0.25);
+    border-radius: 999px;
+}
+
+.sessions-list::-webkit-scrollbar-thumb:hover {
+    background: rgba(200, 220, 255, 0.45);
+}
+
 .session-item {
     flex: 0 0 240px; 
-    border: 1px solid #e0e0e0;
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 10px;
     padding: 12px;
     text-align: left;
-    background: #ffffff;
+    background: rgba(6, 12, 34, 0.92);
     cursor: pointer;
     transition: 0.2s;
+    color: var(--text);
 }
 
 .session-item.active {
-    border-color: #e50914;
-    background: #fff5f5;
+    border-color: rgba(229, 9, 20, 0.8);
+    background: rgba(229, 9, 20, 0.08);
     box-shadow: 0 2px 8px rgba(229, 9, 20, 0.15);
 }
 
@@ -57,7 +77,7 @@
     display: flex;
     flex-direction: column;
     font-size: 12px;
-    color: #666;
+    color: var(--muted);
 }
 
 .details-panel {
@@ -70,8 +90,8 @@
 
 .details-header {
     padding: 15px 25px;
-    background: white;
-    border-bottom: 1px solid #eee;
+    background: rgba(10, 15, 35, 0.9);
+    border-bottom: 1px solid rgba(200, 220, 255, 0.2);
 }
 
 .details-content {
@@ -90,6 +110,25 @@
     flex-direction: column;
     align-items: center;
     padding: 40px;
+}
+
+.hall-wrapper::-webkit-scrollbar {
+    width: 8px;
+    height: 8px;
+}
+
+.hall-wrapper::-webkit-scrollbar-track {
+    background: rgba(200, 220, 255, 0.08);
+    border-radius: 999px;
+}
+
+.hall-wrapper::-webkit-scrollbar-thumb {
+    background: rgba(200, 220, 255, 0.25);
+    border-radius: 999px;
+}
+
+.hall-wrapper::-webkit-scrollbar-thumb:hover {
+    background: rgba(200, 220, 255, 0.45);
 }
 
 .hall-grid {
@@ -141,14 +180,14 @@
 .screen-label {
     width: 70%;
     height: 4px;
-    background: #e0e0e0;
+    background: rgba(200, 220, 255, 0.2);
     margin-bottom: 40px;
     border-radius: 2px;
     display: flex;
     align-items: center;
     justify-content: center;
     font-size: 10px;
-    color: #999;
+    color: var(--muted);
     letter-spacing: 5px;
     font-weight: 700;
 }
@@ -156,18 +195,39 @@
 /* Панель бронювання */
 .reservation-panel {
     width: 350px;
-    background: white;
-    border-left: 1px solid #e0e0e0;
+    background: rgba(10, 15, 35, 0.9);
+    border-left: 1px solid rgba(200, 220, 255, 0.2);
     padding: 25px;
     overflow-y: auto;
     flex-shrink: 0;
+    color: var(--text);
+    box-shadow: -8px 0 20px rgba(139, 154, 196, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.reservation-panel::-webkit-scrollbar {
+    width: 8px;
+}
+
+.reservation-panel::-webkit-scrollbar-track {
+    background: rgba(200, 220, 255, 0.08);
+    border-radius: 999px;
+}
+
+.reservation-panel::-webkit-scrollbar-thumb {
+    background: rgba(200, 220, 255, 0.25);
+    border-radius: 999px;
+}
+
+.reservation-panel::-webkit-scrollbar-thumb:hover {
+    background: rgba(200, 220, 255, 0.45);
 }
 
 .detail-row {
     display: flex;
     justify-content: space-between;
     padding: 10px 0;
-    border-bottom: 1px dashed #eee;
+    border-bottom: 1px dashed rgba(200, 220, 255, 0.15);
     font-size: 14px;
 }
 
@@ -180,14 +240,24 @@
 
 .input-group input, .input-group textarea {
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 6px;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text);
+    box-shadow: 0 0 15px rgba(139, 154, 196, 0.15);
+    transition: all 0.3s ease;
+}
+
+.input-group input:focus, .input-group textarea:focus {
+    outline: none;
+    border-color: rgba(200, 220, 255, 0.4);
+    box-shadow: 0 0 30px rgba(139, 154, 196, 0.35);
 }
 
 .action-btn {
     width: 100%;
     padding: 12px;
-    background: #e50914;
+    background: var(--accent);
     color: white;
     border: none;
     border-radius: 8px;
@@ -196,5 +266,5 @@
     cursor: pointer;
 }
 
-.action-btn.danger { background: #1a1a1a; }
-.status-text { text-align: center; color: #999; margin-top: 50px; }
+.action-btn.danger { background: rgba(6, 12, 34, 0.92); border: 1px solid rgba(200, 220, 255, 0.2); }
+.status-text { text-align: center; color: var(--muted); margin-top: 50px; }

@@ -9,9 +9,11 @@
     width: 389px;
     height: 40px;
     padding: 8px 24px;
-    border: 1px solid #b3b3b3;
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 16px;
     outline: none;
     font-family: 'Inter', sans-serif;
     font-size: 20px;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text);
 }

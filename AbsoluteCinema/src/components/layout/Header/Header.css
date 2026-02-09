@@ -1,8 +1,9 @@
+/* Header styles - dark theme with white logo island */
 .header {
     width: 100%;
-    background-color: #ffffff;
-    border-bottom: 1px solid #9A9A9A;
-    color: #333333;
+    background: rgba(10, 15, 35, 0.8);
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: var(--text);
     z-index: 100;
 }
 
@@ -10,23 +11,65 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 0 5%;
-    height: 80px;
+    padding: 12px 5%;
+    height: auto;
     margin: 0 auto;
 }
 
+/* Logo - white text with glow behind logo icon */
 .logo {
     font-size: clamp(20px, 4vw, 32px);
     display: flex;
     align-items: center;
+    gap: 12px;
     white-space: nowrap;
     text-decoration: none;
-    color: #333;
-    transition: 0.3s;
+    color: white;
+    transition: all 0.3s ease;
+    background-color: transparent;
+    padding: 12px 20px;
+    border-radius: 16px;
 }
 
-.logo:hover {
-    color: #000000;
+.logo-image {
+    height: 40px;
+    width: auto;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    transition: filter 0.3s ease;
+}
+
+.logo-text {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: clamp(16px, 2.5vw, 24px);
+    position: relative;
+    padding-bottom: 6px;
+    color: white;
+    transition: color 0.3s ease;
+}
+
+.logo-text::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: var(--accent);
+    border-radius: 50% 50% 0 0;
+    transition: height 0.3s ease;
+}
+
+.logo:hover .logo-text {
+    color: var(--accent);
+}
+
+.logo:hover .logo-image {
+    filter: drop-shadow(0 0 12px rgba(229, 9, 20, 0.6));
+}
+
+.logo:hover .logo-text::after {
+    height: 4px;
 }
 
 .nav-list {
@@ -37,16 +80,48 @@
     padding: 0;
 }
 
+.nav-list li {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+
+.nav-list li:not(:last-child)::after {
+    content: '|';
+    color: rgba(255, 255, 255, 0.3);
+    margin-left: clamp(10px, 2vw, 30px);
+    font-weight: 300;
+}
+
 .nav-list a {
     text-decoration: none;
-    color: #333333;
-    transition: color 0.3s ease;
+    color: var(--muted);
+    transition: all 0.3s ease;
+    font-family: 'Georgia', 'Times New Roman', serif;
     font-size: clamp(14px, 1.5vw, 20px);
-    font-weight: 500;
+    font-weight: 600;
+    position: relative;
+    padding-bottom: 6px;
+}
+
+.nav-list a::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 0;
+    background-color: var(--accent);
+    border-radius: 50% 50% 0 0;
+    transition: height 0.3s ease;
 }
 
 .nav-list a:hover {
-    color: #e50914;
+    color: var(--accent);
+}
+
+.nav-list a:hover::after {
+    height: 3px;
 }
 
 .mobile-only {
@@ -61,9 +136,9 @@
 }
 
 .register-btn {
-    background-color: #e50914;
+    background-color: var(--accent);
     color: white;
-    border: 2px solid #e50914;
+    border: 2px solid var(--accent);
     width: 120px;
     height: 40px;
     padding: 8px 16px;
@@ -75,16 +150,14 @@
 }
 
 .register-btn:hover {
-    background-color: #b8070f;
-    border-color: #b8070f;
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(229, 9, 20, 0.3);
+    box-shadow: 0 4px 8px rgba(229, 9, 20, 0.24);
 }
 
 .login-btn {
     background-color: transparent;
-    color: #333333;
-    border: 2px solid #333333;
+    color: var(--muted);
+    border: 2px solid rgba(255,255,255,0.12);
     width: 120px;
     height: 40px;
     padding: 8px 16px;
@@ -96,17 +169,14 @@
 }
 
 .login-btn:hover {
-    background-color: #e50914;
+    background-color: var(--accent);
     color: white;
-    border-color: #e50914;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(229, 9, 20, 0.2);
 }
 
 .logout-btn {
     background: transparent;
-    border: 1px solid #e50914;
-    color: #e50914;
+    border: 1px solid var(--accent);
+    color: var(--accent);
     padding: 8px 16px;
     border-radius: 4px;
     cursor: pointer;
@@ -115,19 +185,24 @@
 }
 
 .logout-btn:hover {
-    background: #e50914;
+    background: var(--accent);
     color: white;
 }
 
 .user-name {
     margin-right: 15px;
     font-weight: 500;
-    color: #333;
+    color: var(--muted);
 }
 
 .header-actions {
     display: flex;
     gap: 12px;
+    align-items: center;
+}
+
+.desktop-only {
+    display: flex;
     align-items: center;
 }
 
@@ -143,7 +218,23 @@
 .burger-menu span {
     width: 25px;
     height: 3px;
-    background-color: #333333;
+    background-color: var(--muted);
+}
+
+.promo-link {
+    color: var(--text);
+    background: linear-gradient(90deg, rgba(255,255,255,0.02), rgba(255,255,255,0.03));
+    border: 1px solid rgba(255,255,255,0.06);
+    padding: 8px 14px;
+    border-radius: 8px;
+    text-decoration: none;
+    margin-right: 8px;
+    font-weight: 600;
+}
+
+.promo-link:hover {
+    border-color: rgba(229,9,20,0.25);
+    color: var(--accent);
 }
 
 @media (max-width: 850px) {
@@ -154,7 +245,7 @@
         left: -100%;
         width: 100%;
         height: calc(100vh - 80px);
-        background-color: #ffffff;
+        background-color: rgba(0,0,0,0.55);
         transition: 0.3s ease-in-out;
         z-index: 100;
     }
@@ -171,6 +262,10 @@
 
     .nav.active {
         left: 0;
+    }
+
+    .desktop-only {
+        display: none;
     }
 
     .nav-list {

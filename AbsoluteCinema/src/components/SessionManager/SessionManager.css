@@ -18,7 +18,7 @@
 }
 
 .session-card {
-    background: #fff;
+    background: rgba(10, 15, 35, 0.9);
     border: 1px solid var(--border-color);
     border-radius: var(--radius);
     padding: 30px;
@@ -28,7 +28,7 @@
 }
 
 .session-card:hover {
-    border-color: #adb5bd;
+    border-color: rgba(200, 220, 255, 0.4);
 }
 
 .session-header {
@@ -50,8 +50,8 @@
 
 .remove-session-btn {
     background: none;
-    border: 1px solid #ffc107;
-    color: #856404;
+    border: 1px solid #e50914;
+    color: #ff6b6b;
     padding: 4px 12px;
     font-size: 11px;
     border-radius: 4px;
@@ -62,7 +62,7 @@
 }
 
 .remove-session-btn:hover {
-    background: #fff3cd;
+    background: rgba(229, 9, 20, 0.15);
 }
 
 .session-dates {
@@ -79,18 +79,18 @@
 .form-input {
     width: 100%;
     padding: 12px 16px;
-    border: 1px solid #ced4da;
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 8px;
     font-size: 14px;
-    background-color: #fff;
+    background-color: rgba(6, 12, 34, 0.92);
     transition: all 0.2s ease;
-    color: #495057;
+    color: var(--text);
     outline: none;
 }
 
 .form-input:focus {
-    border-color: #1b1818;
-    box-shadow: 0 0 0 3px rgba(176, 100, 1, 0.1);
+    border-color: #e50914;
+    box-shadow: 0 0 0 3px rgba(229, 9, 20, 0.1);
 }
 
 .hall-select {
@@ -108,7 +108,7 @@
     margin-bottom: 8px;
     font-size: 14px;
     font-weight: 600;
-    color: #343a40;
+    color: var(--text);
 }
 
 .hall-selector-row {

@@ -2,35 +2,36 @@
     padding: 20px;
     max-width: 1200px;
     margin: 0 auto;
+    color: var(--text);
 }
 
 .container h2 {
     font-size: 28px;
     margin-bottom: 30px;
-    color: #1a1a1a;
+    color: var(--text);
 }
 
 .error {
-    background-color: #fee;
-    color: #c33;
+    background-color: rgba(229, 9, 20, 0.08);
+    color: var(--text);
     padding: 12px;
     border-radius: 6px;
     margin-bottom: 20px;
-    border-left: 4px solid #c33;
+    border-left: 4px solid rgba(229, 9, 20, 0.6);
 }
 
 .createSection {
-    background: #f9f9f9;
+    background: rgba(6, 12, 34, 0.92);
     padding: 20px;
     border-radius: 8px;
     margin-bottom: 30px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid rgba(200, 220, 255, 0.2);
 }
 
 .createSection h3 {
     margin-top: 0;
     margin-bottom: 15px;
-    color: #333;
+    color: var(--text);
 }
 
 .inputGroup {
@@ -41,21 +42,23 @@
 .input {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 4px;
     font-size: 14px;
     transition: border-color 0.3s;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text);
 }
 
 .input:focus {
     outline: none;
-    border-color: #4CAF50;
-    box-shadow: 0 0 4px rgba(76, 175, 80, 0.2);
+    border-color: rgba(229, 9, 20, 0.8);
+    box-shadow: 0 0 4px rgba(229, 9, 20, 0.2);
 }
 
 .button {
     padding: 10px 20px;
-    background-color: #4CAF50;
+    background-color: var(--accent);
     color: white;
     border: none;
     border-radius: 4px;
@@ -66,7 +69,7 @@
 }
 
 .button:hover:not(:disabled) {
-    background-color: #45a049;
+    background-color: #b8070f;
 }
 
 .button:disabled {
@@ -75,16 +78,16 @@
 }
 
 .listSection {
-    background: #f9f9f9;
+    background: rgba(6, 12, 34, 0.92);
     padding: 20px;
     border-radius: 8px;
-    border: 1px solid #e0e0e0;
+    border: 1px solid rgba(200, 220, 255, 0.2);
 }
 
 .listSection h3 {
     margin-top: 0;
     margin-bottom: 15px;
-    color: #333;
+    color: var(--text);
 }
 
 .searchContainer {
@@ -96,60 +99,63 @@
 .searchInput {
     flex: 1;
     padding: 10px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 4px;
     font-size: 14px;
     transition: border-color 0.3s;
     min-width: 200px;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text);
 }
 
 .searchInput:focus {
     outline: none;
-    border-color: #4CAF50;
-    box-shadow: 0 0 4px rgba(76, 175, 80, 0.2);
+    border-color: rgba(229, 9, 20, 0.8);
+    box-shadow: 0 0 4px rgba(229, 9, 20, 0.2);
 }
 
 .loading {
     text-align: center;
     padding: 40px;
-    color: #666;
+    color: var(--muted);
     font-size: 16px;
 }
 
 .empty {
     text-align: center;
     padding: 40px;
-    color: #999;
+    color: var(--muted);
     font-size: 16px;
 }
 
 .table {
     width: 100%;
     border-collapse: collapse;
-    background: white;
+    background: rgba(6, 12, 34, 0.92);
 }
 
 .table thead {
-    background-color: #f0f0f0;
-    border-bottom: 2px solid #ddd;
+    background-color: rgba(255, 255, 255, 0.06);
+    border-bottom: 2px solid rgba(200, 220, 255, 0.2);
 }
 
 .table th {
     padding: 12px;
     text-align: left;
     font-weight: 600;
-    color: #333;
+    color: var(--text);
     font-size: 14px;
 }
 
 .table td {
     padding: 12px;
-    border-bottom: 1px solid #eee;
+    border-bottom: 1px solid rgba(200, 220, 255, 0.1);
     font-size: 14px;
+    color: var(--muted);
 }
 
 .table tbody tr:hover {
-    background-color: #fafafa;
+    background-color: rgba(255, 255, 255, 0.04);
 }
 
 .actionButtons {

@@ -90,13 +90,23 @@ export const AdminMainPage = () => {
                     onClick={() => navigate('/admin/movies/add')}
                     style={{
                         padding: '10px 20px',
-                        backgroundColor: '#333',
+                        backgroundColor: '#e50914',
                         color: '#fff',
                         border: 'none',
                         borderRadius: '4px',
                         cursor: 'pointer',
                         fontSize: '16px',
-                        whiteSpace: 'nowrap'
+                        whiteSpace: 'nowrap',
+                        fontWeight: '600',
+                        transition: 'all 0.2s ease'
+                    }}
+                    onMouseEnter={(e) => {
+                        e.currentTarget.style.backgroundColor = '#b8070f';
+                        e.currentTarget.style.boxShadow = '0 4px 12px rgba(229, 9, 20, 0.2)';
+                    }}
+                    onMouseLeave={(e) => {
+                        e.currentTarget.style.backgroundColor = '#e50914';
+                        e.currentTarget.style.boxShadow = 'none';
                     }}
                 >
                     + Add
@@ -121,7 +131,7 @@ export const AdminMainPage = () => {
                         width: '100%',
                         textAlign: 'center',
                         marginTop: '40px',
-                        color: '#333'
+                        color: 'var(--text)'
                     }}>
                         {!loading && <h3>No movies found with this title</h3>}
                     </div>

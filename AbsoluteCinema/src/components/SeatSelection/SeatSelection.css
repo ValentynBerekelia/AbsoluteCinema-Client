@@ -12,11 +12,11 @@
 .screen-label {
     display: inline-block;
     padding: 8px 80px;
-    background: #e0e0e0;
+    background: rgba(200, 220, 255, 0.1);
     border-radius: 0 0 50% 50% / 0 0 20px 20px;
     font-size: 12px;
     font-weight: 800;
-    color: #888;
+    color: var(--muted);
     letter-spacing: 4px;
 }
 
@@ -47,7 +47,7 @@
     width: 20px;
     font-size: 11px;
     font-weight: 700;
-    color: #bbb;
+    color: var(--muted);
 }
 
 .seat {
@@ -79,8 +79,8 @@
 }
 
 .seat--occupied {
-    background-color: #f0f0f0 !important;
-    color: #ccc !important;
+    background-color: rgba(100, 100, 100, 0.3) !important;
+    color: rgba(200, 200, 200, 0.5) !important;
     opacity: 0.6;
     cursor: not-allowed;
     box-shadow: none;
@@ -101,8 +101,9 @@
     display: flex;
     gap: 40px;
     padding: 25px;
-    background: #fbfbfb;
+    background: rgba(10, 15, 35, 0.9);
     border-radius: 12px;
+    border: 1px solid rgba(200, 220, 255, 0.2);
 }
 
 .legend-group {
@@ -115,7 +116,7 @@
     font-size: 11px;
     font-weight: 800;
     text-transform: uppercase;
-    color: #999;
+    color: var(--muted);
 }
 
 .legend-item {
@@ -124,6 +125,7 @@
     gap: 10px;
     font-size: 13px;
     font-weight: 500;
+    color: var(--text);
 }
 
 .legend-seat {
@@ -133,7 +135,7 @@
 }
 
 .legend-price {
-    color: #333;
+    color: var(--text);
     font-weight: 700;
     margin-left: 5px;
 }
@@ -141,9 +143,10 @@
 .seat-selection__summary {
     margin-top: 20px;
     padding: 20px;
-    background: #212529;
-    color: white;
+    background: rgba(10, 15, 35, 0.95);
+    color: var(--text);
     border-radius: 12px;
+    border: 1px solid rgba(200, 220, 255, 0.2);
 }
 
 .summary-info {

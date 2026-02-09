@@ -1,0 +1,39 @@
+<svg viewBox="0 0 120 100" xmlns="http://www.w3.org/2000/svg">
+  <!-- Film reel - black part -->
+  <g id="reel">
+    <!-- Top reel -->
+    <circle cx="30" cy="25" r="20" fill="none" stroke="#000" stroke-width="3"/>
+    <circle cx="30" cy="25" r="15" fill="none" stroke="#000" stroke-width="2"/>
+    <!-- Film holes -->
+    <rect x="26" y="8" width="2" height="3" fill="#fff"/>
+    <rect x="26" y="15" width="2" height="3" fill="#fff"/>
+    <rect x="26" y="22" width="2" height="3" fill="#fff"/>
+    <rect x="26" y="29" width="2" height="3" fill="#fff"/>
+    <rect x="26" y="36" width="2" height="3" fill="#fff"/>
+    <rect x="35" y="8" width="2" height="3" fill="#fff"/>
+    <rect x="35" y="15" width="2" height="3" fill="#fff"/>
+    <rect x="35" y="22" width="2" height="3" fill="#fff"/>
+    <rect x="35" y="29" width="2" height="3" fill="#fff"/>
+    <rect x="35" y="36" width="2" height="3" fill="#fff"/>
+    
+    <!-- Bottom reel -->
+    <circle cx="90" cy="75" r="20" fill="none" stroke="#000" stroke-width="3"/>
+    <circle cx="90" cy="75" r="15" fill="none" stroke="#000" stroke-width="2"/>
+    <!-- Film holes -->
+    <rect x="86" y="58" width="2" height="3" fill="#fff"/>
+    <rect x="86" y="65" width="2" height="3" fill="#fff"/>
+    <rect x="86" y="72" width="2" height="3" fill="#fff"/>
+    <rect x="86" y="79" width="2" height="3" fill="#fff"/>
+    <rect x="86" y="86" width="2" height="3" fill="#fff"/>
+    <rect x="95" y="58" width="2" height="3" fill="#fff"/>
+    <rect x="95" y="65" width="2" height="3" fill="#fff"/>
+    <rect x="95" y="72" width="2" height="3" fill="#fff"/>
+    <rect x="95" y="79" width="2" height="3" fill="#fff"/>
+    <rect x="95" y="86" width="2" height="3" fill="#fff"/>
+    
+    <!-- Film tape - red -->
+    <path d="M 48 28 Q 60 50 75 70" fill="none" stroke="#e50914" stroke-width="12" stroke-linecap="round"/>
+    <circle cx="48" cy="28" r="6" fill="#e50914"/>
+    <circle cx="75" cy="70" r="6" fill="#e50914"/>
+  </g>
+</svg>

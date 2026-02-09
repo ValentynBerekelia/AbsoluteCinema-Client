@@ -69,19 +69,18 @@ export const Header = () => {
         <header className='header'>
             <div className='header-container'>
                 <Link to="/" className='logo' onClick={closeMenu}>
-                    AbsoluteCinema
+                    <img src="/logo.png" alt="AbsoluteCinema" className='logo-image' />
+                    <span className='logo-text'>AbsoluteCinema</span>
                 </Link>
                 <nav className={`nav ${isMenuOpen ? 'active' : ''}`}>
                     <ul className='nav-list'>
-                        <li><Link to="/" onClick={closeMenu}>Home</Link></li>
-                        <li><Link to="/movies" onClick={closeMenu}>Movies</Link></li>
+                        <li><Link to="/" onClick={closeMenu}>Schedule</Link></li>
+                        <li><Link to="/movies" onClick={closeMenu}>Movie</Link></li>
                         <li><Link to="/about" onClick={closeMenu}>About Us</Link></li>
-                        <li className="mobile-only auth-buttons-mobile">
-                            {renderAuthButtons(true)}
-                        </li>
                     </ul>
                 </nav>
                 <div className='header-actions'>
+                    <Link to="/promotion" className="promo-link" onClick={closeMenu}>Promotion</Link>
                     <div className="desktop-only auth-actions">
                         {renderAuthButtons(false)}
                     </div>
