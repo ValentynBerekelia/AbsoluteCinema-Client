@@ -256,6 +256,30 @@ export const EditMoviePage = () => {
             };
             await updateMoviePartial(safeMovieId, payload);
 
+            //poster
+            if (formData.poster instanceof File) {
+                try {
+                    const currentMovie = await getMovieById(safeMovieId);
+                    const oldPosterId = currentMovie.poster?.id;
+
+                    if (oldPosterId) {
+                        await deleteMedia(safeMovieId, oldPosterId);
+                    }
+
+                    const posterRes = await createAndAttachMedia(safeMovieId, {
+                        type: MediaType.PosterImage,
+                        file: formData.poster
+                    });
+
+                    if (posterRes) {
+                        showToast('success', "New poster uploaded!");
+                    }
+                } catch (err) {
+                    console.error("Poster sync failed", err);
+                    showToast('error', "Info saved, but poster update failed");
+                }
+            }
+
             // Handle Genres Changes
             const currentGenreIds = formData.genres.map(g => g.id);
             const originalGenreIds = originalFormData.genres.map(g => g.id);
@@ -393,7 +417,6 @@ export const EditMoviePage = () => {
 
             // Update original data to match current state
             setOriginalFormData(formData);
-            showToast('success', "Movie information updated successfully!");
         } catch (err) {
             setError("Save failed");
             showToast('error', "Failed to save movie information");

@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import { MediaType, Media } from '@/types/Media';
 import { createAndAttachMedia, deleteMedia } from '@/api/movies';
 import './MediaManager.css';
+import { useToast } from '@/context/ToastContext/ToastContext';
 
 interface MediaManagerProps {
     movieId: string;
@@ -10,16 +11,17 @@ interface MediaManagerProps {
     initialBanner?: Media;
 }
 
-export const MediaManager: React.FC<MediaManagerProps> = ({ 
-    movieId, 
-    initialStills, 
+export const MediaManager: React.FC<MediaManagerProps> = ({
+    movieId,
+    initialStills,
     initialTrailers,
-    initialBanner 
+    initialBanner
 }) => {
+    const { showToast } = useToast();
     const [stills, setStills] = useState<Media[]>(initialStills);
     const [trailers, setTrailers] = useState<Media[]>(initialTrailers || []);
     const [banner, setBanner] = useState<Media | null>(initialBanner || null);
-    
+
     const [stillInput, setStillInput] = useState('');
     const [trailerInput, setTrailerInput] = useState('');
     const [bannerInput, setBannerInput] = useState('');
@@ -36,7 +38,7 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
             const response = await createAndAttachMedia(movieId, { url, type });
             const newId = response.mediaId || Date.now().toString();
             const newMedia: Media = { id: newId, url, type };
-            
+
             if (type === MediaType.Image) {
                 setStills(prev => [...prev, newMedia]);
                 setStillInput('');
@@ -48,7 +50,7 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
                 setBannerInput('');
             }
         } catch (err) {
-            alert('Failed to attach media');
+            showToast('error', "Failed to attach media");
         } finally {
             setLoading(false);
         }
@@ -61,7 +63,7 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
             if (type === MediaType.Video) setTrailers(prev => prev.filter(m => m.id !== mediaId));
             if (type === MediaType.BannerImage) setBanner(null);
         } catch (err) {
-            alert('Failed to remove media');
+            showToast('error', "Failed to remove media");
         }
     };
 
@@ -77,14 +79,14 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
                 <div className="media-card">
                     <h4>Hero Banner (Main Page)</h4>
                     <div className="media-input-row">
-                        <input 
-                            value={bannerInput} 
-                            onChange={e => setBannerInput(e.target.value)} 
-                            placeholder="Banner Image URL" 
+                        <input
+                            value={bannerInput}
+                            onChange={e => setBannerInput(e.target.value)}
+                            placeholder="Banner Image URL"
                             className="form-input"
-                            disabled={!!banner || loading} 
+                            disabled={!!banner || loading}
                         />
-                        <button 
+                        <button
                             className="media-action-btn"
                             onClick={() => handleAddMedia(bannerInput, MediaType.BannerImage)}
                             disabled={loading || !bannerInput.trim() || !!banner}
@@ -102,15 +104,15 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
                 <div className="media-card">
                     <h4>Trailers Gallery</h4>
                     <div className="media-input-row">
-                        <input 
-                            value={trailerInput} 
-                            onChange={e => setTrailerInput(e.target.value)} 
-                            placeholder="YouTube URL" 
-                            className="form-input" 
+                        <input
+                            value={trailerInput}
+                            onChange={e => setTrailerInput(e.target.value)}
+                            placeholder="YouTube URL"
+                            className="form-input"
                             disabled={loading}
                         />
-                        <button 
-                            className='media-action-btn' 
+                        <button
+                            className='media-action-btn'
                             onClick={() => handleAddMedia(trailerInput, MediaType.Video)}
                             disabled={loading || !trailerInput.trim()}
                         >Add</button>
@@ -129,14 +131,14 @@ export const MediaManager: React.FC<MediaManagerProps> = ({
                 <div className="media-card full-width">
                     <h4>Gallery Stills</h4>
                     <div className="media-input-row">
-                        <input 
-                            value={stillInput} 
-                            onChange={e => setStillInput(e.target.value)} 
-                            placeholder="Image URL" 
+                        <input
+                            value={stillInput}
+                            onChange={e => setStillInput(e.target.value)}
+                            placeholder="Image URL"
                             className="form-input"
                             disabled={loading}
                         />
-                        <button 
+                        <button
                             className="media-action-btn"
                             onClick={() => handleAddMedia(stillInput, MediaType.Image)}
                             disabled={loading || !stillInput.trim()}
