@@ -11,10 +11,11 @@
                 0 0 20px rgba(139, 154, 196, 0.3),
                 0 0 20px rgba(107, 127, 180, 0.2);
     overflow: hidden;
-    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+    transition: transform 0.2s ease, box-shadow 0.3s ease, border-color 0.3s ease;
 }
 
 .admin-movie-container:hover {
+    transform: translateY(-2px);
     box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
                 0 0 60px rgba(139, 154, 196, 0.5),
                 0 0 60px rgba(107, 127, 180, 0.4);
@@ -91,48 +92,69 @@
     box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
+/* Stats Section */
 .admin-stats-badge {
     background: rgba(6, 12, 34, 0.92);
     padding: 12px;
     border-radius: 10px;
     border: 1px solid rgba(200, 220, 255, 0.2);
+    display: flex;
+    flex-direction: column;
+}
+
+.stats-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: baseline;
+    margin-bottom: 6px;
 }
 
 .stats-label {
-    display: block;
     font-size: 11px;
     text-transform: uppercase;
     color: var(--muted);
-    margin-bottom: 6px;
     font-weight: 700;
+    letter-spacing: 0.5px;
+    margin-bottom: 0;
+}
+
+.stats-percentage {
+    font-size: 14px;
+    font-weight: 800;
+    transition: color 0.3s ease;
 }
 
 .stats-values {
-    font-size: 18px;
+    font-size: 20px;
     font-weight: 800;
     display: flex;
-    align-items: center;
-    gap: 5px;
+    align-items: baseline;
+    gap: 4px;
+    margin-bottom: 10px;
 }
 
 .stats-sold { color: #e50914; }
 .stats-divider { color: rgba(200, 220, 255, 0.3); }
 .stats-total { color: var(--text); }
 
+/* Progress Bar */
 .stats-progress-bar {
     height: 5px;
     background: rgba(200, 220, 255, 0.15);
     border-radius: 3px;
     margin-top: 10px;
     overflow: hidden;
+    position: relative;
 }
 
 .stats-progress-fill {
     height: 100%;
-    background: #e50914;
-    border-radius: 3px;
+    border-radius: 10px;
+    transition: width 0.8s cubic-bezier(0.4, 0, 0.2, 1), background-color 0.3s ease;
+    min-width: 4px; /* Мінімальна видима частина */
 }
 
+/* Right Column & Meta */
 .admin-right-column {
     flex: 1;
     display: flex;
@@ -160,6 +182,7 @@
 .meta-tag.duration { background: rgba(25, 118, 210, 0.15); color: #64b5f6; }
 .meta-tag.age { background: rgba(245, 124, 0, 0.15); color: #ffb74d; }
 
+/* Sessions Section */
 .admin-sessions-section h3 {
     font-size: 14px;
     text-transform: uppercase;
@@ -200,6 +223,7 @@
     gap: 8px;
 }
 
+/* Action Button */
 .admin-action-btn {
     margin-top: auto;
     width: 100%;
@@ -221,8 +245,10 @@
     border-color: #e50914;
     color: #e50914;
     box-shadow: 0 4px 12px rgba(229, 9, 20, 0.2);
+    transform: translateY(-1px);
 }
 
+/* Scrollbar */
 .sessions-by-date-group::-webkit-scrollbar {
     width: 5px;
 }

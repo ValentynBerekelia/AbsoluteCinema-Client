@@ -8,6 +8,8 @@ import { mapHallDetailsFromApi, Seat, SeatType } from '@/types/hall';
 import { SortOrder } from '@/types/MoviesQueryParameters';
 import { getDynamicSeatColor } from '@/utils/colorGenerator';
 import styles from './ReservationsPage.module.css';
+import { useAuth } from '@/context/AuthContext/AuthContext';
+import { useToast } from '@/context/ToastContext/ToastContext';
 
 interface SessionSummary {
     id: string;
@@ -48,12 +50,12 @@ const normalizeTickets = (data: any): TicketInfo[] => {
     })).filter((t: TicketInfo) => t.id && t.seatId);
 };
 
-const ADMIN_USER_ID = '48190e15-159b-46ea-a0a8-bc11f3d3cd8a';
-
 export const ReservationsPage = () => {
     const [searchParams] = useSearchParams();
     const sessionIdFromUrl = searchParams.get('sessionId');
-    
+    const { user } = useAuth();
+    const { showToast } = useToast();
+
     const [sessions, setSessions] = useState<SessionSummary[]>([]);
     const [loadingSessions, setLoadingSessions] = useState(true);
     const [selectedSessionId, setSelectedSessionId] = useState<string | null>(sessionIdFromUrl);
@@ -65,9 +67,7 @@ export const ReservationsPage = () => {
     const [userIdInput, setUserIdInput] = useState('');
     const [commentInput, setCommentInput] = useState('');
     const [isAdminReservation, setIsAdminReservation] = useState(false);
-    const [reservationNotes, setReservationNotes] = useState<Record<string, string>>({});
     const [actionLoading, setActionLoading] = useState(false);
-    const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
         const fetchSessions = async () => {
@@ -77,7 +77,7 @@ export const ReservationsPage = () => {
                     pageNumber: 1, pageSize: 100, sortColumn: 'name', sortOrder: SortOrder.Asc
                 });
                 const rawMovies = Array.isArray(moviesResponse) ? moviesResponse : moviesResponse?.movies ?? [];
-                
+
                 const sessionsPerMovie = await Promise.all(
                     rawMovies.map(async (movie: any) => {
                         const mId = movie.id?.id ?? movie.id;
@@ -98,15 +98,14 @@ export const ReservationsPage = () => {
                 const flattened = sessionsPerMovie.flat().filter((s: any) => s.id);
                 flattened.sort((a: SessionSummary, b: SessionSummary) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
                 setSessions(flattened);
-                
-                // If sessionId is in URL, select that session; otherwise select first
+
                 if (sessionIdFromUrl && flattened.some((s: SessionSummary) => s.id === sessionIdFromUrl)) {
                     setSelectedSessionId(sessionIdFromUrl);
                 } else if (flattened.length > 0 && !selectedSessionId) {
                     setSelectedSessionId(flattened[0].id);
                 }
             } catch (err) {
-                setError('Failed to load sessions');
+                showToast('error', 'Failed to load sessions');
             } finally {
                 setLoadingSessions(false);
             }
@@ -164,16 +163,32 @@ export const ReservationsPage = () => {
     const selectedSeat = selectedSeatId ? hallSeats.find(s => s.seatId === selectedSeatId) || null : null;
 
     const handleCreateReservation = async () => {
-        const finalUserId = isAdminReservation ? ADMIN_USER_ID : userIdInput;
-        if (!selectedSession || !selectedSeatId || !finalUserId) return;
+        const finalUserId = isAdminReservation ? user?.userId : userIdInput.trim();
+
+        if (!selectedSession || !selectedSeatId) return;
+
+        if (!finalUserId) {
+            showToast('error', isAdminReservation
+                ? 'Could not find your Admin ID. Please re-login.'
+                : 'User ID is required');
+            return;
+        }
+
         try {
             setActionLoading(true);
-            await createTicket({ sessionId: selectedSession.id, seatId: selectedSeatId, userId: finalUserId });
-            if (commentInput) setReservationNotes(prev => ({ ...prev, [selectedSeatId]: commentInput }));
+            await createTicket({
+                sessionId: selectedSession.id,
+                seatId: selectedSeatId,
+                userId: finalUserId
+            });
+
+            showToast('success', 'Reservation created successfully');
             await refreshTickets(selectedSession.id);
-            setCommentInput(''); setUserIdInput(''); setIsAdminReservation(false);
-        } catch (err) {
-            console.error(err);
+
+            setUserIdInput('');
+            setIsAdminReservation(false);
+        } catch (err: any) {
+            showToast('error', 'Failed to create reservation');
         } finally {
             setActionLoading(false);
         }
@@ -188,6 +203,7 @@ export const ReservationsPage = () => {
             setSelectedSeatId(null);
         } catch (err) {
             console.error(err);
+            showToast('error', `Failed to cancel reservation ${String(err)}`);
         } finally {
             setActionLoading(false);
         }
@@ -275,8 +291,8 @@ export const ReservationsPage = () => {
                                             <h3>Seat {selectedSeat?.row}-{selectedSeat?.number}</h3>
                                             {selectedTicket ? (
                                                 <>
-                                                    <div className={styles["detail-row"]}><span>Ticket ID:</span><span>{selectedTicket.id.slice(0,8)}...</span></div>
-                                                    <div className={styles["detail-row"]}><span>User ID:</span><span>{selectedTicket.userId?.slice(0,8)}...</span></div>
+                                                    <div className={styles["detail-row"]}><span>Ticket ID:</span><span>{selectedTicket.id.slice(0, 8)}...</span></div>
+                                                    <div className={styles["detail-row"]}><span>User ID:</span><span>{selectedTicket.userId?.slice(0, 8)}...</span></div>
                                                     <button className={`${styles['action-btn']} ${styles.danger}`} onClick={handleCancelReservation} disabled={actionLoading}>Cancel reservation</button>
                                                 </>
                                             ) : (
@@ -295,7 +311,13 @@ export const ReservationsPage = () => {
                                                         <label>Comment</label>
                                                         <textarea value={commentInput} onChange={(e) => setCommentInput(e.target.value)} placeholder="Notes..." />
                                                     </div>
-                                                    <button className={styles["action-btn"]} onClick={handleCreateReservation} disabled={actionLoading || (!isAdminReservation && !userIdInput)}>Create reservation</button>
+                                                    <button
+                                                        className={styles["action-btn"]}
+                                                        onClick={handleCreateReservation}
+                                                        disabled={actionLoading || (!isAdminReservation && !userIdInput.trim())}
+                                                    >
+                                                        {actionLoading ? 'Processing...' : 'Create reservation'}
+                                                    </button>
                                                 </>
                                             )}
                                         </div>

@@ -105,10 +105,12 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
                                 key={`${movie.id}-${idx}`}
                                 className={`hero-movie-card ${isActive ? 'active' : ''}`}
                                 onClick={() => {
-                                    if (!isActive) {
-                                        if (movie.slideIndex === -1) prevSlide();
-                                        if (movie.slideIndex === 1) nextSlide();
+                                    if (isActive) {
+                                        navigate(`/movie/${movie.id}`);
+                                        return;
                                     }
+                                    if (movie.slideIndex === -1) prevSlide();
+                                    if (movie.slideIndex === 1) nextSlide();
                                 }}
                             >
                                 <div 

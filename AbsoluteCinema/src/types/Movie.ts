@@ -13,19 +13,9 @@ export interface MovieCardInfo {
     duration: number;
     ageLimit: number;
     sessions: Session[];
-    format: string; 
+    format: string;
 }
 
-export interface MovieAdminCardInfo {
-    id: string;
-    title: string;
-    duration: string; //cause in entity we have TimeSpan
-    format: string;
-    ageLimit: number;
-    sessions: Session[];
-    poster: string;
-    halls: string[];
-};
 
 export interface HeroBannerInfo {
     id: string;
@@ -52,6 +42,17 @@ export interface MovieDetails {
     trailers: Media[];
     genres: Genre[];
 }
+
+export interface MovieAdminCardInfo {
+    id: string;
+    title: string;
+    duration: string;
+    ageLimit: number;
+    poster: string;
+    sessions: Session[];
+    totalTicketSold: number;
+    totalCapacity: number;
+};
 
 const normalizeGenres = (genres: any[]): Genre[] => {
     return (genres || []).map((g: any) => ({
@@ -133,7 +134,7 @@ export const mapMovieFromApi = (data: any): any[] => {
                 const hallId = s.hall?.id?.id || s.hall?.id || s.hallId?.id || s.hallId;
                 const hallName = s.hall?.name || s.hallName;
                 console.log('Extracted hallId:', hallId, 'hallName:', hallName);
-                
+
                 return {
                     id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''),
                     ...convertIsoToDateTime(s.startDateTime),
@@ -158,17 +159,18 @@ export const mapMoviesForAdmin = (data: any): MovieAdminCardInfo[] => {
             id: String(id),
             title: movie.name ?? '',
             duration: movie.duration,
-            format: '3D',
             ageLimit: movie.ageLimit ?? 0,
+            poster: movie.posterUrl ?? '',
+            totalTicketSold: movie.totalTicketSold ?? 0,
+            totalCapacity: movie.totalCapacity ?? 0,
             sessions: movie.sessions?.map((s: any) => ({
-                id: s.id,
+                id: String(s.id?.id ?? s.id ?? ''),
                 ...convertIsoToDateTime(s.startDateTime),
                 movieType: s.format
-            })) ?? [],
-            poster: movie.posterUrl ?? ''
-        }
+            })) ?? []
+        };
     });
-}
+};
 
 export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
     const movies = data.movies ?? (Array.isArray(data) ? data : []);
@@ -182,21 +184,21 @@ export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
             image: m.bannerUrl,
             sessions: (m.todaySessions || []).map((s: any) => {
                 const dateTime = convertIsoToDateTime(s.startDateTime);
-                
-                // Правильно видобуваємо ID з різних форматів
-                let sessionId = '';
-                if (typeof s.id === 'string') {
-                    sessionId = s.id;
-                } else if (typeof s.id === 'object' && s.id?.id) {
-                    sessionId = s.id.id;
-                } else if (s.sessionId) {
-                    sessionId = typeof s.sessionId === 'string' ? s.sessionId : s.sessionId.id;
-                }
-                
-                return { 
-                    id: sessionId, 
-                    date: dateTime.date, 
-                    time: dateTime.time 
+                const sessionId = (() => {
+                    if (typeof s.id === 'string') return s.id;
+                    if (typeof s.id === 'object' && s.id?.id) return String(s.id.id);
+                    if (s.sessionId) {
+                        return typeof s.sessionId === 'string'
+                            ? s.sessionId
+                            : String(s.sessionId.id ?? '');
+                    }
+                    return String(s.id?.id ?? s.id ?? s.sessionId ?? '');
+                })();
+
+                return {
+                    id: sessionId,
+                    date: dateTime.date,
+                    time: dateTime.time
                 };
             })
         };
