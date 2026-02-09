@@ -1,13 +1,13 @@
 .movie-sessions-page {
     min-height: calc(100vh - 120px);
     padding: 60px 20px;
-    background: #f7f7f7;
+    background: rgba(6, 12, 34, 0.92);
 }
 
 .sessions-header {
     text-align: center;
     margin-bottom: 80px;
-    color: #1a1a1a;
+    color: var(--text);
 }
 
 .sessions-header h1 {
@@ -15,12 +15,12 @@
     margin: 0 0 15px 0;
     font-weight: 700;
     letter-spacing: -0.5px;
-    text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
+    color: var(--text);
 }
 
 .sessions-header p {
     font-size: 18px;
-    color: #666666;
+    color: var(--muted);
     margin: 0;
     font-weight: 300;
 }
@@ -41,9 +41,9 @@
 }
 
 .date-nav-btn {
-    background: #ffffff;
-    border: 1px solid #e0e0e0;
-    color: #1a1a1a;
+    background: rgba(10, 15, 35, 0.9);
+    border: 1px solid rgba(200, 220, 255, 0.2);
+    color: var(--text);
     width: 44px;
     height: 44px;
     border-radius: 8px;
@@ -53,12 +53,14 @@
     align-items: center;
     justify-content: center;
     transition: all 0.3s ease;
+    box-shadow: 0 0 15px rgba(139, 154, 196, 0.15);
 }
 
 .date-nav-btn:hover:not(:disabled) {
-    background: #f3f3f3;
-    border-color: #cccccc;
+    background: rgba(229, 9, 20, 0.15);
+    border-color: #e50914;
     transform: scale(1.08);
+    box-shadow: 0 0 30px rgba(139, 154, 196, 0.3);
 }
 
 .date-nav-btn:disabled {
@@ -74,32 +76,34 @@
 }
 
 .date-button {
-    background: #ffffff;
-    border: 2px solid #e6e6e6;
-    color: #1a1a1a;
+    background: rgba(10, 15, 35, 0.9);
+    border: 2px solid rgba(200, 220, 255, 0.2);
+    color: var(--text);
     padding: 12px 10px;
     border-radius: 10px;
     cursor: pointer;
     transition: all 0.3s ease;
     font-weight: 500;
     text-align: center;
+    box-shadow: 0 0 15px rgba(139, 154, 196, 0.15);
 }
 
 .date-button:hover {
-    background: #f5f5f5;
-    border-color: #d6d6d6;
+    background: rgba(20, 25, 50, 0.95);
+    border-color: rgba(200, 220, 255, 0.4);
     transform: translateY(-2px);
+    box-shadow: 0 0 30px rgba(139, 154, 196, 0.3);
 }
 
 .date-button.active {
     background: linear-gradient(135deg, #e50914 0%, #ff3b3b 100%);
     border-color: #e50914;
-    box-shadow: 0 8px 24px rgba(229, 9, 20, 0.35);
+    box-shadow: 0 8px 24px rgba(229, 9, 20, 0.35), 0 0 40px rgba(139, 154, 196, 0.3);
 }
 
 .date-day {
     font-size: 11px;
-    color: #777777;
+    color: var(--muted);
     margin-bottom: 4px;
     text-transform: uppercase;
     letter-spacing: 0.5px;
@@ -116,11 +120,20 @@
 
 /* Sessions List */
 .sessions-list-wrapper {
-    background: #ffffff;
-    border: 1px solid #e6e6e6;
+    background: rgba(10, 15, 35, 0.9);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 16px;
     padding: 40px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.06);
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 20px rgba(139, 154, 196, 0.3),
+                0 0 20px rgba(107, 127, 180, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.sessions-list-wrapper:hover {
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 60px rgba(139, 154, 196, 0.5),
+                0 0 60px rgba(107, 127, 180, 0.4);
 }
 
 .sessions-list {
@@ -130,24 +143,26 @@
 }
 
 .session-item {
-    background: #fafafa;
-    border: 1px solid #e5e5e5;
+    background: rgba(6, 12, 34, 0.92);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 12px;
     padding: 22px 24px 20px;
     cursor: pointer;
     transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
     text-align: left;
-    color: #1a1a1a;
+    color: var(--text);
     display: flex;
     flex-direction: column;
     gap: 16px;
+    box-shadow: 0 0 20px rgba(139, 154, 196, 0.2);
 }
 
 .session-item:hover {
-    background: #ffffff;
-    border-color: #dcdcdc;
+    background: rgba(10, 15, 35, 0.95);
+    border-color: rgba(200, 220, 255, 0.4);
     transform: translateY(-4px);
-    box-shadow: 0 12px 28px rgba(0, 0, 0, 0.12);
+    box-shadow: 0 12px 28px rgba(139, 154, 196, 0.3), 0 0 40px rgba(139, 154, 196, 0.25);
+}
 }
 
 .session-time {
@@ -171,10 +186,16 @@
     gap: 6px;
     margin-top: 4px;
     padding: 8px 10px;
-    background: #ffffff;
-    border: 1px solid #eeeeee;
+    background: rgba(6, 12, 34, 0.92);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 10px;
     width: 100%;
+    box-shadow: 0 0 15px rgba(139, 154, 196, 0.15);
+    transition: all 0.3s ease;
+}
+
+.session-prices:hover {
+    box-shadow: 0 0 30px rgba(139, 154, 196, 0.3);
 }
 
 .session-price-row {
@@ -182,14 +203,14 @@
     justify-content: space-between;
     align-items: center;
     font-size: 13px;
-    color: #333333;
+    color: var(--text);
     padding: 2px 0;
     gap: 10px;
     flex-wrap: wrap;
 }
 
 .session-price-label {
-    color: #666666;
+    color: var(--muted);
     font-weight: 600;
     flex: 1 1 auto;
     min-width: 140px;
@@ -197,19 +218,19 @@
 
 .session-price-value {
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--text);
     flex: 0 0 auto;
 }
 
 .session-price-empty {
     font-size: 13px;
-    color: #999999;
+    color: var(--muted);
     text-align: center;
 }
 
 .session-hall {
     font-size: 13px;
-    color: #666666;
+    color: var(--muted);
     font-weight: 600;
     text-align: center;
 }
@@ -217,7 +238,7 @@
 .session-price {
     font-size: 15px;
     font-weight: 600;
-    color: #1a1a1a;
+    color: var(--text);
 }
 
 .session-action {
@@ -233,7 +254,7 @@
 .no-sessions {
     text-align: center;
     padding: 60px 20px;
-    color: #777777;
+    color: var(--muted);
     font-size: 18px;
 }
 
@@ -243,12 +264,12 @@
     align-items: center;
     justify-content: center;
     min-height: calc(100vh - 120px);
-    color: #1a1a1a;
+    color: var(--text);
     font-size: 20px;
 }
 
 .sessions-page-error {
-    color: #e50914;
+    color: #ff6b6b;
 }
 
 /* Responsive */

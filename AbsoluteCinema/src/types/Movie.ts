@@ -182,8 +182,19 @@ export const mapHeroBannersFromApi = (data: any): HeroBannerInfo[] => {
             image: m.bannerUrl,
             sessions: (m.todaySessions || []).map((s: any) => {
                 const dateTime = convertIsoToDateTime(s.startDateTime);
+                
+                // Правильно видобуваємо ID з різних форматів
+                let sessionId = '';
+                if (typeof s.id === 'string') {
+                    sessionId = s.id;
+                } else if (typeof s.id === 'object' && s.id?.id) {
+                    sessionId = s.id.id;
+                } else if (s.sessionId) {
+                    sessionId = typeof s.sessionId === 'string' ? s.sessionId : s.sessionId.id;
+                }
+                
                 return { 
-                    id: String(s.id?.id ?? s.id ?? s.sessionId ?? ''), 
+                    id: sessionId, 
                     date: dateTime.date, 
                     time: dateTime.time 
                 };

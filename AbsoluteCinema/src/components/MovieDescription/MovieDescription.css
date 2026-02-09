@@ -8,11 +8,21 @@
     display: flex;
     width: 100%;
     max-width: 1100px;
-    background: #fff;
-    border: 1px solid #ccc;
+    background: rgba(10, 15, 35, 0.9);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 12px;
     padding: 30px;
     gap: 40px;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 20px rgba(139, 154, 196, 0.3),
+                0 0 20px rgba(107, 127, 180, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.description-card:hover {
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 60px rgba(139, 154, 196, 0.5),
+                0 0 60px rgba(107, 127, 180, 0.4);
 }
 
 .description-poster img {
@@ -25,19 +35,20 @@
 
 .description-content {
     flex: 1;
-    color: #333;
+    color: var(--text);
 }
 
 .description-content h2 {
     font-size: 28px;
     margin-bottom: 15px;
+    color: var(--text);
 }
 
 .movie-text {
     font-size: 18px;
     line-height: 1.6;
     margin-bottom: 25px;
-    color: #555;
+    color: var(--muted);
 }
 
 .info-grid {
@@ -48,9 +59,11 @@
 
 .info-item {
     font-size: 18px;
+    color: var(--text);
 }
 
 .info-item span {
     font-weight: 700;
     margin-right: 8px;
+    color: var(--text);
 }

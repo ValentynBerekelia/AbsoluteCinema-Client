@@ -4,6 +4,8 @@
     max-width: 1280px; /* Головний обмежувач ширини */
     margin: 0 auto;
     font-family: 'Inter', sans-serif;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text);
 }
 
 .add-movie-header {
@@ -25,15 +27,15 @@
     width: 100%;
     margin-top: 20px;
     padding: 30px;
-    background: #fff;
-    border: 1px solid #ccc;
+    background: rgba(10, 15, 35, 0.9);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 8px;
     box-sizing: border-box;
 }
 
 .session-card {
-    background: #f9f9f9;
-    border: 1px solid #ddd;
+    background: rgba(6, 12, 34, 0.92);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 8px;
     padding: 25px;
     margin-bottom: 20px;
@@ -48,7 +50,7 @@
 
 .submit-btn {
     padding: 15px 40px;
-    background: #333;
+    background: var(--accent);
     color: #fff;
     border: none;
     border-radius: 4px;
@@ -58,5 +60,5 @@
 }
 
 .submit-btn:hover {
-    background: #000;
+    background: #b8070f;
 }

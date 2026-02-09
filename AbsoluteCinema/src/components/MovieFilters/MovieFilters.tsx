@@ -56,7 +56,7 @@ export const MovieFilters = ({
     return (
         <div className="filters-container">
             
-            {/* --- GENRE ROW --- */}
+            {/* --- GENRE ROW WITH FORMAT BUTTONS --- */}
             <div className="filters-row">
                 
                 <div className="genre-wrapper">
@@ -114,11 +114,8 @@ export const MovieFilters = ({
                         )}
                     </div>
                 </div>
-            </div>
 
-            {/* --- FORMAT ROW --- */}
-            <div className="filters-row">
-                <div className="filters-row formats-row"></div>
+                {/* Format buttons aligned on same row */}
                 <div className="formats-list">
                     {FORMATS.map(format => (
                         <button

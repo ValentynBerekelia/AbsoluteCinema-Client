@@ -8,11 +8,12 @@
 }
 
 .home-container {
-    max-width: 1080px;
+    max-width: 1800px;
     margin: 0 auto;
     display: flex;
     flex-direction: column;
-    color: #333333;
+    color: var(--text);
+    padding: 0 20px;
 }
 
 .movie-section {

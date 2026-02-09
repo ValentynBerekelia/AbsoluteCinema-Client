@@ -5,7 +5,12 @@
     background: var(--bg-card);
     border: 1px solid var(--border-color);
     border-radius: 12px;
-    box-shadow: var(--shadow-sm);
+    box-shadow: var(--shadow-sm), 0 0 20px rgba(139, 154, 196, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.media-section:hover {
+    box-shadow: var(--shadow-md), 0 0 40px rgba(139, 154, 196, 0.35);
 }
 
 .media-section-header h3 {
@@ -36,6 +41,12 @@
     display: flex;
     flex-direction: column;
     gap: 12px;
+    box-shadow: 0 0 20px rgba(139, 154, 196, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.media-card:hover {
+    box-shadow: 0 0 40px rgba(139, 154, 196, 0.35);
 }
 
 .media-card.full-width {
@@ -59,22 +70,25 @@
     padding: 10px 16px;
     border: none;
     border-radius: 8px;
-    background: var(--secondary-color);
-    color: #fff;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     font-weight: 700;
     cursor: pointer;
     transition: var(--transition);
 }
 
 .media-action-btn:hover:not(:disabled) {
-    background: var(--primary-color);
+    background: rgba(229, 9, 20, 0.15);
+    color: #e50914;
+    border-color: #e50914;
     transform: translateY(-1px);
 }
 
 .media-action-btn:disabled {
-    background-color: #e0e0e0;
-    color: #a0a0a0;
-    border: 1px solid #d0d0d0;
+    background-color: rgba(10, 15, 35, 0.6);
+    color: var(--muted);
+    border: 1px solid rgba(200, 220, 255, 0.15);
     cursor: not-allowed;
     box-shadow: none;
     transform: none !important;
@@ -88,7 +102,7 @@
     border-radius: 8px;
     overflow: hidden;
     border: 1px solid var(--border-color);
-    background: #f0f0f0;
+    background: rgba(6, 12, 34, 0.92);
 }
 
 .media-preview-banner img {
@@ -155,11 +169,12 @@
     display: flex;
     justify-content: space-between;
     align-items: center;
-    background: #fff;
+    background: rgba(6, 12, 34, 0.92);
     padding: 8px 12px;
     border-radius: 8px;
     border: 1px solid var(--border-color);
     font-size: 14px;
+    color: var(--text-primary);
 }
 
 .media-link-item a {
@@ -174,7 +189,7 @@
 .media-link-remove {
     background: none;
     border: none;
-    color: #999;
+    color: var(--muted);
     cursor: pointer;
     font-size: 16px;
     font-weight: bold;
@@ -183,7 +198,7 @@
 }
 
 .media-link-remove:hover {
-    color: #d32f2f;
+    color: #e50914;
     transform: scale(1.1);
 }
 

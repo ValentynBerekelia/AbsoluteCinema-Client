@@ -16,6 +16,16 @@ body {
   font-family: 'Inter', sans-serif;
 }
 
+:root {
+  --bg-start: #050816;
+  --bg-end: #0b1330;
+  --primary: #0f1630;
+  --accent: #e50914;
+  --card-bg: #0f1726;
+  --muted: #cfcfcf;
+  --text: #e9eef8;
+}
+
 body,
 html,
 #root {
@@ -31,4 +41,10 @@ html,
   box-sizing: border-box;
   margin: 0;
   padding: 0;
+}
+
+body {
+  background: #0d26a3;
+  background: radial-gradient(circle, rgb(12, 19, 59) 9%, rgb(44, 0, 9) 79%);
+  color: var(--text);
 }

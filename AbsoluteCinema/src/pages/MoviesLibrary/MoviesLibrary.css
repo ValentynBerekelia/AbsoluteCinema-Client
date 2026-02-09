@@ -27,12 +27,12 @@
     font-weight: 700;
     font-size: 64px;
     margin-bottom: 16px;
-    color: #333333;
+    color: #fff;
 }
 
 .movies-library-subtitle {
     font-size: 20px;
-    color: #666666;
+    color: var(--muted);
     font-weight: 400;
 }
 

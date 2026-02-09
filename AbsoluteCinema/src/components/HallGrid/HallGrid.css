@@ -3,8 +3,8 @@
     max-width: 600px;
     margin: 0 auto;
     padding: 20px;
-    background: #fdfdfd;
-    border: 1px solid #eee;
+    background: rgba(6, 12, 34, 0.92);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 12px;
     display: flex;
     flex-direction: column;
@@ -15,11 +15,11 @@
     width: 80%;
     margin: 0 auto 30px;
     height: 4px;
-    background: #ddd;
+    background: rgba(200, 220, 255, 0.25);
     border-radius: 2px;
     text-align: center;
     font-size: 10px;
-    color: #bbb;
+    color: var(--muted);
     letter-spacing: 5px;
     position: relative;
 }
@@ -51,7 +51,7 @@
     z-index: 2;
 }
 
-.seat-item.standard { background: #d1d1d1; }
+.seat-item.standard { background: rgba(200, 220, 255, 0.6); }
 .seat-item.vip { background: #f4c542; }
 .seat-item.comfort { background: #2ecc71; }
 

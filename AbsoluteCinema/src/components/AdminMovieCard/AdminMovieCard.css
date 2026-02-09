@@ -2,14 +2,23 @@
     position: relative;
     margin-bottom: 25px;
     width: 100%;
-    background-color: #ffffff;
-    border: 1px solid #e0e0e0; 
+    background-color: rgba(10, 15, 35, 0.9);
+    border: 1px solid rgba(200, 220, 255, 0.2); 
     border-radius: 12px;
-    color: #333;
+    color: var(--text);
     font-size: 16px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 20px rgba(139, 154, 196, 0.3),
+                0 0 20px rgba(107, 127, 180, 0.2);
     overflow: hidden;
-    transition: transform 0.2s ease;
+    transition: box-shadow 0.3s ease, border-color 0.3s ease;
+}
+
+.admin-movie-container:hover {
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 60px rgba(139, 154, 196, 0.5),
+                0 0 60px rgba(107, 127, 180, 0.4);
+    border-color: rgba(229, 9, 20, 0.8);
 }
 
 .admin-movie-header-row {
@@ -24,7 +33,7 @@
     font-weight: 800;
     margin: 0;
     letter-spacing: -0.5px;
-    color: #1a1a1a;
+    color: var(--text);
 }
 
 .admin-delete-movie-btn {
@@ -34,9 +43,9 @@
     width: 32px;
     height: 32px;
     border-radius: 50%;
-    border: 1px solid #ffcdd2;
-    background: white;
-    color: #d32f2f;
+    border: 1px solid rgba(229, 9, 20, 0.5);
+    background: rgba(6, 12, 34, 0.92);
+    color: #e50914;
     font-size: 16px;
     font-weight: bold;
     cursor: pointer;
@@ -54,16 +63,16 @@
 }
 
 .admin-delete-movie-btn:hover {
-    background: #d32f2f;
+    background: #e50914;
     color: white;
-    border-color: #d32f2f;
+    border-color: #e50914;
     transform: scale(1.1) rotate(90deg);
 }
 
 .admin-movie-main-content {
     display: flex;
     gap: 25px;
-    padding: 0 20px 20px 20px;
+    padding: 12px 20px 20px 20px;
 }
 
 .admin-left-column {
@@ -78,22 +87,22 @@
     height: 310px;
     object-fit: cover;
     border-radius: 8px;
-    border: 1px solid #eee;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.1);
+    border: 1px solid rgba(200, 220, 255, 0.2);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.3);
 }
 
 .admin-stats-badge {
-    background: #f8f9fa;
+    background: rgba(6, 12, 34, 0.92);
     padding: 12px;
     border-radius: 10px;
-    border: 1px solid #eee;
+    border: 1px solid rgba(200, 220, 255, 0.2);
 }
 
 .stats-label {
     display: block;
     font-size: 11px;
     text-transform: uppercase;
-    color: #888;
+    color: var(--muted);
     margin-bottom: 6px;
     font-weight: 700;
 }
@@ -107,12 +116,12 @@
 }
 
 .stats-sold { color: #e50914; }
-.stats-divider { color: #ccc; }
-.stats-total { color: #333; }
+.stats-divider { color: rgba(200, 220, 255, 0.3); }
+.stats-total { color: var(--text); }
 
 .stats-progress-bar {
     height: 5px;
-    background: #e0e0e0;
+    background: rgba(200, 220, 255, 0.15);
     border-radius: 3px;
     margin-top: 10px;
     overflow: hidden;
@@ -148,13 +157,13 @@
     text-transform: uppercase;
 }
 
-.meta-tag.duration { background: #e3f2fd; color: #1976d2; }
-.meta-tag.age { background: #fff3e0; color: #f57c00; }
+.meta-tag.duration { background: rgba(25, 118, 210, 0.15); color: #64b5f6; }
+.meta-tag.age { background: rgba(245, 124, 0, 0.15); color: #ffb74d; }
 
 .admin-sessions-section h3 {
     font-size: 14px;
     text-transform: uppercase;
-    color: #999;
+    color: var(--muted);
     margin: 0 0 12px 0;
     letter-spacing: 1px;
 }
@@ -177,11 +186,12 @@
 .session-date-header {
     font-size: 13px;
     font-weight: 800;
-    color: #444;
-    background: #f0f0f0;
+    color: var(--text);
+    background: rgba(6, 12, 34, 0.92);
     padding: 2px 8px;
     border-radius: 4px;
     width: fit-content;
+    border: 1px solid rgba(200, 220, 255, 0.15);
 }
 
 .sessions-row {
@@ -194,9 +204,9 @@
     margin-top: auto;
     width: 100%;
     padding: 14px;
-    background-color: #1a1a1a;
-    color: white;
-    border: none;
+    background-color: rgba(6, 12, 34, 0.92);
+    color: var(--text);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     font-size: 16px;
     font-weight: 700;
     cursor: pointer;
@@ -207,7 +217,9 @@
 }
 
 .admin-action-btn:hover {
-    background-color: #e50914;
+    background-color: rgba(229, 9, 20, 0.15);
+    border-color: #e50914;
+    color: #e50914;
     box-shadow: 0 4px 12px rgba(229, 9, 20, 0.2);
 }
 
@@ -215,12 +227,12 @@
     width: 5px;
 }
 .sessions-by-date-group::-webkit-scrollbar-track {
-    background: #f9f9f9;
+    background: rgba(200, 220, 255, 0.05);
 }
 .sessions-by-date-group::-webkit-scrollbar-thumb {
-    background: #ddd;
+    background: rgba(200, 220, 255, 0.2);
     border-radius: 10px;
 }
 .sessions-by-date-group::-webkit-scrollbar-thumb:hover {
-    background: #bbb;
+    background: rgba(200, 220, 255, 0.4);
 }

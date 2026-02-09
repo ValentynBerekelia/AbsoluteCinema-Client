@@ -20,47 +20,49 @@ export const ScheduleMovieCard = ({ movie }: ScheduleMovieCardProps) => {
     const durationText = convertDuration(movie.duration);
 
     return (
-        <article className="schedule-card">
-            <Link to={`/movie/${movie.id}`} className="schedule-card__poster">
-                <img src={movie.image || NO_POSTER_URL} alt={movie.title} />
-            </Link>
+        <article className="schedule-card-outer">
+            <div className="schedule-card schedule-card__inner-border">
+                <Link to={`/movie/${movie.id}`} className="schedule-card__poster">
+                    <img src={movie.image || NO_POSTER_URL} alt={movie.title} />
+                </Link>
 
-            <div className="schedule-card__content">
-                <div className="schedule-card__info">
-                    <Link to={`/movie/${movie.id}`} className="schedule-card__title">
-                        {movie.title}
-                    </Link>
+                <div className="schedule-card__content">
+                    <div className="schedule-card__info">
+                        <Link to={`/movie/${movie.id}`} className="schedule-card__title">
+                            {movie.title}
+                        </Link>
 
-                    <div className="schedule-card__meta">
-                        {movie.ageLimit != null && (
-                            <span className="schedule-card__age">{movie.ageLimit}+</span>
-                        )}
-                        {durationText && (
-                            <span className="schedule-card__duration">{durationText}</span>
+                        <div className="schedule-card__meta">
+                            {movie.ageLimit != null && (
+                                <span className="schedule-card__age">{movie.ageLimit}+</span>
+                            )}
+                            {durationText && (
+                                <span className="schedule-card__duration">{durationText}</span>
+                            )}
+                        </div>
+
+                        {movie.genre && (
+                            <p className="schedule-card__genre">{movie.genre}</p>
                         )}
                     </div>
 
-                    {movie.genre && (
-                        <p className="schedule-card__genre">{movie.genre}</p>
-                    )}
-                </div>
-
-                <div className="schedule-card__sessions">
-                    {hasSessions ? (
-                        validSessions.map((session, idx) => (
-                            <TimeBadge
-                                key={session.id || idx}
-                                session={session}
-                                onclick={() => {
-                                    if (session.id) {
-                                        navigate(`/booking/${movie.id}/${session.id}`);
-                                    }
-                                }}
-                            />
-                        ))
-                    ) : (
-                        <span className="schedule-card__no-sessions">No sessions available</span>
-                    )}
+                    <div className="schedule-card__sessions">
+                        {hasSessions ? (
+                            validSessions.map((session, idx) => (
+                                <TimeBadge
+                                    key={session.id || idx}
+                                    session={session}
+                                    onclick={() => {
+                                        if (session.id) {
+                                            navigate(`/booking/${movie.id}/${session.id}`);
+                                        }
+                                    }}
+                                />
+                            ))
+                        ) : (
+                            <span className="schedule-card__no-sessions">No sessions available</span>
+                        )}
+                    </div>
                 </div>
             </div>
         </article>

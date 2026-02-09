@@ -1,11 +1,18 @@
 .movie-add-container {
-    background: #f5f5f5;
-    border: 1px solid #ccc;
+    background: rgba(10, 15, 35, 0.9);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 8px;
     padding: 30px;
     width: 100%;
     margin: 0 auto;
     box-sizing: border-box;
+    color: var(--text);
+    box-shadow: 0 0 20px rgba(139, 154, 196, 0.2);
+    transition: box-shadow 0.3s ease;
+}
+
+.movie-add-container:hover {
+    box-shadow: 0 0 40px rgba(139, 154, 196, 0.35);
 }
 
 .movie-add-header {
@@ -15,12 +22,20 @@
 .title-input-field {
     font-size: 28px;
     font-weight: bold;
-    background: #fff;
-    border: 1px solid #ccc;
+    background: rgba(6, 12, 34, 0.92);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     padding: 10px 15px;
-    color: #333;
+    color: var(--text);
     width: 100%;
     box-sizing: border-box;
+    box-shadow: 0 0 15px rgba(139, 154, 196, 0.15);
+    transition: all 0.3s ease;
+}
+
+.title-input-field:focus {
+    outline: none;
+    border-color: rgba(200, 220, 255, 0.4);
+    box-shadow: 0 0 30px rgba(139, 154, 196, 0.35);
 }
 
 .movie-add-body {
@@ -38,8 +53,8 @@
 .poster-skeleton {
     width: 100%;
     aspect-ratio: 2 / 3;
-    border: 2px solid #ccc;
-    background: #eee;
+    border: 2px solid rgba(200, 220, 255, 0.2);
+    background: rgba(6, 12, 34, 0.92);
     position: relative;
     display: flex;
     justify-content: center;
@@ -57,7 +72,7 @@
 
 .skeleton-x {
     font-size: 80px;
-    color: #ccc;
+    color: rgba(200, 220, 255, 0.35);
     font-weight: 100;
 }
 
@@ -67,17 +82,17 @@
     left: 0;
     right: 0;
     height: 60px;
-    background: rgba(217, 217, 217, 0.9);
+    background: rgba(6, 12, 34, 0.85);
     display: flex;
     justify-content: center;
     align-items: center;
     cursor: pointer;
-    border-top: 1px solid #ccc;
+    border-top: 1px solid rgba(200, 220, 255, 0.2);
 }
 
 .arrow-down {
     font-size: 24px;
-    color: #333;
+    color: var(--text);
 }
 
 .form-fields-section {
@@ -98,19 +113,34 @@
 .multi-select-group label {
     font-weight: bold;
     font-size: 14px;
-    color: #333;
+    color: var(--text);
     display: block;
 }
 
 .form-group input, 
 .form-group textarea {
     padding: 10px;
-    border: 1px solid #ccc;
-    background: #fff;
+    border: 1px solid rgba(200, 220, 255, 0.2);
+    background: rgba(6, 12, 34, 0.92);
     font-size: 14px;
     border-radius: 4px;
     width: 100%;
     box-sizing: border-box;
+    color: var(--text);
+    box-shadow: 0 0 15px rgba(139, 154, 196, 0.15);
+    transition: all 0.3s ease;
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+    outline: none;
+    border-color: rgba(200, 220, 255, 0.4);
+    box-shadow: 0 0 30px rgba(139, 154, 196, 0.35);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+    color: var(--muted);
 }
 
 .form-group-multi {
@@ -127,14 +157,14 @@
 .form-group input:not(:placeholder-shown):invalid,
 .form-group textarea:not(:placeholder-shown):invalid {
     border-color: #e50914 !important;
-    background-color: #fff0f0;
+    background-color: rgba(229, 9, 20, 0.12);
     outline: none;
     box-shadow: 0 0 5px rgba(229, 9, 20, 0.3);
 }
 
 .form-group input:out-of-range {
     border-color: #e50914;
-    background-color: #fff0f0;
+    background-color: rgba(229, 9, 20, 0.12);
 }
 
 .form-group input:invalid:focus {

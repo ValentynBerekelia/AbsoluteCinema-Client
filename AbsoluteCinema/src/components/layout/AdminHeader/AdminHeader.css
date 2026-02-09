@@ -1,21 +1,63 @@
 .admin-header {
-    background-color: #ffffff;
+    background: rgba(10, 15, 35, 0.85);
     height: 80px;
     display: flex;
     justify-content: space-between;
     align-items: center;
     padding: 20px 56px;
-    border-bottom: 1px solid #9a9a9a;
-    color: #333333;
+    border-bottom: 1px solid rgba(255,255,255,0.06);
+    color: var(--text);
 }
 
-.admin-na {
-    width: 240px;
-    height: 100%;
+.admin-logo-island {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    background-color: transparent;
+    padding: 12px 20px;
+    border-radius: 16px;
+    transition: all 0.3s ease;
 }
 
-.admin-header-logo {
-    font-size: 32px;
+.admin-logo-image {
+    height: 32px;
+    width: auto;
+    filter: drop-shadow(0 0 8px rgba(255, 255, 255, 0.3));
+    transition: filter 0.3s ease;
+}
+
+.admin-logo-text {
+    font-family: 'Georgia', 'Times New Roman', serif;
+    font-weight: 700;
+    font-size: 20px;
+    color: white;
+    position: relative;
+    padding-bottom: 6px;
+    transition: color 0.3s ease;
+}
+
+.admin-logo-text::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    height: 3px;
+    background-color: #e50914;
+    border-radius: 50% 50% 0 0;
+    transition: height 0.3s ease;
+}
+
+.admin-logo-island:hover .admin-logo-text {
+    color: var(--accent);
+}
+
+.admin-logo-island:hover .admin-logo-image {
+    filter: drop-shadow(0 0 12px rgba(229, 9, 20, 0.6));
+}
+
+.admin-logo-island:hover .admin-logo-text::after {
+    height: 4px;
 }
 
 .admin-user-profile {
@@ -26,10 +68,11 @@
 
 .admin-name {
     font-size: 24px;
+    color: var(--muted);
 }
 
 .admin-logout-btn {
-    color: #757575;
+    color: var(--muted);
     font-size: 36px;
     background-color: transparent;
     border: none;

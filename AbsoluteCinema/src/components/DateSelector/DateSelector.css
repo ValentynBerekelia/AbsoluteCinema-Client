@@ -5,7 +5,7 @@
     overflow-x: auto;
     padding-bottom: 16px;
     scrollbar-width: thin;
-    scrollbar-color: #e50914 #f0f0f0;
+    scrollbar-color: rgba(180, 200, 255, 0.4) rgba(6, 12, 34, 0.92);
 }
 
 .date-selector::-webkit-scrollbar {
@@ -13,12 +13,12 @@
 }
 
 .date-selector::-webkit-scrollbar-track {
-    background: #f0f0f0;
+    background: rgba(6, 12, 34, 0.92);
     border-radius: 3px;
 }
 
 .date-selector::-webkit-scrollbar-thumb {
-    background: #e50914;
+    background: rgba(180, 200, 255, 0.4);
     border-radius: 3px;
 }
 
@@ -28,34 +28,44 @@
     align-items: center;
     padding: 14px 20px;
     min-width: 90px;
-    border: 1px solid #ddd;
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 8px;
-    background: #fff;
-    color: #333;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--muted);
     cursor: pointer;
-    transition: all 0.2s ease;
+    transition: all 0.3s ease;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 20px rgba(139, 154, 196, 0.5),
+                0 0 20px rgba(107, 127, 180, 0.4);
 }
 
 .date-selector__item:hover {
-    border-color: #e50914;
-    background: #fff5f5;
+    border-color: rgba(229, 9, 20, 0.8);
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 60px rgba(139, 154, 196, 0.5),
+                0 0 60px rgba(107, 127, 180, 0.4);
 }
 
 .date-selector__item--active {
-    border-color: #e50914;
-    background: #e50914;
+    border-color: rgba(229, 9, 20, 0.8);
+    background: rgba(229, 9, 20, 0.8);
     color: #fff;
+    box-shadow: 0 10px 30px rgba(2, 6, 23, 0.9),
+                0 0 60px rgba(139, 154, 196, 0.5),
+                0 0 60px rgba(107, 127, 180, 0.4);
 }
 
 .date-selector__label {
     font-size: 15px;
     font-weight: 600;
+    color: var(--text);
 }
 
 .date-selector__weekday {
     font-size: 13px;
     opacity: 0.7;
     margin-top: 4px;
+    color: var(--muted);
 }
 
 /* Tablet */
@@ -64,7 +74,7 @@
         min-width: 80px;
         padding: 12px 16px;
     }
-    
+
     .date-selector__label {
         font-size: 14px;
     }
@@ -76,11 +86,11 @@
         min-width: 70px;
         padding: 10px 12px;
     }
-    
+
     .date-selector__label {
         font-size: 13px;
     }
-    
+
     .date-selector__weekday {
         font-size: 11px;
     }

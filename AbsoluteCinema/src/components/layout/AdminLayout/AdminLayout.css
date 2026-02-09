@@ -4,11 +4,13 @@
     min-height: calc(100vh - 160px);
     padding: 56px;
     gap: 24px;
+    color: var(--text);
 }
 
 .admin-main-wrapper-row {
     display: flex;
     gap: 24px;
+    align-items: flex-start;
 }
 
 .admin-content {

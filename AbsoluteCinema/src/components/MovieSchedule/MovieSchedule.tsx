@@ -5,7 +5,7 @@ import { mapMovieFromApi, MovieCardInfo } from '../../types/Movie';
 import { SortOrder } from '@/types/MoviesQueryParameters';
 import './MovieSchedule.css';
 import { DateSelector } from '../DateSelector/DateSelector';
-import { MovieFilters } from '../MovieFilters/MovieFilters';
+// MovieFilters removed from main schedule (filters will be on movie page only)
 
 const formatDateForApi = (date: Date): string => {
     const year = date.getFullYear();
@@ -21,8 +21,7 @@ export const MovieSchedule = () => {
         return today;
     });
 
-    const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-    const [selectedFormat, setSelectedFormat] = useState<number | null>(null);
+    // filters removed for main schedule
 
 
     const [movies, setMovies] = useState<MovieCardInfo[]>([]);
@@ -83,37 +82,18 @@ export const MovieSchedule = () => {
         setSelectedDate(date);
     };
 
-const displayedMovies = movies.filter(movie => {
-        const matchesGenre = selectedGenres.length === 0 
-            ? true 
-            : selectedGenres.some(selected => 
-                movie.genre?.toLowerCase().includes(selected.toLowerCase())
-              );
-
-        const matchesFormat = selectedFormat
-            ? (movie.sessions?.some((s: any) => s.movieType === selectedFormat))
-            : true;
-
-        return matchesGenre && matchesFormat;
-    });
+    const displayedMovies = movies;
 
     return (
         <section className="movie-schedule">
-            <h2 className="movie-schedule__title">Session Schedule</h2>
+            
             
             <DateSelector 
                 selectedDate={selectedDate} 
                 onDateChange={handleDateChange} 
             />
 
-            <div className="movie-schedule__filters-wrapper">
-                <MovieFilters 
-                    selectedGenres={selectedGenres}
-                    selectedFormat={selectedFormat}
-                    onSelectGenre={setSelectedGenres}
-                    onSelectFormat={setSelectedFormat}
-                />
-            </div>
+            {/* Filters removed from main page - moved to movie details/library */}
 
             <div className="movie-schedule__content">
                 {loading && (

@@ -12,6 +12,7 @@
     gap: 15px;
     min-height: 40px;
     width: 100%;
+    justify-content: space-between;
 }
 
 .filters-label {
@@ -34,9 +35,9 @@
 }
 
 .dropdown-btn {
-    background-color: #2b2b2b;
-    color: white;
-    border: 1px solid #444;
+    background-color: rgba(6, 12, 34, 0.92);
+    color: var(--muted);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     padding: 8px 26px;
     border-radius: 20px;
     cursor: pointer;
@@ -52,8 +53,9 @@
 }
 
 .dropdown-btn:hover {
-    background-color: #3a3a3a;
-    border-color: #666;
+    background-color: rgba(6, 12, 34, 0.92);
+    border-color: rgba(229, 9, 20, 0.8);
+    color: var(--text);
 }
 
 .arrow {
@@ -67,8 +69,8 @@
     width: 170px;
     max-height: 300px;
     overflow-y: auto;
-    background-color: #1f1f1f;
-    border: 1px solid #444;
+    background-color: rgba(6, 12, 34, 0.92);
+    border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 8px;
     box-shadow: 0 5px 15px rgba(0,0,0,0.5);
     z-index: 1000;
@@ -81,13 +83,14 @@
     align-items: center;
     gap: 10px;
     cursor: pointer;
-    color: #eee;
+    color: var(--muted);
     font-size: 14px;
     transition: background 0.2s;
 }
 
 .dropdown-item:hover {
-    background-color: #333;
+    background-color: rgba(180, 200, 255, 0.1);
+    color: var(--text);
 }
 
 .dropdown-item input[type="checkbox"] {
@@ -140,9 +143,9 @@
 
 .format-chip {
     padding: 6px 16px;
-    border: 1px solid #444;
-    background-color: #2b2b2b;
-    color: #fff;
+    border: 1px solid rgba(200, 220, 255, 0.2);
+    background-color: rgba(6, 12, 34, 0.92);
+    color: var(--muted);
     border-radius: 20px;
     cursor: pointer;
     font-size: 14px;
@@ -151,8 +154,9 @@
 }
 
 .format-chip:hover {
-    background-color: #3a3a3a;
-    border-color: #666;
+    background-color: rgba(6, 12, 34, 0.92);
+    border-color: rgba(229, 9, 20, 0.8);
+    color: var(--text);
 }
 
 .format-chip.active {
@@ -167,8 +171,8 @@
 }
 
 .more-genres-badge {
-    background-color: #444;
-    color: #fff;
+    background-color: rgba(180, 200, 255, 0.2);
+    color: var(--muted);
     font-size: 12px;
     font-weight: bold;
     padding: 6px 10px;
@@ -176,7 +180,7 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    border: 1px solid #666;
+    border: 1px solid rgba(200, 220, 255, 0.2);
 }
 
 .selected-chips-area {
@@ -184,9 +188,4 @@
     flex-wrap: wrap;
     gap: 8px;
     max-width: 600px;
-}
-
-.formats-row {
-    justify-content: center; 
-    margin-top: 10px;
 }
