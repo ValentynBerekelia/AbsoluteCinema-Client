@@ -8,6 +8,8 @@ import { SeatSelection } from '@/components/SeatSelection/SeatSelection';
 import { mapHallDetailsFromApi } from '@/types/hall';
 import { convertIsoToDateTime } from '@/utils/dataTimeConverters';
 import './BookingPage.css';
+import { useToast } from '@/context/ToastContext/ToastContext';
+import { getSessionTickets, getSessionTicketsShort } from '@/api';
 
 interface SessionData {
     id: string;
@@ -33,8 +35,9 @@ interface BookingResult {
 
 export const BookingPage = () => {
     const { movieId, sessionId } = useParams<{ movieId: string; sessionId: string }>();
+    const { showToast } = useToast();
     const navigate = useNavigate();
-    
+
     const [sessionData, setSessionData] = useState<SessionData | null>(null);
     const [hallSeats, setHallSeats] = useState<any[]>([]);
     const [hallTypes, setHallTypes] = useState<any[]>([]);
@@ -56,10 +59,10 @@ export const BookingPage = () => {
                 setLoading(true);
                 setError(null);
 
-                // Отримуємо дані про сеанси фільму та знаходимо потрібний
-                const [sessionsResponse, movieResponse] = await Promise.all([
+                const [sessionsResponse, movieResponse, ticketResponse] = await Promise.all([
                     getMovieSessions(movieId),
-                    getMovieById(movieId)
+                    getMovieById(movieId),
+                    getSessionTicketsShort(sessionId)
                 ]);
                 const sessionsList = Array.isArray(sessionsResponse)
                     ? sessionsResponse
@@ -81,6 +84,14 @@ export const BookingPage = () => {
                         price: Number(rawPrices[seatTypeId])
                     }));
 
+                const occupiedFromTickets = Array.isArray(ticketResponse?.tickets)
+                    ? ticketResponse.tickets.map((t: any) => String(t.seatId?.id || t.seatId || ''))
+                    : Array.isArray(ticketResponse)
+                        ? ticketResponse.map((t: any) => String(t.seat?.id?.id || t.seatId?.id || t.seatId || ''))
+                        : [];
+
+                console.log('Final occupied seats list:', occupiedFromTickets);
+
                 const session: SessionData = {
                     id: String(foundSession.id?.id ?? foundSession.id ?? foundSession.sessionId ?? sessionId),
                     movieTitle: movieResponse?.title || foundSession.movieTitle || foundSession.movie?.title || 'Unknown Movie',
@@ -89,16 +100,15 @@ export const BookingPage = () => {
                     hallName: foundSession.hallName || foundSession.hall?.name || 'Unknown Hall',
                     format: foundSession.format || 1,
                     prices: pricesArray,
-                    occupiedSeats: foundSession.occupiedSeats || []
+                    occupiedSeats: [...(foundSession.occupiedSeats || []), ...occupiedFromTickets]
                 };
 
                 setSessionData(session);
 
-                // Отримуємо дані про зал
                 if (session.hallId) {
                     const hallResponse = await getHallById(session.hallId);
                     console.log('Hall details:', hallResponse);
-                    
+
                     const { seats, availableSeatTypes } = mapHallDetailsFromApi(hallResponse);
                     setHallSeats(seats);
                     setHallTypes(availableSeatTypes);
@@ -126,7 +136,6 @@ export const BookingPage = () => {
                 setUserId(userData.userId);
             } catch (err) {
                 console.error('Failed to fetch user data:', err);
-                // Continue without userId - booking can be done anonymously if needed
             }
         };
 
@@ -147,7 +156,7 @@ export const BookingPage = () => {
 
         try {
             setBookingInProgress(true);
-            
+
             const result = await createBooking({
                 sessionId,
                 seatIds: selectedSeats,
@@ -155,14 +164,14 @@ export const BookingPage = () => {
             });
 
             console.log('Booking result:', result);
-            
-            alert(`Booking successful!\nBooking ID: ${result.bookingId}\nSeats: ${selectedSeats.length}`);
-            
+
+            showToast('success', `Booking successful!\nBooking ID: ${result.bookingId}\nSeats: ${selectedSeats.length}`);
+
             // Return to home page
             navigate('/');
         } catch (err: any) {
             console.error('Booking failed:', err);
-            alert('Booking failed: ' + (err.message || 'Please try again.'));
+            showToast('error', 'Booking failed: ' + (err.message || 'Please try again.'));
         } finally {
             setBookingInProgress(false);
         }
@@ -170,7 +179,7 @@ export const BookingPage = () => {
 
     const getPricesMap = (): Record<string, number> => {
         if (!sessionData?.prices) return {};
-        
+
         return sessionData.prices.reduce((acc, p) => {
             const typeId = typeof p.seatTypeId === 'object' ? (p.seatTypeId as any).id : p.seatTypeId;
             acc[typeId] = p.price;
@@ -202,12 +211,12 @@ export const BookingPage = () => {
         if (!dateTimeStr) return '';
         const date = new Date(dateTimeStr);
         const { date: dateStr, time } = convertIsoToDateTime(dateTimeStr);
-        
+
         const weekday = date.toLocaleDateString('en-GB', { weekday: 'short', timeZone: 'UTC' });
         const day = date.getUTCDate();
         const month = date.toLocaleDateString('en-GB', { month: 'short', timeZone: 'UTC' });
         const year = date.getUTCFullYear();
-        
+
         return `${weekday}, ${month} ${day}, ${year}, ${time}`;
     };
 
