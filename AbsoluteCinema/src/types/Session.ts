@@ -4,6 +4,7 @@ export interface Session {
     id: string;
     date: string;
     time: string;
+    hallId?: string;
     movieType?: SessionFormat;
     hallName?: string;
     basePrice?: number;
@@ -37,7 +38,7 @@ export interface SessionFormData {
     dateTo?: string;
     date?: string;
     time: string;
-    hall: string;
+    hallId: string;
     seatPrices: Record<string, string>;
     enabledTypes: Record<string, boolean>;
 }
@@ -50,7 +51,7 @@ export const mapApiSessionToForm = (apiSession: any): SessionFormData => {
         id: apiSession.id || apiSession.sessionId,
         date: date,
         time: time,
-        hall: apiSession.hallId?.id || apiSession.hallId || '',
+        hallId: apiSession.hallId?.id || apiSession.hallId || '',
         seatPrices: apiSession.prices?.reduce((acc: any, p: any) => {
             const id = p.seatTypeId?.id || p.seatTypeId;
             acc[id] = String(p.price);

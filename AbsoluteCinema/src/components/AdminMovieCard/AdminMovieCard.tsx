@@ -33,39 +33,54 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
     useEffect(() => {
         const fetchSalesData = async () => {
             try {
-                let tickets = 0;
-                let seats = 0;
+                let totalSold = 0;
+                let totalCapacity = 0;
 
-                for (const session of movie.sessions) {
-                    // Get tickets for this session
-                    try {
-                        const ticketsResponse = await getSessionTickets(session.id);
-                        const ticketsArray = Array.isArray(ticketsResponse) ? ticketsResponse : ticketsResponse?.tickets ?? [];
-                        tickets += ticketsArray.length;
-                    } catch (err) {
-                        console.error(`Failed to fetch tickets for session ${session.id}:`, err);
+                // 1. Створюємо масив промісів для квитків (паралельно)
+                const ticketPromises = movie.sessions.map(s =>
+                    getSessionTickets(s.id).catch(() => []) // ігноруємо помилки окремих сесій
+                );
+
+                const uniqueHallIds = Array.from(new Set(movie.sessions.map(s => s.hallId || s.hallName).filter(Boolean))) as string[];
+                const hallPromises = uniqueHallIds.map(id =>
+                    getHallById(id).catch(() => null)
+                );
+
+                const [allTicketsResults, allHallsResults] = await Promise.all([
+                    Promise.all(ticketPromises),
+                    Promise.all(hallPromises)
+                ]);
+
+                // 3. Рахуємо продані квитки
+                allTicketsResults.forEach(res => {
+                    const arr = Array.isArray(res) ? res : res?.tickets ?? [];
+                    totalSold += arr.length;
+                });
+
+                // 4. Рахуємо загальну місткість
+                // Створюємо карту залів для швидкого доступу
+                const hallsMap = new Map();
+                allHallsResults.forEach(h => {
+                    if (h) {
+                        const id = h.id?.id || h.id;
+                        const seats = Array.isArray(h.seats) ? h.seats.length : (h.seats?.seats?.length || 0);
+                        hallsMap.set(id, seats);
                     }
+                });
 
-                    // Get hall capacity
-                    try {
-                        const hallResponse = await getHallById(session.hallName || '');
-                        if (hallResponse) {
-                            const seatsArray = Array.isArray(hallResponse.seats) ? hallResponse.seats : hallResponse.seats?.seats ?? [];
-                            seats += seatsArray.length;
-                        }
-                    } catch (err) {
-                        console.error(`Failed to fetch hall for session ${session.id}:`, err);
-                    }
-                }
+                movie.sessions.forEach(s => {
+                    const hallId = s.hallId || s.hallName;
+                    totalCapacity += hallsMap.get(hallId) || 0;
+                });
 
-                setTotalTickets(tickets);
-                setTotalSeats(seats);
+                setTotalTickets(totalSold);
+                setTotalSeats(totalCapacity);
             } catch (err) {
-                console.error('Failed to fetch sales data:', err);
+                console.error('Failed to aggregate sales data:', err);
             }
         };
 
-        if (movie.sessions.length > 0) {
+        if (movie.sessions?.length > 0) {
             fetchSalesData();
         }
     }, [movie.sessions]);

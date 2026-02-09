@@ -2,8 +2,17 @@ import { useCallback, useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import styles from './AddMoviePage.module.css';
 import { MovieAddForm } from '../../../../components/MovieAddForm/MovieForm';
-import { CreateMovieRequest, MovieFormData } from '../../../../types/CreateMovieRequest';
-import { createMovie, attachPersonToMovie, attachGenreToMovie, getGenres, searchPersons, createPerson, createGenre, attachMediaToPerson, CreatePersonRequestPayload } from '../../../../api/movies';
+import { MovieFormData } from '../../../../types/CreateMovieRequest';
+import {
+    createMovie,
+    attachPersonToMovie,
+    getGenres,
+    searchPersons,
+    createPerson,
+    createGenre,
+    attachMediaToPerson,
+    CreatePersonRequestPayload
+} from '../../../../api/movies';
 import { SessionManager } from '@/components/SessionManager/SessionManager';
 import { getDatesInRange } from '@/utils/getDatesInRange';
 import { createSession, getHallById, getHalls } from '@/api';
@@ -42,7 +51,7 @@ export const AddMoviePage = () => {
     const [directorOptions, setDirectorOptions] = useState<PersonOption[]>([]);
     const [actorOptions, setActorOptions] = useState<PersonOption[]>([]);
     const [showPersonModal, setShowPersonModal] = useState(false);
-    const [personModalRole, setPersonModalRole] = useState<1 | 2>(1); // 1 = Director, 2 = Actor
+    const [personModalRole, setPersonModalRole] = useState<1 | 2>(1);
     const [creatingPerson, setCreatingPerson] = useState(false);
     const [showGenreModal, setShowGenreModal] = useState(false);
     const [creatingGenre, setCreatingGenre] = useState(false);
@@ -59,7 +68,7 @@ export const AddMoviePage = () => {
         genres: [],
         directors: [],
         starring: [],
-        poster: null as File | null,
+        poster: null,
         posterUrl: ''
     });
 
@@ -75,96 +84,49 @@ export const AddMoviePage = () => {
         }
     ]);
 
-    const handlePosterChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0];
-        if (file) {
-            setFormData(prev => ({
-                ...prev,
-                poster: file
-            }));
-        }
-    };
-
-    const addSession = () => {
-        const newSession: SessionFormData = {
-            id: Date.now().toString(),
-            dateFrom: '',
-            dateTo: '',
-            time: '11:00',
-            hall: '',
-            seatPrices: {},
-            enabledTypes: {},
-        };
-        setSessions(prev => [...prev, newSession]);
-    };
-
-    const removeSession = (id: string) => {
-        if (sessions.length > 1) {
-            setSessions(prev => prev.filter(session => session.id !== id));
-        }
-    };
-
-    const fetchGenres = useCallback(async () => {
-        try {
-            const allGenres = await getGenres();
-            const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
-            const formattedGenres = genreList
-                .map((g: any) => ({
-                    id: g?.id ?? '',
-                    name: g?.name ?? g
-                }))
-                .filter((g: any) => g.name.trim().length > 0);
-            setGenreOptions(formattedGenres);
-        } catch (err) {
-            console.error('Failed to fetch genres:', err);
-            showToast('error', 'Failed to fetch genres');
-        }
-    }, [showToast]);
-
-    // Fetch genres and persons
+    // Ініціалізація сторінки одним викликом
     useEffect(() => {
-        const fetchData = async () => {
+        const initPage = async () => {
             try {
-                const [hallsData, allGenres] = await Promise.all([getHalls(), getGenres()]);
-                
+                const [hallsData, allGenres, directors, actors] = await Promise.all([
+                    getHalls(),
+                    getGenres(),
+                    searchPersons(undefined, 1, 100),
+                    searchPersons(undefined, 2, 100)
+                ]);
+
                 setHalls(mapHallsListFromApi(hallsData));
 
-        const fetchPersons = async () => {
-            try {
-                const directors = await searchPersons(undefined, 1, 100); // 1 = Director
-                const actors = await searchPersons(undefined, 2, 100); // 2 = Actor
-                
+                const genreList = Array.isArray(allGenres) ? allGenres : allGenres?.genres || [];
+                setGenreOptions(genreList.map((g: any) => ({
+                    id: g?.id ?? '',
+                    name: g?.name ?? g
+                })).filter((g: any) => g.name.trim().length > 0));
+
                 setDirectorOptions(Array.isArray(directors) ? directors.map((p: any) => ({
                     id: p.personId || p.id,
                     name: p.fullName || p.name
                 })) : []);
-                
+
                 setActorOptions(Array.isArray(actors) ? actors.map((p: any) => ({
                     id: p.personId || p.id,
                     name: p.fullName || p.name
                 })) : []);
+
             } catch (err) {
-                console.error('Failed to fetch persons:', err);
-                // Don't show error, persons are optional
+                console.error('Initial load failed:', err);
             }
         };
-        fetchData();
-    }, [showToast]);
+        initPage();
+    }, []);
 
-        fetchHalls();
-        fetchGenres();
-        fetchPersons();
-    }, [fetchGenres, showToast]);
-
-    const loadHallDetails = async (hallId: string, sessionId: string) => {
+    const loadHallDetails = useCallback(async (hallId: string, sessionId: string) => {
         try {
             setLoadingHalls(prev => ({ ...prev, [hallId]: true }));
             const data = await getHallById(hallId);
             const { seats, availableSeatTypes } = mapHallDetailsFromApi(data);
 
-            setHalls(prev => prev.map(h =>
-                h.id === hallId ? { ...h, seats, availableSeatTypes } : h
-            ));
+            setHalls(prev => prev.map(h => h.id === hallId ? { ...h, seats, availableSeatTypes } : h));
 
             const defaultEnabled = availableSeatTypes.reduce((acc: Record<string, boolean>, type: SeatType) => {
                 acc[type.id] = true;
@@ -180,27 +142,16 @@ export const AddMoviePage = () => {
                 return { ...session, enabledTypes: defaultEnabled, seatPrices: mergedPrices };
             }));
         } catch (err) {
-            console.error('Failed to load hall details:', err);
-            showToast('error', 'Failed to load hall details');
+            console.error('Hall details error:', err);
         } finally {
             setLoadingHalls(prev => ({ ...prev, [hallId]: false }));
         }
-    }, [showToast]);
+    }, []);
 
     const handleSessionChange = useCallback((id: string, field: keyof SessionFormData, value: any) => {
-        setSessions(prev => prev.map(session =>
-            session.id === id ? { ...session, [field]: value } : session
-        ));
-
-        if (field === 'hall' && value) {
-            loadHallDetails(value, id);
-        }
+        setSessions(prev => prev.map(session => session.id === id ? { ...session, [field]: value } : session));
+        if (field === 'hall' && value) loadHallDetails(value, id);
     }, [loadHallDetails]);
-
-    const handleOpenPersonModal = (role: 1 | 2) => {
-        setPersonModalRole(role);
-        setShowPersonModal(true);
-    };
 
     const handleCreateGenre = async (genreName: string) => {
         setCreatingGenre(true);
@@ -211,65 +162,35 @@ export const AddMoviePage = () => {
                 name: response?.name ?? response?.genreName ?? genreName
             };
             setGenreOptions(prev => [...prev, newGenre]);
-            setFormData(prev => ({
-                ...prev,
-                genres: [...(prev.genres || []), newGenre]
-            }));
+            setFormData(prev => ({ ...prev, genres: [...prev.genres, newGenre] }));
             setShowGenreModal(false);
-            showToast('success', 'Genre created successfully');
+            showToast('success', 'Genre created');
         } catch (err) {
-            console.error('Failed to create genre:', err);
             showToast('error', 'Failed to create genre');
         } finally {
             setCreatingGenre(false);
-            fetchGenres();
         }
     };
 
     const handleCreatePerson = async (personData: PersonFormModalData) => {
         setCreatingPerson(true);
         try {
-            const payload: CreatePersonRequestPayload = {
-                fullName: personData.fullName,
-                bio: personData.bio,
-                birthDate: personData.birthDate,
-                role: personData.role
-            };
+            const response = await createPerson(personData);
+            const newId = response.personId || response.id;
+            const newPerson = { id: newId, name: personData.fullName };
 
-            const response = await createPerson(payload);
-            const newPersonId = response.personId || response.id;
-            const newPerson: PersonOption = {
-                id: newPersonId,
-                name: response.fullName || personData.fullName
-            };
-
-            if (personData.photoUrl && newPersonId) {
-                try {
-                    await attachMediaToPerson(newPersonId, personData.photoUrl);
-                } catch (mediaErr) {
-                    console.error('Failed to attach person media:', mediaErr);
-                    showToast('error', 'Failed to attach person media');
-                }
-            }
+            if (personData.photoUrl && newId) await attachMediaToPerson(newId, personData.photoUrl);
 
             if (personData.role === 1) {
                 setDirectorOptions(prev => [...prev, newPerson]);
-                setFormData(prev => ({
-                    ...prev,
-                    directors: [...(prev.directors || []), newPerson.name]
-                }));
+                setFormData(prev => ({ ...prev, directors: [...prev.directors, newPerson.name] }));
             } else {
                 setActorOptions(prev => [...prev, newPerson]);
-                setFormData(prev => ({
-                    ...prev,
-                    starring: [...(prev.starring || []), newPerson.name]
-                }));
+                setFormData(prev => ({ ...prev, starring: [...prev.starring, newPerson.name] }));
             }
-
             setShowPersonModal(false);
-            showToast('success', 'Person created successfully');
-        } catch (err: any) {
-            console.error('Failed to create person:', err);
+            showToast('success', 'Person created');
+        } catch (err) {
             showToast('error', 'Failed to create person');
         } finally {
             setCreatingPerson(false);
@@ -278,19 +199,11 @@ export const AddMoviePage = () => {
 
     const resolvePersonId = async (name: string, role: 1 | 2) => {
         const options = role === 1 ? directorOptions : actorOptions;
-        const directMatch = options.find(p => p.name === name);
-        if (directMatch?.id) return directMatch.id;
+        const match = options.find(p => p.name === name);
+        if (match) return match.id;
 
-        try {
-            const results = await searchPersons(name, role, 5);
-            if (Array.isArray(results)) {
-                const match = results.find((p: any) => (p.fullName || p.name) === name);
-                return match?.personId || match?.id || '';
-            }
-        } catch (err) {
-            console.error('Failed to resolve person by name:', name, err);
-        }
-        return '';
+        const results = await searchPersons(name, role, 1);
+        return results[0]?.personId || results[0]?.id || '';
     };
 
     const handleSubmit = async (e: React.FormEvent) => {
@@ -308,83 +221,38 @@ export const AddMoviePage = () => {
             bodyFormData.append('Studio', formData.studio);
             bodyFormData.append('Language', formData.language);
 
-            if (formData.poster) {
-                bodyFormData.append('poster', formData.poster);
-            }
-
-            if (formData.genres && formData.genres.length > 0) {
-                formData.genres.forEach(genre => {
-                    bodyFormData.append('Genres', genre.name);
-                });
-            }
+            if (formData.poster) bodyFormData.append('poster', formData.poster);
+            formData.genres.forEach(g => bodyFormData.append('Genres', g.name));
 
             const movieResult = await createMovie(bodyFormData);
             const newMovieId = movieResult.movieId?.id || movieResult.id || movieResult;
 
+            // Прикріплення людей (використовуємо ID, а не імена)
             const personPromises: Promise<any>[] = [];
-            
-            if (formData.directors?.length) {
-                formData.directors.forEach(name => 
-                    personPromises.push(attachPersonToMovie(newMovieId, name, 1))
-                );
+
+            for (const name of formData.directors) {
+                const id = await resolvePersonId(name, 1);
+                if (id) personPromises.push(attachPersonToMovie(newMovieId, id, 1));
             }
-
-            // Attach Directors to Movie
-            if (formData.directors && formData.directors.length > 0) {
-                for (const directorName of formData.directors) {
-                    try {
-                        const personId = await resolvePersonId(directorName, 1);
-                        if (!personId) {
-                            console.warn(`Director ${directorName} has no ID and cannot be attached.`);
-                            continue;
-                        }
-                        await attachPersonToMovie(newMovieId, personId, 1); // 1 = Director
-                    } catch (err) {
-                        console.error(`Failed to attach director ${directorName}:`, err);
-                    }
-                }
+            for (const name of formData.starring) {
+                const id = await resolvePersonId(name, 2);
+                if (id) personPromises.push(attachPersonToMovie(newMovieId, id, 2));
             }
+            await Promise.allSettled(personPromises);
 
-            // Attach Actors (Starring) to Movie
-            if (formData.starring && formData.starring.length > 0) {
-                for (const actorName of formData.starring) {
-                    try {
-                        const personId = await resolvePersonId(actorName, 2);
-                        if (!personId) {
-                            console.warn(`Actor ${actorName} has no ID and cannot be attached.`);
-                            continue;
-                        }
-                        await attachPersonToMovie(newMovieId, personId, 2); // 2 = Actor
-                    } catch (err) {
-                        console.error(`Failed to attach actor ${actorName}:`, err);
-                    }
-                }
-            }
-
-            const sessionPromises: Promise<any>[] = [];
-            for (const sessionCard of sessions) {
-                if (!sessionCard.hall || !sessionCard.dateFrom) continue;
-
-                const dates = getDatesInRange(sessionCard.dateFrom, sessionCard.dateTo || sessionCard.dateFrom);
-                dates.forEach(date => {
-                    const payload = prepareSessionPayload(sessionCard, date, newMovieId);
-                    if (payload.prices.length > 0) {
-                        sessionPromises.push(createSession(payload));
-                    }
+            // Сесії
+            const sessionPromises = sessions
+                .filter(s => s.hall && s.dateFrom)
+                .flatMap(s => {
+                    const dates = getDatesInRange(s.dateFrom, s.dateTo || s.dateFrom);
+                    return dates.map(date => createSession(prepareSessionPayload(s, date, newMovieId)));
                 });
-            }
+            await Promise.all(sessionPromises);
 
-            if (sessionPromises.length > 0) {
-                await Promise.all(sessionPromises);
-            }
-
-            showToast('success', 'Movie and sessions created successfully!');
+            showToast('success', 'Movie created successfully!');
             navigate('/admin/movies');
-
         } catch (err: any) {
-            console.error(err);
-            const message = err.response?.data?.message || err.message || 'Failed to create movie';
-            showToast('error', message);
+            showToast('error', err.response?.data?.message || 'Failed to create movie');
         } finally {
             setSaving(false);
         }
@@ -394,9 +262,7 @@ export const AddMoviePage = () => {
         <div className={styles["add-movie-page"]}>
             <div className={styles["add-movie-header"]}>
                 <h2>Add New Movie</h2>
-                <button onClick={() => navigate('/admin/movies')} className={styles["back-btn"]}>
-                    Back to Movies
-                </button>
+                <button onClick={() => navigate('/admin/movies')} className={styles["back-btn"]}>Back</button>
             </div>
 
             <form onSubmit={handleSubmit} className="add-movie-form">
@@ -406,8 +272,8 @@ export const AddMoviePage = () => {
                     genreOptions={genreOptions}
                     directorOptions={directorOptions}
                     actorOptions={actorOptions}
-                    onAddDirector={() => handleOpenPersonModal(1)}
-                    onAddActor={() => handleOpenPersonModal(2)}
+                    onAddDirector={() => { setPersonModalRole(1); setShowPersonModal(true); }}
+                    onAddActor={() => { setPersonModalRole(2); setShowPersonModal(true); }}
                     onAddGenre={() => setShowGenreModal(true)}
                 />
 
@@ -416,8 +282,8 @@ export const AddMoviePage = () => {
                     halls={halls}
                     seatTypes={seatTypes}
                     loadingHalls={loadingHalls}
-                    onAddSession={addSession}
-                    onRemoveSession={removeSession}
+                    onAddSession={() => setSessions(prev => [...prev, { id: Date.now().toString(), dateFrom: '', dateTo: '', time: '11:00', hall: '', seatPrices: {}, enabledTypes: {} }])}
+                    onRemoveSession={(id) => sessions.length > 1 && setSessions(prev => prev.filter(s => s.id !== id))}
                     onSessionChange={handleSessionChange}
                 />
 
@@ -425,14 +291,7 @@ export const AddMoviePage = () => {
                     <button type="submit" className={styles["submit-btn"]} disabled={saving}>
                         {saving ? 'Creating...' : 'Create Movie'}
                     </button>
-                    <button
-                        type="button"
-                        onClick={() => navigate('/admin/movies')}
-                        className={styles["cancel-btn"]}
-                        disabled={saving}
-                    >
-                        Cancel
-                    </button>
+                    <button type="button" onClick={() => navigate('/admin/movies')} className={styles["cancel-btn"]}>Cancel</button>
                 </div>
             </form>
 

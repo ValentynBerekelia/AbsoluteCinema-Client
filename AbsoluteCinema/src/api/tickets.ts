@@ -7,7 +7,7 @@ export interface CreateTicketPayload {
 }
 
 export const getSessionTickets = async (sessionId: string) => {
-    const response = await axiosInstance.get(`sessions/${sessionId}/tickets`);
+    const response = await axiosInstance.get(`/sessions/${sessionId}/tickets`);
     return response.data;
 };
 

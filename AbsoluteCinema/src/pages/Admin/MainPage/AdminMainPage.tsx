@@ -3,7 +3,7 @@ import { ADMIN_MOVIES_DATA } from "../../../data/adminMovies";
 import { useEffect, useState } from "react";
 import { MoviesQueryParameters, SortOrder } from "@/types/MoviesQueryParameters";
 import { deleteMovie, getMovies } from "@/api";
-import { mapMoviesForAdmin } from "@/types/Movie";
+import { mapMoviesForAdmin, MovieAdminCardInfo, MovieDetails } from "@/types/Movie";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AdminSearch } from "../../../components/layout/AdminSearch/AdminSearch";
 import { useToast } from "@/context/ToastContext/ToastContext";
@@ -12,7 +12,7 @@ export const AdminMainPage = () => {
         const { showToast } = useToast();
         const navigate = useNavigate();
 
-    const [movies, setMovies] = useState(ADMIN_MOVIES_DATA);
+    const [movies, setMovies] = useState<MovieAdminCardInfo[]>([]);
     const [loading, setLoading] = useState(true);
 
     const [searchParams] = useSearchParams();
