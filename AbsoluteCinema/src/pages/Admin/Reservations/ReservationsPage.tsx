@@ -1,4 +1,5 @@
 import { useEffect, useMemo, useState } from 'react';
+import { useSearchParams } from 'react-router-dom';
 import { getMovies } from '@/api/movies';
 import { getMovieSessions } from '@/api/sessions';
 import { getHallById } from '@/api/halls';
@@ -47,12 +48,15 @@ const normalizeTickets = (data: any): TicketInfo[] => {
     })).filter((t: TicketInfo) => t.id && t.seatId);
 };
 
-const ADMIN_USER_ID = '61981f2a-81ac-4afd-a87c-1ed52239d7ca';
+const ADMIN_USER_ID = '48190e15-159b-46ea-a0a8-bc11f3d3cd8a';
 
 export const ReservationsPage = () => {
+    const [searchParams] = useSearchParams();
+    const sessionIdFromUrl = searchParams.get('sessionId');
+    
     const [sessions, setSessions] = useState<SessionSummary[]>([]);
     const [loadingSessions, setLoadingSessions] = useState(true);
-    const [selectedSessionId, setSelectedSessionId] = useState<string | null>(null);
+    const [selectedSessionId, setSelectedSessionId] = useState<string | null>(sessionIdFromUrl);
     const [loadingDetails, setLoadingDetails] = useState(false);
     const [hallSeats, setHallSeats] = useState<Seat[]>([]);
     const [hallTypes, setHallTypes] = useState<SeatType[]>([]);
@@ -91,10 +95,16 @@ export const ReservationsPage = () => {
                     })
                 );
 
-                const flattened = sessionsPerMovie.flat().filter(s => s.id);
-                flattened.sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
+                const flattened = sessionsPerMovie.flat().filter((s: any) => s.id);
+                flattened.sort((a: SessionSummary, b: SessionSummary) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
                 setSessions(flattened);
-                if (flattened.length > 0) setSelectedSessionId(flattened[0].id);
+                
+                // If sessionId is in URL, select that session; otherwise select first
+                if (sessionIdFromUrl && flattened.some((s: SessionSummary) => s.id === sessionIdFromUrl)) {
+                    setSelectedSessionId(sessionIdFromUrl);
+                } else if (flattened.length > 0 && !selectedSessionId) {
+                    setSelectedSessionId(flattened[0].id);
+                }
             } catch (err) {
                 setError('Failed to load sessions');
             } finally {

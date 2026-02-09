@@ -15,7 +15,9 @@ import { MovieSessionsPage } from './pages/MovieSessions/MovieSessionsPage'
 import { ReservationsPage } from './pages/Admin/Reservations/ReservationsPage'
 import { AboutUs } from './pages/AboutUs/AboutUs'
 import { MoviesLibrary } from './pages/MoviesLibrary/MoviesLibrary'
-import { ProtectedRoute } from './components/ProtectedRoute' // Імпортуємо твій захисник
+import { AdminGenresPage } from './pages/Admin/Genres/AdminGenresPage'
+import { AdminPersonsPage } from './pages/Admin/Persons/AdminPersonsPage'
+import { ProtectedRoute } from './components/ProtectedRoute'
 
 function App() {
   return (
@@ -37,8 +39,9 @@ function App() {
         <Route path='/admin/reservations' element={<AdminLayout><ReservationsPage /></AdminLayout>} />
         <Route path='/admin/movies/add' element={<AdminLayout><AddMoviePage /></AdminLayout>} />
         <Route path='/admin/movies/edit/:movieId' element={<AdminLayout><EditMoviePage /></AdminLayout>} />
+        <Route path='/admin/genres' element={<AdminLayout><AdminGenresPage /></AdminLayout>} />
+        <Route path='/admin/persons' element={<AdminLayout><AdminPersonsPage /></AdminLayout>} />
       </Route>
-      
     </Routes>
   )
 }

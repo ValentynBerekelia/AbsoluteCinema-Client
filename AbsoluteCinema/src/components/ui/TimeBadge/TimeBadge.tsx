@@ -1,14 +1,18 @@
 import { Session, getFormatLabel } from "../../../types/Session";
 import { formatTime } from "@/utils/dataTimeConverters";
+import { useNavigate } from 'react-router-dom';
 import './TimeBadge.css'
 
 interface TimeBadgeProps {
     session: Session;
     showPastDisabled?: boolean;
     onclick?: () => void;
+    movieId?: string;
 }
 
-export const TimeBadge = ({ session, showPastDisabled = true, onclick }: TimeBadgeProps) => {
+export const TimeBadge = ({ session, showPastDisabled = true, onclick, movieId }: TimeBadgeProps) => {
+    const navigate = useNavigate();
+    
     if (!session || !session.time) return null;
 
     const isPast = () => {
@@ -29,10 +33,18 @@ export const TimeBadge = ({ session, showPastDisabled = true, onclick }: TimeBad
     
     const displayTime = formatTime(session.time).trim();
 
+    const handleClick = () => {
+        if (onclick) {
+            onclick();
+        } else if (movieId) {
+            navigate(`/admin/reservations?sessionId=${session.id}`);
+        }
+    };
+
     return (
         <button 
             className={`session-badge ${past ? 'is-past' : ''}`} 
-            onClick={onclick}
+            onClick={handleClick}
             disabled={past}
             type="button"
         >

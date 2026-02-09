@@ -4,23 +4,34 @@ import { MultiSelectField } from '../MultiSelectField/MultiSelectField';
 import './MovieForm.css';
 import { Genre } from '@/types/Genre';
 
+interface PersonOption {
+    id: string;
+    name: string;
+}
+
 interface Props {
     formData: MovieFormData;
     setFormData: React.Dispatch<React.SetStateAction<MovieFormData>>;
     genreOptions?: Genre[];
-    directorOptions?: string[];
-    actorOptions?: string[];
+    directorOptions?: PersonOption[];
+    actorOptions?: PersonOption[];
+    onAddGenre?: () => void;
+    onAddDirector?: () => void;
+    onAddActor?: () => void;
 }
 
-const DIRECTORS_LIST = ['Christopher Nolan', 'James Cameron', 'Quentin Tarantino', 'Denis Villeneuve'];
-const ACTORS_LIST = ['Leonardo DiCaprio', 'Cillian Murphy', 'Tom Hardy', 'Anne Hathaway'];
+const DEFAULT_DIRECTORS_LIST = ['Christopher Nolan', 'James Cameron', 'Quentin Tarantino', 'Denis Villeneuve'];
+const DEFAULT_ACTORS_LIST = ['Leonardo DiCaprio', 'Cillian Murphy', 'Tom Hardy', 'Anne Hathaway'];
 
 export const MovieAddForm = ({
     formData,
     setFormData,
     genreOptions,
     directorOptions,
-    actorOptions
+    actorOptions,
+    onAddGenre,
+    onAddDirector,
+    onAddActor
 }: Props) => {
     const [posterPreview, setPosterPreview] = useState<string | null>(null);
 
@@ -174,20 +185,26 @@ export const MovieAddForm = ({
                             setFormData(p => ({ ...p, genres: updatedGenres }));
                         }}
                         placeholder="Select Genres"
+                        onAddNew={onAddGenre}
+                        showAddButton={!!onAddGenre}
                     />
                     <MultiSelectField
                         label="Directors"
-                        options={directorOptions && directorOptions.length > 0 ? directorOptions : DIRECTORS_LIST}
+                        options={directorOptions && directorOptions.length > 0 ? directorOptions.map(d => d.name) : DEFAULT_DIRECTORS_LIST}
                         selectedValues={formData.directors || []}
                         onChange={(vals) => setFormData(p => ({ ...p, directors: vals }))}
                         placeholder="Select Directors"
+                        onAddNew={onAddDirector}
+                        showAddButton={!!onAddDirector}
                     />
                     <MultiSelectField
                         label="Starring"
-                        options={actorOptions && actorOptions.length > 0 ? actorOptions : ACTORS_LIST}
+                        options={actorOptions && actorOptions.length > 0 ? actorOptions.map(a => a.name) : DEFAULT_ACTORS_LIST}
                         selectedValues={formData.starring || []}
                         onChange={(vals) => setFormData(p => ({ ...p, starring: vals }))}
                         placeholder="Select Actors"
+                        onAddNew={onAddActor}
+                        showAddButton={!!onAddActor}
                     />
 
                     <div className="form-group description-row">

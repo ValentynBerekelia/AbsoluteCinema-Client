@@ -1,3 +1,40 @@
+.form-group.multi-select-group {
+}
+
+.label-with-button {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.label-with-button label {
+    margin: 0;
+    font-weight: 500;
+    color: #333;
+    font-size: 14px;
+}
+
+.add-button {
+    background-color: #4CAF50;
+    color: white;
+    border: none;
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background-color 0.2s;
+}
+
+.add-button:hover {
+    background-color: #45a049;
+}
+
+.add-button:active {
+    background-color: #3d8b40;
+}
+
 .multi-select-container {
     position: relative;
     width: 100%;
