@@ -290,12 +290,13 @@ export const attachMediaToPerson = async (personId: string, url: string | null) 
   return response.data;
 };
 
-export const getAdminMoviesStats = async (searchTerm?: string, pageSize: number = 50) => {
-    const response = await axiosInstance.get<AdminStatsResponse>('/admin/movies/stats', {
-        params: {
-            SearchTerm: searchTerm,
-            PageSize: pageSize
+export const getAdminMoviesStats = async (searchTerm?: string, pageSize = 10, lastMovieId?: string) => {
+    const response = await axiosInstance.get('/admin/movies/stats', {
+        params: { 
+            searchTerm, 
+            pageSize, 
+            lastMovieId
         }
     });
-    return response.data; 
+    return response.data;
 }

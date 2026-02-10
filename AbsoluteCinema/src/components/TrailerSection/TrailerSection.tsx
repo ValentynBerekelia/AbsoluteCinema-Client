@@ -5,6 +5,7 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons';
 import { MovieDetails } from '../../types/Movie';
 import './TrailerSection.css';
+import { NO_BANNER_URL } from '@/constants/movieMetadata';
 
 interface TrailerSectionProps {
     movie: MovieDetails;
@@ -44,7 +45,7 @@ export const TrailerSection = ({ movie, movieId }: TrailerSectionProps) => {
                     />
                 ) : (
                     <div className="no-video-placeholder">
-                        <img src={movie.bannerUrl} alt="Banner" className="fallback-banner" />
+                        <img src={movie.bannerUrl || NO_BANNER_URL} alt="Banner" className="fallback-banner" />
                     </div>
                 )}
             </div>

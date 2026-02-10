@@ -9,7 +9,7 @@ export interface MoviesQueryParameters {
   firstDate?: string;
   secondDate?: string;
   pageNumber?: number;
-  pageSize?: number;
+  pageSize: number;
   sortColumn?: string;
   sortOrder?: SortOrder;
 }
