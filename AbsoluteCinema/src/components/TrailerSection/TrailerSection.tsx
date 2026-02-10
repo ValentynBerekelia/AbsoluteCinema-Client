@@ -72,7 +72,7 @@ export const TrailerSection = ({ movie, movieId }: TrailerSectionProps) => {
                     </div>
                     <div className="trailer-actions">
                         <span className="age-badge">{movie.ageLimit}+</span>
-                        <span className="format-badge">IMAX</span>
+                        <span className="rate-badge">{movie.rate}</span>
                         <button
                             className="buy-ticket-btn"
                             onClick={() => {

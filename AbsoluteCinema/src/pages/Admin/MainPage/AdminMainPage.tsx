@@ -1,12 +1,12 @@
 import { AdminMovieCard } from "../../../components/AdminMovieCard/AdminMovieCard";
-import { ADMIN_MOVIES_DATA } from "../../../data/adminMovies";
 import { useEffect, useState } from "react";
 import { MoviesQueryParameters, SortOrder } from "@/types/MoviesQueryParameters";
-import { deleteMovie, getAdminMoviesStats, getMovies } from "@/api";
-import { mapMoviesForAdmin, MovieAdminCardInfo, MovieDetails } from "@/types/Movie";
+import { deleteMovie, getAdminMoviesStats, } from "@/api";
+import { mapMoviesForAdmin, MovieAdminCardInfo, } from "@/types/Movie";
 import { useSearchParams, useNavigate } from "react-router-dom";
 import { AdminSearch } from "../../../components/layout/AdminSearch/AdminSearch";
 import { useToast } from "@/context/ToastContext/ToastContext";
+import { NO_POSTER_URL } from "@/constants/movieMetadata";
 
 export const AdminMainPage = () => {
     const { showToast } = useToast();
@@ -25,7 +25,7 @@ export const AdminMainPage = () => {
 
         return {
             pageNumber: 1,
-            pageSize: 50,
+            pageSize: 10,
             sortColumn: 'rate',
             sortOrder: SortOrder.Asc,
             searchTerm: searchTermFromUrl,

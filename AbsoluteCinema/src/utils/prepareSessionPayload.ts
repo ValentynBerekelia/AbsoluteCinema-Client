@@ -8,7 +8,7 @@ export const prepareSessionPayload = (sessionCard: any, date: string, movieId: s
 
     return {
         movieId: movieId,
-        hallId: sessionCard.hall,
+        hallId: sessionCard.hallId,
         format: 2,
         startTime: `${date}T${sessionCard.time}:00.000Z`,
         prices: prices

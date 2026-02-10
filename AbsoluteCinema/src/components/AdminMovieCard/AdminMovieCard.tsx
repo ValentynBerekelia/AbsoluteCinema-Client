@@ -3,6 +3,7 @@ import { MovieAdminCardInfo } from '../../types/Movie';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import './AdminMovieCard.css';
 import { Session } from '@/types/Session';
+import { NO_POSTER_URL } from '@/constants/movieMetadata';
 
 interface AdminMovieCardProps {
     movie: MovieAdminCardInfo;
@@ -48,7 +49,7 @@ export const AdminMovieCard = ({ movie, onDelete }: AdminMovieCardProps) => {
             <div className='admin-movie-main-content'>
                 <div className='admin-left-column'>
                     <div className='admin-movie-poster-wrapper'>
-                        <img src={movie.poster} alt={movie.title} className='admin-poster-img' />
+                        <img src={movie.poster || NO_POSTER_URL} alt={movie.title} className='admin-poster-img' />
                     </div>
 
                     <div className='admin-stats-badge'>

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom';
 import { MovieCardInfo } from '../../types/Movie';
 import './SimpleMovieCard.css';
+import { NO_POSTER_URL } from '@/constants/movieMetadata';
 
 interface SimpleMovieCardProps {
     movie: MovieCardInfo;
@@ -18,7 +19,7 @@ export const SimpleMovieCard = ({ movie, premiereDate }: SimpleMovieCardProps) =
     return (
         <Link to={`/movie/${movie.id}`} className="simple-movie-card">
             <div className="simple-movie-card__poster">
-                <img src={movie.image} alt={movie.title} />
+                <img src={movie.image || NO_POSTER_URL} alt={movie.title} />
                 {premiereDate && (
                     <div className="simple-movie-card__date-badge">
                         {formatDate(premiereDate)}

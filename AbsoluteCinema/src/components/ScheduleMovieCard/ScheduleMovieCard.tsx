@@ -3,7 +3,7 @@ import { MovieCardInfo } from '../../types/Movie';
 import './ScheduleMovieCard.css';
 import { convertDuration, formatTime } from '@/utils/dataTimeConverters';
 import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
-import { NO_POSTER_URL } from '@/constans/movieMetadata';
+import { NO_POSTER_URL } from '@/constants/movieMetadata';
 
 interface ScheduleMovieCardProps {
     movie: MovieCardInfo;

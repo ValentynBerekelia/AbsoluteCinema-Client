@@ -99,7 +99,7 @@
     backdrop-filter: blur(10px);
 }
 
-.format-badge {
+.rate-badge {
     padding: 8px 16px;
     background: linear-gradient(135deg, #333333 0%, #1a1a1a 100%);
     color: #ffffff;
