@@ -9,7 +9,7 @@ export interface SessionFormData {
     dateFrom: string;
     dateTo: string;
     time: string;
-    hall: string;
+    hallId: string;
     seatPrices: Record<string, string>;
     enabledTypes: Record<string, boolean>;
 }
@@ -38,11 +38,26 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
             <h3>Sessions & Pricing</h3>
 
             {sessions.map((session, index) => {
-                const selectedHall = halls.find(h => h.id === session.hall);
-                const isLoading = session.hall ? loadingHalls[session.hall] : false;
+                const selectedHall = halls.find(h => h.id === session.hallId);
+                const isLoading = session.hallId ? loadingHalls[session.hallId] : false;
 
                 const hasData = selectedHall && selectedHall.seats && selectedHall.seats.length > 0;
                 const hallSeatTypes = selectedHall?.availableSeatTypes ?? [];
+
+                // --- ЛОГІКА ВАЛІДАЦІЇ СЕСІЇ ---
+                const isHallSelected = !!session.hallId;
+                
+                // Перевіряємо, чи всі увімкнені типи місць мають ціну > 0
+                const arePricesValid = hallSeatTypes.length > 0 && hallSeatTypes.every(type => {
+                    const isEnabled = session.enabledTypes[type.id];
+                    if (!isEnabled) return true; // Якщо категорія вимкнена, ціна не обов'язкова
+                    
+                    const price = session.seatPrices[type.id];
+                    return price !== undefined && price.trim() !== '' && parseFloat(price) > 0;
+                });
+
+                // Сесія невалідна, якщо не обрано зал, дату, час або не вказані ціни
+                const isSessionInvalid = !isHallSelected || !arePricesValid || !session.dateFrom || !session.time;
 
                 return (
                     <div key={session.id} className="session-card">
@@ -86,8 +101,8 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                         <div className="hall-selector-row">
                             <label>Hall:</label>
                             <select
-                                value={session.hall}
-                                onChange={(e) => onSessionChange(session.id, 'hall', e.target.value)}
+                                value={session.hallId}
+                                onChange={(e) => onSessionChange(session.id, 'hallId', e.target.value)}
                                 className="form-input hall-select"
                             >
                                 <option value="">Select Hall</option>
@@ -109,7 +124,7 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                                     seatTypes={selectedHall.availableSeatTypes ?? []}
                                     enabledTypes={session.enabledTypes}
                                 />
-                            ) : session.hall ? (
+                            ) : session.hallId ? (
                                 <div className="hall-error">Error while loading data</div>
                             ) : (
                                 <div className="hall-placeholder">Choose the hall to watch schema </div>
@@ -130,7 +145,19 @@ export const SessionManager: React.FC<SessionManagerProps> = ({
                             }}
                         />
 
-                        <button type="button" className="save-session-btn">Save sessions and price</button>
+                        <div className="session-footer">
+                            {!arePricesValid && isHallSelected && (
+                                <p className="validation-error-text">Fill in prices for all enabled seat types</p>
+                            )}
+                            <button 
+                                type="button" 
+                                className="save-session-btn"
+                                disabled={isSessionInvalid}
+                                title={isSessionInvalid ? "Please fill hall, dates and all prices" : ""}
+                            >
+                                Save sessions and price
+                            </button>
+                        </div>
                     </div>
                 );
             })}

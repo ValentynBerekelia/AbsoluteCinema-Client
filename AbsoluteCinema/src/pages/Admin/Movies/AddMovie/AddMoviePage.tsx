@@ -29,7 +29,7 @@ interface SessionFormData {
     dateFrom: string;
     dateTo: string;
     time: string;
-    hall: string;
+    hallId: string;
     seatPrices: Record<string, string>;
     enabledTypes: Record<string, boolean>;
 }
@@ -78,13 +78,12 @@ export const AddMoviePage = () => {
             dateFrom: '',
             dateTo: '',
             time: '11:00',
-            hall: '',
+            hallId: '',
             seatPrices: {},
             enabledTypes: {},
         }
     ]);
 
-    // Ініціалізація сторінки одним викликом
     useEffect(() => {
         const initPage = async () => {
             try {
@@ -150,7 +149,7 @@ export const AddMoviePage = () => {
 
     const handleSessionChange = useCallback((id: string, field: keyof SessionFormData, value: any) => {
         setSessions(prev => prev.map(session => session.id === id ? { ...session, [field]: value } : session));
-        if (field === 'hall' && value) loadHallDetails(value, id);
+        if (field === 'hallId' && value) loadHallDetails(value, id);
     }, [loadHallDetails]);
 
     const handleCreateGenre = async (genreName: string) => {
@@ -227,7 +226,6 @@ export const AddMoviePage = () => {
             const movieResult = await createMovie(bodyFormData);
             const newMovieId = movieResult.movieId?.id || movieResult.id || movieResult;
 
-            // Прикріплення людей (використовуємо ID, а не імена)
             const personPromises: Promise<any>[] = [];
 
             for (const name of formData.directors) {
@@ -240,9 +238,8 @@ export const AddMoviePage = () => {
             }
             await Promise.allSettled(personPromises);
 
-            // Сесії
             const sessionPromises = sessions
-                .filter(s => s.hall && s.dateFrom)
+                .filter(s => s.hallId && s.dateFrom)
                 .flatMap(s => {
                     const dates = getDatesInRange(s.dateFrom, s.dateTo || s.dateFrom);
                     return dates.map(date => createSession(prepareSessionPayload(s, date, newMovieId)));
@@ -252,11 +249,33 @@ export const AddMoviePage = () => {
             showToast('success', 'Movie created successfully!');
             navigate('/admin/movies');
         } catch (err: any) {
-            showToast('error', err.response?.data?.message || 'Failed to create movie');
+            showToast('error', err.message || 'Failed to create movie');
         } finally {
             setSaving(false);
         }
     };
+
+    const getValidationErrors = () => {
+        const errors: string[] = [];
+
+        if (!formData.movieName.trim() || formData.movieName === 'Add Movie Title')
+            errors.push("Movie name");
+        if (!formData.description.trim())
+            errors.push("Description");
+        if (!formData.duration || formData.duration === '0')
+            errors.push("Duration");
+        if (!formData.language.trim())
+            errors.push("Language");
+        if (!formData.country.trim())
+            errors.push("Country");
+        if (formData.genres.length === 0)
+            errors.push("At least one genre");
+
+        return errors;
+    };
+
+    const validationErrors = getValidationErrors();
+    const isFormInvalid = validationErrors.length > 0 || saving;
 
     return (
         <div className={styles["add-movie-page"]}>
@@ -282,16 +301,37 @@ export const AddMoviePage = () => {
                     halls={halls}
                     seatTypes={seatTypes}
                     loadingHalls={loadingHalls}
-                    onAddSession={() => setSessions(prev => [...prev, { id: Date.now().toString(), dateFrom: '', dateTo: '', time: '11:00', hall: '', seatPrices: {}, enabledTypes: {} }])}
+                    onAddSession={() => setSessions(prev => [...prev, { id: Date.now().toString(), dateFrom: '', dateTo: '', time: '11:00', hallId: '', seatPrices: {}, enabledTypes: {} }])}
                     onRemoveSession={(id) => sessions.length > 1 && setSessions(prev => prev.filter(s => s.id !== id))}
                     onSessionChange={handleSessionChange}
                 />
 
-                <div className={styles["form-actions"]}>
-                    <button type="submit" className={styles["submit-btn"]} disabled={saving}>
-                        {saving ? 'Creating...' : 'Create Movie'}
-                    </button>
-                    <button type="button" onClick={() => navigate('/admin/movies')} className={styles["cancel-btn"]}>Cancel</button>
+                <div className={styles["form-actions-container"]}>
+                    {validationErrors.length > 0 && (
+                        <div className={styles["validation-message"]}>
+                            <span>Please fill in the required fields.: </span>
+                            <span className={styles["error-list"]}>
+                                {validationErrors.join(", ")}
+                            </span>
+                        </div>
+                    )}
+
+                    <div className={styles["form-actions"]}>
+                        <button
+                            type="submit"
+                            className={styles["submit-btn"]}
+                            disabled={isFormInvalid}
+                        >
+                            {saving ? 'Creating...' : 'Create Movie'}
+                        </button>
+                        <button
+                            type="button"
+                            onClick={() => navigate('/admin/movies')}
+                            className={styles["cancel-btn"]}
+                        >
+                            Cancel
+                        </button>
+                    </div>
                 </div>
             </form>
 

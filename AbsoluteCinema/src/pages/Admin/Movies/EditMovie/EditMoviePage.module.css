@@ -169,6 +169,14 @@
     left: 120%;
 }
 
+.save-details-btn:disabled {
+    background: #333 !important;
+    color: #777 !important;
+    cursor: not-allowed !important;
+    pointer-events: auto !important; 
+    opacity: 0.6;
+}
+
 .sessions-section {
     padding: 35px;
     background: var(--bg-card);
@@ -259,12 +267,35 @@
     color: var(--text-secondary);
 }
 
+.validation-info {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin-bottom: 0.5rem;
+    text-align: right;
+}
+
+.session-error-hint {
+    color: #ff4d4d;
+    font-size: 0.8rem;
+    margin-right: auto;
+}
+
 .session-footer {
     display: flex;
+    align-items: center;
     justify-content: flex-end;
-    gap: 12px;
-    padding: 15px 25px;
-    background: rgba(6, 12, 34, 0.92);
+    gap: 15px;
+    margin-top: 15px;
+    padding: 15px 20px;
+    border-top: 1px solid #333;
+    min-height: 65px;
+    position: relative;
+}
+
+.save-session-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    filter: grayscale(1);
 }
 
 .save-session-btn {

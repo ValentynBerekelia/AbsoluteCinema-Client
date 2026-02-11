@@ -94,6 +94,25 @@
     box-shadow: var(--shadow-subtle);
 }
 
+.form-actions-container {
+    margin-top: 2rem;
+    padding: 1rem;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 8px;
+}
+
+.validation-message {
+    margin-bottom: 1rem;
+    color: #ff4d4d;
+    font-size: 0.9rem;
+    text-align: center;
+}
+
+.error-list {
+    font-weight: bold;
+    text-decoration: underline;
+}
+
 .submit-btn {
     padding: 15px 40px;
     background: var(--accent);
@@ -130,7 +149,41 @@
     background: rgba(255, 255, 255, 0.04);
 }
 
-/* Responsive adjustments for the page container */
+.session-footer {
+    margin-top: 15px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 8px;
+}
+
+.validation-error-text {
+    color: #ff4d4d;
+    font-size: 0.85rem;
+    margin: 0;
+}
+
+.save-session-btn:disabled {
+    background-color: #333;
+    color: #777;
+    cursor: not-allowed;
+    border: 1px solid #444;
+}
+
+.spinner {
+    width: 20px;
+    height: 20px;
+    border: 2px solid rgba(255,255,255,0.1);
+    border-top: 2px solid #fff;
+    border-radius: 50%;
+    animation: spin 1s linear infinite;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
 @media (max-width: 768px) {
     .add-movie-page {
         padding: 20px 10px;

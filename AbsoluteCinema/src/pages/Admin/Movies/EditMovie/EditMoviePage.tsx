@@ -161,7 +161,7 @@ export const EditMoviePage = () => {
     // 3. Load movie and its sessions
     useEffect(() => {
         if (!safeMovieId || halls.length === 0) return;
-        
+
         const loadMovieData = async () => {
             setLoadingMovie(true);
             try {
@@ -195,7 +195,7 @@ export const EditMoviePage = () => {
                 const sessionsData = await getMovieSessions(safeMovieId);
                 const sessionsArray = Array.isArray(sessionsData) ? sessionsData : sessionsData?.sessions || [];
                 const mappedSessions = sessionsArray.map(mapApiSessionToForm);
-                
+
                 setSessions(mappedSessions);
 
                 mappedSessions.forEach((s: any) => {
@@ -269,11 +269,11 @@ export const EditMoviePage = () => {
         const session = sessions.find(s => s.id === sessionId);
         if (!session) return;
         const payload = prepareSessionPayload(session, session.date, safeMovieId);
-        
+
         const prices = Object.keys(session.enabledTypes)
             .filter(tid => session.enabledTypes[tid])
             .map(tid => ({ seatTypeId: tid, price: Number(session.seatPrices[tid] || 0) }));
-        
+
         const seatPrices = prices.reduce((acc: Record<string, number>, p) => {
             acc[p.seatTypeId] = p.price;
             return acc;
@@ -342,6 +342,44 @@ export const EditMoviePage = () => {
 
     if (loadingMovie) return <div className={styles.loading}>Loading...</div>;
 
+    const getMovieValidationErrors = () => {
+        const errors: string[] = [];
+        if (!formData.movieName.trim()) errors.push("Movie name");
+        if (!formData.description.trim()) errors.push("Description");
+        if (!formData.duration || formData.duration === '0') errors.push("Duration");
+        if (!formData.language.trim()) errors.push("Language");
+        if (!formData.country.trim()) errors.push("Country");
+        if (formData.genres.length === 0) errors.push("Genres");
+        return errors;
+    };
+
+    const movieErrors = getMovieValidationErrors();
+    const isMovieInvalid = movieErrors.length > 0 || saving;
+
+    const getSessionValidationErrors = (session: SessionFormData) => {
+        const errors: string[] = [];
+        const selectedHall = halls.find(h => String(h.id) === String(session.hallId));
+
+        if (!session.date) errors.push("Data");
+        if (!session.time) errors.push("Time");
+        if (!session.hallId) errors.push("Hall");
+
+        const hallSeatTypes = selectedHall?.availableSeatTypes ?? [];
+        if (hallSeatTypes.length === 0 && session.hallId) {
+            errors.push("Loading seat types...");
+        }
+
+        const hasUnfilledPrices = hallSeatTypes.some(type => {
+            const isEnabled = session.enabledTypes[type.id];
+            if (!isEnabled) return false;
+            const price = session.seatPrices[type.id];
+            return !price || String(price).trim() === '' || parseFloat(String(price)) <= 0;
+        });
+
+        if (hasUnfilledPrices) errors.push("Prices");
+        return errors;
+    };
+
     return (
         <div className={styles["edit-movie-page"]}>
             <div className={styles["edit-movie-header"]}>
@@ -369,49 +407,80 @@ export const EditMoviePage = () => {
                     onAddGenre={() => setShowGenreModal(true)}
                 />
 
-                <div className={styles["details-save-actions"]}>
-                    <button onClick={handleSaveMovieDetailsOnly} className={styles["save-details-btn"]} disabled={saving}>
-                        {saving ? '💾 Saving...' : '💾 Save General Info'}
-                    </button>
+                <div className={styles["details-save-actions-container"]}>
+                    {movieErrors.length > 0 && (
+                        <div className={styles["validation-info"]}>
+                            Please fill in the required fields: <strong>{movieErrors.join(", ")}</strong>
+                        </div>
+                    )}
+                    <div className={styles["details-save-actions"]}>
+                        <button
+                            onClick={handleSaveMovieDetailsOnly}
+                            className={styles["save-details-btn"]}
+                            disabled={isMovieInvalid}
+                        >
+                            {saving ? '💾 Saving...' : '💾 Save General Info'}
+                        </button>
+                    </div>
                 </div>
 
                 <MediaManager movieId={safeMovieId} initialStills={stills} initialTrailers={trailers} initialBanner={banner || undefined} />
 
                 <div className={styles["sessions-section"]}>
                     <h3>Sessions Management</h3>
-                    {sessions.map(s => (
-                        <div key={s.id} className={styles["session-card"]}>
-                            <div className={styles["session-controls-row"]}>
-                                <input type="date" value={s.date} onChange={e => handleSessionChange(s.id, 'date', e.target.value)} className="form-input" />
-                                <input type="time" value={s.time} onChange={e => handleSessionChange(s.id, 'time', e.target.value)} className="form-input" />
-                                <select value={s.hallId} onChange={e => handleSessionChange(s.id, 'hallId', e.target.value)} className="form-input">
-                                    <option value="">Select Hall</option>
-                                    {halls.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}
-                                </select>
+                    {sessions.map(s => {
+                        const sessionErrors = getSessionValidationErrors(s);
+                        const isSessionInvalid = sessionErrors.length > 0;
+                        return (
+                            <div key={s.id} className={styles["session-card"]}>
+                                <div className={styles["session-controls-row"]}>
+                                    <input type="date" value={s.date} onChange={e => handleSessionChange(s.id, 'date', e.target.value)} className="form-input" />
+                                    <input type="time" value={s.time} onChange={e => handleSessionChange(s.id, 'time', e.target.value)} className="form-input" />
+                                    <select value={s.hallId} onChange={e => handleSessionChange(s.id, 'hallId', e.target.value)} className="form-input">
+                                        <option value="">Select Hall</option>
+                                        {halls.map(h => <option key={h.id} value={h.id}>{h.name}</option>)}
+                                    </select>
+                                </div>
+
+                                <HallGrid
+                                    seats={halls.find(h => h.id === s.hallId)?.seats || []}
+                                    seatTypes={halls.find(h => h.id === s.hallId)?.availableSeatTypes || []}
+                                    enabledTypes={s.enabledTypes}
+                                />
+
+                                <TicketPriceManager
+                                    sessionId={s.id}
+                                    seatTypes={halls.find(h => h.id === s.hallId)?.availableSeatTypes || []}
+                                    enabledTypes={s.enabledTypes}
+                                    seatPrices={s.seatPrices}
+                                    onPriceChange={(tid, field, val) => {
+                                        const sub = field === 'enabled' ? 'enabledTypes' : 'seatPrices';
+                                        handleSessionChange(s.id, sub, { ...s[sub], [tid]: val });
+                                    }}
+                                />
+                                <div className={styles["session-footer"]}>
+                                    {isSessionInvalid && (
+                                        <div className={styles["session-error-hint"]}>
+                                            Need: {sessionErrors.join(", ")}
+                                        </div>
+                                    )}
+                                    <button
+                                        onClick={() => handleDeleteSession(s.id)}
+                                        className={styles["remove-session-btn"]}
+                                    >
+                                        Remove
+                                    </button>
+                                    <button
+                                        onClick={() => handleSaveSession(s.id)}
+                                        className={styles["save-session-btn"]}
+                                        disabled={isSessionInvalid}
+                                    >
+                                        Save Session
+                                    </button>
+                                </div>
                             </div>
-                            
-                            <HallGrid 
-                                seats={halls.find(h => h.id === s.hallId)?.seats || []} 
-                                seatTypes={halls.find(h => h.id === s.hallId)?.availableSeatTypes || []} 
-                                enabledTypes={s.enabledTypes} 
-                            />
-                            
-                            <TicketPriceManager
-                                sessionId={s.id}
-                                seatTypes={halls.find(h => h.id === s.hallId)?.availableSeatTypes || []}
-                                enabledTypes={s.enabledTypes}
-                                seatPrices={s.seatPrices}
-                                onPriceChange={(tid, field, val) => {
-                                    const sub = field === 'enabled' ? 'enabledTypes' : 'seatPrices';
-                                    handleSessionChange(s.id, sub, { ...s[sub], [tid]: val });
-                                }}
-                            />
-                            <div className={styles["session-footer"]}>
-                                <button onClick={() => handleDeleteSession(s.id)} className={styles["remove-session-btn"]}>Remove</button>
-                                <button onClick={() => handleSaveSession(s.id)} className="save-session-btn">Save Session</button>
-                            </div>
-                        </div>
-                    ))}
+                        )
+                    })}
                     <button className={styles['add-session-btn']} onClick={() => setSessions(p => [...p, { id: Date.now().toString(), date: '', time: '12:00', hallId: '', seatPrices: {}, enabledTypes: {} }])}>
                         + Add New Session
                     </button>
