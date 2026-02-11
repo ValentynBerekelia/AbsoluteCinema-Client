@@ -76,30 +76,41 @@ export const ReservationsPage = () => {
         const fetchSessions = async () => {
             try {
                 setLoadingSessions(true);
+                const now = new Date();
+
                 const moviesResponse = await getMovies({
-                    pageNumber: 1, pageSize: 100, sortColumn: 'name', sortOrder: SortOrder.Asc
+                    pageNumber: 1,
+                    pageSize: 100,
+                    sortColumn: 'name',
+                    sortOrder: SortOrder.Asc
                 });
                 const rawMovies = Array.isArray(moviesResponse) ? moviesResponse : moviesResponse?.movies ?? [];
 
                 const sessionsPerMovie = await Promise.all(
                     rawMovies.map(async (movie: any) => {
                         const mId = movie.id?.id ?? movie.id;
+
                         const sessionsResponse = await getMovieSessions(mId);
                         const sArray = Array.isArray(sessionsResponse) ? sessionsResponse : sessionsResponse?.sessions ?? [];
-                        return sArray.map((s: any) => ({
-                            id: String(s.id?.id ?? s.id ?? ''),
-                            movieId: mId,
-                            movieTitle: movie.name ?? movie.title,
-                            hallId: String(s.hallId?.id ?? s.hallId ?? ''),
-                            hallName: String(s.hallName ?? 'Hall'),
-                            startDateTime: String(s.startDateTime ?? ''),
-                            format: Number(s.format ?? 1)
-                        }));
+
+                        return sArray
+                            .map((s: any) => ({
+                                id: String(s.id?.id ?? s.id ?? ''),
+                                movieId: mId,
+                                movieTitle: movie.name ?? movie.title,
+                                hallId: String(s.hallId?.id ?? s.hallId ?? ''),
+                                hallName: String(s.hallName ?? 'Hall'),
+                                startDateTime: String(s.startDateTime ?? ''),
+                                format: Number(s.format ?? 1)
+                            }))
+                            .filter((s: SessionSummary) => new Date(s.startDateTime) >= now);
                     })
                 );
 
                 const flattened = sessionsPerMovie.flat().filter((s: any) => s.id);
-                flattened.sort((a: SessionSummary, b: SessionSummary) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
+
+                flattened.sort((a, b) => new Date(a.startDateTime).getTime() - new Date(b.startDateTime).getTime());
+
                 setSessions(flattened);
 
                 if (sessionIdFromUrl && flattened.some((s: SessionSummary) => s.id === sessionIdFromUrl)) {
