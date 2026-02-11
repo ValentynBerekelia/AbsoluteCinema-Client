@@ -5,39 +5,41 @@ import { Recommendations } from "../../components/Recommendations/Recommendation
 import { TrailerSection } from "../../components/TrailerSection/TrailerSection";
 import { MOCK_MOVIE_DETAILS } from "../../data/DetailsMovie";
 import { MOCK_RECOMMENDATIONS } from "../../data/MovieRecommendations";
-import { getMovieById, getMovies } from "../../api/movies";
-import {mapMovieDetailsFromApi} from "@/types/Movie";
+import { getMovieById, getMovieRecommendations, getMovies } from "../../api/movies";
+import { mapMovieDetailsFromApi, MovieRecommendation } from "@/types/Movie";
 import { useParams } from "react-router-dom";
 
 export const MovieDetailsPage = () => {
-    const {id} = useParams<{id: string}>();
-    const [movie, setMovie] = useState<typeof MOCK_MOVIE_DETAILS>({...MOCK_MOVIE_DETAILS, id: id || MOCK_MOVIE_DETAILS.id});
+    const { id } = useParams<{ id: string }>();
+    const [movie, setMovie] = useState<typeof MOCK_MOVIE_DETAILS>({ ...MOCK_MOVIE_DETAILS, id: id || MOCK_MOVIE_DETAILS.id });
+    const [movieRecommendations, setMovieRecommendations] = useState<MovieRecommendation[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
 
     useEffect(() => {
-        if (!id) {
-            setError('Movie ID is required');
-            setLoading(false);
-            return;
-        }
+        if (!id) return;
 
-        const fetchMovies = async () => {
+        const fetchData = async () => {
+            setLoading(true);
             try {
-                setLoading(true);
-                const movieData = mapMovieDetailsFromApi(await getMovieById(id));
-                if (movieData) {
-                    setMovie(await movieData);
-                }
+                const [movieDataRaw, recommendationsData] = await Promise.all([
+                    getMovieById(id),
+                    getMovieRecommendations(id, 10)
+                ]);
+
+                const mappedMovie = await mapMovieDetailsFromApi(movieDataRaw);
+
+                setMovie(mappedMovie);
+                setMovieRecommendations(recommendationsData.movies);
             } catch (err) {
-                setError(err instanceof Error ? err.message : 'Failed to fetch movies');
-                setMovie({...MOCK_MOVIE_DETAILS, id: id || MOCK_MOVIE_DETAILS.id});
+                console.error("Failed to fetch data:", err);
+                setError(err instanceof Error ? err.message : 'Unknown error');
             } finally {
                 setLoading(false);
             }
         };
 
-        fetchMovies();
+        fetchData();
     }, [id]);
 
     if (loading) {
@@ -47,13 +49,13 @@ export const MovieDetailsPage = () => {
     if (error) {
         console.warn('Error fetching movies:', error);
     }
-    
+
     return (
         <div>
             <TrailerSection movie={movie} movieId={id} />
-            <MovieDescription movie={movie}/>
-            <MovieStills movie={movie}/>
-            <Recommendations recommendations={MOCK_RECOMMENDATIONS}/>
+            <MovieDescription movie={movie} />
+            <MovieStills movie={movie} />
+            <Recommendations recommendations={movieRecommendations} />
         </div>
     );
 }

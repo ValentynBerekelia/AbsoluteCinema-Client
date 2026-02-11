@@ -106,8 +106,8 @@ export const mapMovieDetailsFromApi = async (data: any): Promise<MovieDetails> =
 
 export interface MovieRecommendation {
     id: string;
-    title: string;
-    poster: string;
+    name: string;
+    posterUrl: string;
 };
 
 export const mapMovieFromApi = (data: any): any[] => {

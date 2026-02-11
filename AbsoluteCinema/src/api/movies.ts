@@ -1,5 +1,6 @@
 import { defaultMoviesQueryParams, MoviesQueryParameters } from '@/types/MoviesQueryParameters';
 import axiosInstance from './axiosInstance';
+import { MovieRecommendation } from '@/types/Movie';
 
 // Media Type Enum - matches backend API
 export enum MediaType {
@@ -27,23 +28,27 @@ export interface CreateAndAttachMediaResponse {
 }
 
 export interface AdminMovieStats {
+  id: string;
+  name: string;
+  posterUrl: string;
+  duration: string;
+  ageLimit: number;
+  totalTicketSold: number;
+  totalCapacity: number;
+  sessions: {
     id: string;
-    name: string;
-    posterUrl: string;
-    duration: string;
-    ageLimit: number;
-    totalTicketSold: number;
-    totalCapacity: number;
-    sessions: {
-        id: string;
-        startDateTime: string;
-        format: number;
-    }[];
+    startDateTime: string;
+    format: number;
+  }[];
 }
 
+export interface MovieRecommendationsResponse {
+  movies: MovieRecommendation[]
+};
+
 interface AdminStatsResponse {
-    movies: AdminMovieStats[];
-    nextCursor: string | null;
+  movies: AdminMovieStats[];
+  nextCursor: string | null;
 }
 
 export const createMovie = async (formData: FormData) => {
@@ -154,7 +159,7 @@ export const getGenres = async (movieId?: string) => {
 };
 
 export const createGenre = async (genreName: string) => {
-  const response = await axiosInstance.post('/genres', { 
+  const response = await axiosInstance.post('/genres', {
     genreName
   });
   return response.data;
@@ -248,7 +253,7 @@ export const searchPersons = async (searchTerm?: string, role?: number, limit?: 
   if (searchTerm) params.Search = searchTerm;
   if (role) params.Role = role;
   if (limit) params.Limit = limit;
-  
+
   const response = await axiosInstance.get('/persons', { params });
   return response.data;
 };
@@ -291,12 +296,19 @@ export const attachMediaToPerson = async (personId: string, url: string | null) 
 };
 
 export const getAdminMoviesStats = async (searchTerm?: string, pageSize = 10, lastMovieId?: string) => {
-    const response = await axiosInstance.get('/admin/movies/stats', {
-        params: { 
-            searchTerm, 
-            pageSize, 
-            lastMovieId
-        }
+  const response = await axiosInstance.get('/admin/movies/stats', {
+    params: {
+      searchTerm,
+      pageSize,
+      lastMovieId
+    }
+  });
+  return response.data;
+}
+
+export const getMovieRecommendations = async (id: string, limit: number = 10): Promise<MovieRecommendationsResponse> => {
+    const response = await axiosInstance.get<MovieRecommendationsResponse>(`/movie/${id}/recommendations`, { 
+        params: { limit } 
     });
     return response.data;
-}
+};

@@ -1,6 +1,7 @@
 import { formatToMinutes } from '@/utils/dataTimeConverters';
 import { MovieDetails } from '../../types/Movie';
 import './MovieDescription.css';
+import { NO_POSTER_URL } from '@/constants/movieMetadata';
 
 interface Props {
     movie: MovieDetails;
@@ -15,7 +16,7 @@ export const MovieDescription = ({ movie }: Props) => {
         <section className="movie-description-section">
             <div className="description-card">
                 <div className="description-poster">
-                    <img src={movie.posterUrl} alt={movie.title} />
+                    <img src={movie.posterUrl || NO_POSTER_URL} alt={movie.title} />
                 </div>
                 
                 <div className="description-content">
