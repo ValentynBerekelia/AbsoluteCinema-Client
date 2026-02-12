@@ -18,12 +18,16 @@ export const LoginPage = () => {
         setLoading(true);
 
         try {
-            await loginUser({
+            const loggedInUser = await loginUser({
                 email: formData.email,
                 password: formData.password
             });
 
-            navigate('/');
+            if (loggedInUser?.roles?.includes("Admin")) {
+                navigate('/admin');
+            } else {
+                navigate('/');
+            }
         } catch (err: any) {
             console.error('Login error in component:', err);
         } finally {

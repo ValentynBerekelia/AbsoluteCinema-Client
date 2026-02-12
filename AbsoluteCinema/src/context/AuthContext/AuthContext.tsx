@@ -7,7 +7,7 @@ import { useToast } from "@/context/ToastContext/ToastContext";
 interface AuthContextType {
     user: User | null;
     accessToken: string | null;
-    loginUser: (data: LoginRequest) => Promise<void>;
+    loginUser: (data: LoginRequest) => Promise<User | null>;
     registerUser: (data: RegisterRequest) => Promise<void>;
     logoutUser: () => Promise<void>;
     revokeAllSessions: () => Promise<void>;
@@ -51,18 +51,23 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         initAuth();
     }, []);
 
-    const loginUser = async (data: LoginRequest) => {
+    const loginUser = async (data: LoginRequest): Promise<User | null> => {
         try {
             const res = await login(data);
             setAccessToken(res.accessToken);
             setAuthHeader(res.accessToken);
 
             const profileData = await getMe();
-            setUser({
+            
+            const newUser = {
                 ...profileData,
                 userName: res.userName
-            });
+            };
+
+            setUser(newUser);
             showToast('success', `Welcome back, ${data.email}!`);
+            
+            return newUser; 
         } catch (error: any) {
             const message = error.message || "Invalid username or password";
             showToast('error', message);
