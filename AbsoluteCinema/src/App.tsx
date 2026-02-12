@@ -19,7 +19,6 @@ import { MoviesLibrary } from './pages/MoviesLibrary/MoviesLibrary'
 import { AdminGenresPage } from './pages/Admin/Genres/AdminGenresPage'
 import { AdminPersonsPage } from './pages/Admin/Persons/AdminPersonsPage'
 import { ProtectedRoute } from './components/ProtectedRoute'
-import { DashboardPage } from './pages/Admin/Dashboard/DashboardPage'
 import { ProfilePage } from './pages/Profile/ProfilePage'
 
 function App() {
@@ -46,7 +45,6 @@ function App() {
         <Route path='/admin/movies/edit/:movieId' element={<AdminLayout><EditMoviePage /></AdminLayout>} />
         <Route path='/admin/genres' element={<AdminLayout><AdminGenresPage /></AdminLayout>} />
         <Route path='/admin/persons' element={<AdminLayout><AdminPersonsPage /></AdminLayout>} />
-        <Route path='/admin/statistics' element={<AdminLayout><DashboardPage /></AdminLayout>} />
       </Route>
     </Routes>
   )

@@ -1,5 +1,4 @@
 import axiosInstance from './axiosInstance';
-import { Ticket } from '../types/ticket';
 import { GetTicketDetailsResponse } from '@/types/Ticket';
 
 export interface CreateTicketPayload {
@@ -8,8 +7,8 @@ export interface CreateTicketPayload {
     userId: string;
 }
 
-export const getSessionTickets = async (sessionId: string): Promise<Ticket[]> => {
-    const response = await axiosInstance.get<Ticket[]>(`sessions/${sessionId}/tickets`);
+export const getSessionTickets = async (sessionId: string) => {
+    const response = await axiosInstance.get(`sessions/${sessionId}/tickets`);
     return response.data;
 };
 
@@ -18,13 +17,13 @@ export const getSessionTicketsShort = async (sessionId: string) => {
     return response.data;
 };
 
-export const getTicketById = async (ticketId: string): Promise<Ticket> => {
-    const response = await axiosInstance.get<Ticket>(`ticket/${ticketId}`);
+export const getTicketById = async (ticketId: string) => {
+    const response = await axiosInstance.get(`ticket${ticketId}`);
     return response.data;
 };
 
-export const createTicket = async (payload: CreateTicketPayload): Promise<Ticket> => {
-    const response = await axiosInstance.post<Ticket>('ticket', payload);
+export const createTicket = async (payload: CreateTicketPayload) => {
+    const response = await axiosInstance.post('ticket', payload);
     return response.data;
 };
 
@@ -49,13 +48,6 @@ export const deleteTicket = async (ticketId: string) => {
     return response.data;
 };
 
-export const confirmTicket = async (ticketId: string): Promise<void> => {
-    await axiosInstance.post(`/ticket/${ticketId}/confirm`);
-};
-
-export const cancelTicket = async (ticketId: string): Promise<void> => {
-    await axiosInstance.delete(`/ticket/${ticketId}/cancel`);
-};
 export const updateTicketStatus = async (ticketId: string, status: string) => {
     const response = await axiosInstance.patch(`ticket/${ticketId}`, { status });
     return response.data;
