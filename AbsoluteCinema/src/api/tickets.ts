@@ -1,4 +1,5 @@
 import axiosInstance from './axiosInstance';
+import { GetTicketDetailsResponse } from '@/types/Ticket';
 
 export interface CreateTicketPayload {
     sessionId: string;
@@ -44,5 +45,15 @@ export const updateTicket = async (ticketId: string, payload: CreateTicketPayloa
 
 export const deleteTicket = async (ticketId: string) => {
     const response = await axiosInstance.delete(`ticket/${ticketId}`);
+    return response.data;
+};
+
+export const updateTicketStatus = async (ticketId: string, status: string) => {
+    const response = await axiosInstance.patch(`ticket/${ticketId}`, { status });
+    return response.data;
+};
+
+export const getUserTickets = async (userId: string): Promise<GetTicketDetailsResponse[]> => {
+    const response = await axiosInstance.get(`tickets/user/${userId}`);
     return response.data;
 };

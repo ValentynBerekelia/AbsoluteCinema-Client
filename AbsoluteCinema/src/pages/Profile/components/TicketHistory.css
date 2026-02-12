@@ -1,0 +1,15 @@
+.history-container {
+    width: 100%;
+}
+
+.history-list {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+@media (max-width: 768px) {
+    .history-list {
+        gap: 12px;
+    }
+}
