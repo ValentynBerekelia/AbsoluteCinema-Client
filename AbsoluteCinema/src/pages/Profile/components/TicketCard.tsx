@@ -1,7 +1,8 @@
 import { useState } from 'react';
+import { GetTicketDetailsResponse, TicketStatus } from '@/types/Ticket';
 import { deleteTicket } from '@/api/tickets';
 import './TicketCard.css';
-import { GetTicketDetailsResponse, TicketStatus } from '@/types/Ticket';
+import { convertIsoToDateTime } from '@/utils/dataTimeConverters';
 
 interface TicketCardProps {
     ticket: GetTicketDetailsResponse;
@@ -15,7 +16,7 @@ export const TicketCard = ({ ticket, isActive, onRefresh, hallSeatTypes = {} }: 
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
-        return date.toLocaleDateString('en-US', {
+        return date.toLocaleDateString('en-GB', {
             weekday: 'short',
             year: 'numeric',
             month: 'short',
@@ -23,14 +24,12 @@ export const TicketCard = ({ ticket, isActive, onRefresh, hallSeatTypes = {} }: 
         });
     };
 
-    const formatTime = (dateString: string) => {
-        const date = new Date(dateString);
-        return date.toLocaleTimeString('en-US', {
-            hour: '2-digit',
-            minute: '2-digit',
-            hour12: true
-        });
+    const formatDateTime = (dateTimeStr: string) => {
+        if (!dateTimeStr) return '';
+        const { time } = convertIsoToDateTime(dateTimeStr);
+        return time;
     };
+
 
     const getStatusColor = (status: string | TicketStatus) => {
         const normalizedStatus = String(status).toLowerCase();
@@ -90,7 +89,7 @@ export const TicketCard = ({ ticket, isActive, onRefresh, hallSeatTypes = {} }: 
                     </div>
                     <div className="date-time">
                         <div className="date">{formatDate(ticket.session?.startDateTime || '')}</div>
-                        <div className="time">{formatTime(ticket.session?.startDateTime || '')}</div>
+                        <div className="time">{formatDateTime(ticket.session?.startDateTime || '')}</div>
                     </div>
 
                     <div className="divider"></div>
