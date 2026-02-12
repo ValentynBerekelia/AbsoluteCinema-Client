@@ -1,11 +1,11 @@
-.clients-page {
+.clientsPage {
     padding: 24px;
     background: linear-gradient(135deg, rgba(10, 15, 35, 0.95) 0%, rgba(20, 25, 50, 0.95) 100%);
     border-radius: 8px;
     min-height: 100%;
 }
 
-.clients-header {
+.clientsHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -14,19 +14,19 @@
     flex-wrap: wrap;
 }
 
-.clients-header h1 {
+.clientsHeader h1 {
     color: white;
     font-size: 28px;
     font-weight: 700;
     margin: 0;
 }
 
-.clients-search-wrapper {
+.clientsSearchWrapper {
     flex: 1;
     min-width: 250px;
 }
 
-.clients-search-input {
+.clientsSearchInput {
     width: 100%;
     padding: 10px 16px;
     background: rgba(255, 255, 255, 0.05);
@@ -37,18 +37,18 @@
     transition: all 0.3s ease;
 }
 
-.clients-search-input::placeholder {
+.clientsSearchInput::placeholder {
     color: rgba(255, 255, 255, 0.5);
 }
 
-.clients-search-input:focus {
+.clientsSearchInput:focus {
     outline: none;
     border-color: #e50914;
     background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 12px rgba(229, 9, 20, 0.3);
 }
 
-.clients-list {
+.clientsList {
     background: rgba(255, 255, 255, 0.02);
     border: 1px solid rgba(255, 255, 255, 0.1);
     border-radius: 8px;
@@ -56,39 +56,39 @@
     transition: background 0.3s ease;
 }
 
-.clients-list.loading {
+.clientsList.loading {
     opacity: 0.6;
     pointer-events: none;
 }
 
-.clients-loading,
-.clients-empty {
+.clientsLoading,
+.clientsEmpty {
     padding: 48px 24px;
     text-align: center;
     color: rgba(255, 255, 255, 0.6);
 }
 
-.clients-loading {
+.clientsLoading {
     font-size: 16px;
 }
 
-.clients-empty p {
+.clientsEmpty p {
     margin: 0;
     font-size: 18px;
     color: rgba(255, 255, 255, 0.5);
 }
 
-.clients-table {
+.clientsTable {
     width: 100%;
     border-collapse: collapse;
 }
 
-.clients-table thead {
+.clientsTable thead {
     background: rgba(255, 255, 255, 0.05);
     border-bottom: 2px solid rgba(229, 9, 20, 0.3);
 }
 
-.clients-table thead th {
+.clientsTable thead th {
     padding: 16px;
     text-align: left;
     color: white;
@@ -98,27 +98,27 @@
     letter-spacing: 0.5px;
 }
 
-.client-row {
+.clientRow {
     border-bottom: 1px solid rgba(255, 255, 255, 0.05);
     transition: background 0.2s ease;
 }
 
-.client-row:hover {
+.clientRow:hover {
     background: rgba(229, 9, 20, 0.1);
 }
 
-.clients-table tbody td {
+.clientsTable tbody td {
     padding: 14px 16px;
     color: rgba(255, 255, 255, 0.9);
     font-size: 14px;
 }
 
-.client-username {
+.clientUsername {
     font-weight: 600;
     color: white;
 }
 
-.expand-btn {
+.expandBtn {
     background: none;
     border: none;
     color: white;
@@ -129,25 +129,25 @@
     transition: color 0.2s ease;
 }
 
-.expand-btn:hover {
+.expandBtn:hover {
     color: #e50914;
 }
 
-.client-row.expanded {
+.clientRow.expanded {
     background: rgba(229, 9, 20, 0.05);
 }
 
-.tickets-row {
+.ticketsRow {
     background: rgba(255, 255, 255, 0.02);
     width: 100%;
 }
 
-.tickets-row td {
+.ticketsRow td {
     padding: 0;
     width: 100%;
 }
 
-.tickets-details {
+.ticketsDetails {
     padding: 20px 0;
     background: rgba(10, 15, 35, 0.6);
     border-top: 1px solid rgba(229, 9, 20, 0.2);
@@ -155,22 +155,24 @@
     box-sizing: border-box;
     display: flex;
     flex-direction: column;
+    align-items: stretch; /* Виправлення для ширини */
 }
 
-.tickets-loading,
-.no-tickets {
+.ticketsLoading,
+.noTickets {
     text-align: center;
     color: rgba(255, 255, 255, 0.5);
     padding: 20px;
 }
 
-.tickets-grid {
+.ticketsGrid {
     display: grid;
     grid-template-columns: 1fr;
     gap: 16px;
+    width: 100%; /* Виправлення для ширини */
 }
 
-.tickets-list {
+.ticketsList {
     display: flex;
     flex-direction: column;
     gap: 12px;
@@ -179,9 +181,8 @@
     box-sizing: border-box;
 }
 
-.ticket-item {
+.ticketItem {
     display: grid;
-    /* use a more even distribution and allow the card to span the full container */
     grid-template-columns: 2fr 1fr 1fr 1fr auto;
     gap: 16px;
     align-items: center;
@@ -197,7 +198,7 @@
     box-sizing: border-box;
 }
 
-.ticket-item:hover {
+.ticketItem:hover {
     background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
     border-color: rgba(229, 9, 20, 0.4);
     box-shadow: 0 4px 12px rgba(229, 9, 20, 0.15);
@@ -214,18 +215,18 @@
     }
 }
 
-.ticket-movie {
+.ticketMovie {
     display: flex;
     gap: 8px;
     align-items: center;
 }
 
-.ticket-movie strong {
+.ticketMovie strong {
     color: white;
     font-size: 14px;
 }
 
-.ticket-status {
+.ticketStatus {
     display: inline-block;
     padding: 2px 8px;
     background: rgba(76, 175, 80, 0.2);
@@ -236,7 +237,7 @@
     text-transform: uppercase;
 }
 
-.ticket-info {
+.ticketInfo {
     display: flex;
     flex-direction: column;
     gap: 4px;
@@ -244,36 +245,36 @@
     color: rgba(255, 255, 255, 0.7);
 }
 
-.ticket-info span {
+.ticketInfo span {
     display: flex;
     align-items: center;
     gap: 6px;
 }
 
-.ticket-seat {
+.ticketSeat {
     display: flex;
     flex-direction: column;
     gap: 4px;
     font-size: 13px;
 }
 
-.seat-info {
+.seatInfo {
     color: white;
     font-weight: 600;
 }
 
-.seat-type {
+.seatType {
     color: rgba(255, 255, 255, 0.6);
     font-size: 12px;
 }
 
-.ticket-price {
+.ticketPrice {
     font-weight: 700;
     color: #4db854;
     font-size: 16px;
 }
 
-.cancel-ticket-btn {
+.cancelTicketBtn {
     padding: 6px 12px;
     background: rgba(229, 9, 20, 0.2);
     border: 1px solid rgba(229, 9, 20, 0.4);
@@ -286,26 +287,26 @@
     white-space: nowrap;
 }
 
-.cancel-ticket-btn:hover:not(:disabled) {
+.cancelTicketBtn:hover:not(:disabled) {
     background: rgba(229, 9, 20, 0.3);
     border-color: #e50914;
     color: #ff8a8a;
 }
 
-.cancel-ticket-btn:disabled {
+.cancelTicketBtn:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.client-email {
+.clientEmail {
     color: rgba(255, 255, 255, 0.7);
 }
 
-.client-tickets {
+.clientTickets {
     min-width: 150px;
 }
 
-.tickets-badge {
+.ticketsBadge {
     display: inline-block;
     padding: 6px 12px;
     background: rgba(138, 155, 255, 0.15);
@@ -316,13 +317,13 @@
     font-weight: 600;
 }
 
-.client-id {
+.clientId {
     color: rgba(255, 255, 255, 0.5);
     font-family: monospace;
     font-size: 12px;
 }
 
-.clients-pagination {
+.clientsPagination {
     display: flex;
     justify-content: center;
     align-items: center;
@@ -332,7 +333,7 @@
     background: rgba(255, 255, 255, 0.01);
 }
 
-.pagination-btn {
+.paginationBtn {
     padding: 8px 16px;
     background: rgba(229, 9, 20, 0.1);
     border: 1px solid rgba(229, 9, 20, 0.3);
@@ -344,18 +345,18 @@
     font-size: 14px;
 }
 
-.pagination-btn:hover:not(:disabled) {
+.paginationBtn:hover:not(:disabled) {
     background: rgba(229, 9, 20, 0.2);
     border-color: #e50914;
     color: #ff8a8a;
 }
 
-.pagination-btn:disabled {
+.paginationBtn:disabled {
     opacity: 0.4;
     cursor: not-allowed;
 }
 
-.pagination-info {
+.paginationInfo {
     color: rgba(255, 255, 255, 0.6);
     font-size: 14px;
     min-width: 200px;
@@ -364,28 +365,28 @@
 
 /* Responsive */
 @media (max-width: 768px) {
-    .clients-page {
+    .clientsPage {
         padding: 16px;
     }
 
-    .clients-header {
+    .clientsHeader {
         flex-direction: column;
         align-items: stretch;
     }
 
-    .clients-header h1 {
+    .clientsHeader h1 {
         font-size: 24px;
     }
 
-    .clients-search-wrapper {
+    .clientsSearchWrapper {
         min-width: 100%;
     }
 
-    .clients-table thead {
+    .clientsTable thead {
         display: none;
     }
 
-    .client-row {
+    .clientRow {
         display: block;
         margin-bottom: 12px;
         background: rgba(255, 255, 255, 0.02);
@@ -394,59 +395,59 @@
         padding: 12px;
     }
 
-    .client-row:hover {
+    .clientRow:hover {
         background: rgba(229, 9, 20, 0.15);
     }
 
-    .clients-table tbody td {
+    .clientsTable tbody td {
         display: block;
         padding: 8px 0;
         text-align: right;
     }
 
-    .clients-table tbody td::before {
+    .clientsTable tbody td::before {
         content: attr(data-label);
         float: left;
         font-weight: 600;
         color: white;
     }
 
-    .client-username::before { content: 'Username: '; }
-    .client-email::before { content: 'Email: '; }
-    .client-tickets::before { content: 'Total Tickets: '; }
-    .client-id::before { content: 'ID: '; }
+    .clientUsername::before { content: 'Username: '; }
+    .clientEmail::before { content: 'Email: '; }
+    .clientTickets::before { content: 'Total Tickets: '; }
+    .clientId::before { content: 'ID: '; }
 
-    .ticket-item {
+    .ticketItem {
         display: flex;
         flex-direction: column;
         gap: 12px;
         align-items: stretch;
     }
 
-    .ticket-movie {
+    .ticketMovie {
         justify-content: space-between;
     }
 
-    .ticket-actions {
+    .ticketActions {
         flex-direction: column;
     }
 
-    .ticket-actions button {
+    .ticketActions button {
         width: 100%;
     }
 
-    .clients-pagination {
+    .clientsPagination {
         flex-direction: column;
         gap: 12px;
     }
 
-    .pagination-info {
+    .paginationInfo {
         min-width: 100%;
     }
 }
 
 /* Edit Modal Styles */
-.modal-overlay {
+.modalOverlay {
     position: fixed;
     top: 0;
     left: 0;
@@ -461,15 +462,11 @@
 }
 
 @keyframes fadeIn {
-    from {
-        opacity: 0;
-    }
-    to {
-        opacity: 1;
-    }
+    from { opacity: 0; }
+    to { opacity: 1; }
 }
 
-.modal-content {
+.modalContent {
     background: linear-gradient(135deg, rgba(20, 25, 50, 0.98) 0%, rgba(15, 20, 40, 0.98) 100%);
     border: 1px solid rgba(229, 9, 20, 0.3);
     border-radius: 12px;
@@ -485,17 +482,11 @@
 }
 
 @keyframes slideUp {
-    from {
-        transform: translateY(30px);
-        opacity: 0;
-    }
-    to {
-        transform: translateY(0);
-        opacity: 1;
-    }
+    from { transform: translateY(30px); opacity: 0; }
+    to { transform: translateY(0); opacity: 1; }
 }
 
-.modal-header {
+.modalHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -503,14 +494,14 @@
     border-bottom: 1px solid rgba(229, 9, 20, 0.2);
 }
 
-.modal-header h2 {
+.modalHeader h2 {
     color: white;
     font-size: 20px;
     font-weight: 600;
     margin: 0;
 }
 
-.modal-close {
+.modalClose {
     background: none;
     border: none;
     color: white;
@@ -526,12 +517,12 @@
     transition: all 0.2s ease;
 }
 
-.modal-close:hover {
+.modalClose:hover {
     background: rgba(229, 9, 20, 0.2);
     color: #e50914;
 }
 
-.modal-body {
+.modalBody {
     padding: 24px;
     display: flex;
     flex-direction: column;
@@ -542,13 +533,13 @@
     min-height: 0;
 }
 
-.modal-body > div:first-child {
+.modalBody > div:first-child {
     display: flex;
     flex-direction: column;
     gap: 20px;
 }
 
-.modal-body.with-seat-selector {
+.modalBody.withSeatSelector {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 0;
@@ -558,7 +549,7 @@
     min-height: 0;
 }
 
-.modal-body.with-seat-selector > div:first-child {
+.modalBody.withSeatSelector > div:first-child {
     padding: 24px;
     padding-right: 12px;
     grid-column: 1;
@@ -571,7 +562,7 @@
     min-height: 0;
 }
 
-.modal-body.with-seat-selector .seat-selector-container {
+.modalBody.withSeatSelector .seatSelectorContainer {
     padding: 24px;
     padding-left: 12px;
     grid-column: 2;
@@ -583,13 +574,13 @@
     min-height: 0;
 }
 
-.modal-field {
+.modalField {
     display: flex;
     flex-direction: column;
     gap: 8px;
 }
 
-.modal-field label {
+.modalField label {
     color: rgba(255, 255, 255, 0.7);
     font-size: 13px;
     text-transform: uppercase;
@@ -597,7 +588,7 @@
     font-weight: 600;
 }
 
-.modal-info {
+.modalInfo {
     color: white;
     font-size: 15px;
     margin: 0;
@@ -607,7 +598,7 @@
     border: 1px solid rgba(255, 255, 255, 0.1);
 }
 
-.status-select {
+.statusSelect {
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(229, 9, 20, 0.3);
@@ -618,20 +609,20 @@
     transition: all 0.2s ease;
 }
 
-.status-select:focus {
+.statusSelect:focus {
     outline: none;
     border-color: #e50914;
     background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 12px rgba(229, 9, 20, 0.3);
 }
 
-.status-select option {
+.statusSelect option {
     background: #0a0f23;
     color: white;
     padding: 8px;
 }
 
-.modal-footer {
+.modalFooter {
     display: flex;
     gap: 12px;
     padding: 24px;
@@ -640,8 +631,8 @@
     flex-shrink: 0;
 }
 
-.modal-cancel-btn,
-.modal-save-btn {
+.modalCancelBtn,
+.modalSaveBtn {
     padding: 10px 20px;
     border: none;
     border-radius: 6px;
@@ -651,43 +642,43 @@
     transition: all 0.2s ease;
 }
 
-.modal-cancel-btn {
+.modalCancelBtn {
     background: rgba(255, 255, 255, 0.1);
     color: white;
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.modal-cancel-btn:hover {
+.modalCancelBtn:hover {
     background: rgba(255, 255, 255, 0.15);
     border-color: rgba(255, 255, 255, 0.3);
 }
 
-.modal-save-btn {
+.modalSaveBtn {
     background: #e50914;
     color: white;
     border: 1px solid #e50914;
 }
 
-.modal-save-btn:hover {
+.modalSaveBtn:hover {
     background: #c2070f;
     border-color: #c2070f;
     box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
 }
 
 /* Seat Edit Styles */
-.seat-edit-group {
+.seatEditGroup {
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 12px;
 }
 
-.seat-input-group {
+.seatInputGroup {
     display: flex;
     flex-direction: column;
     gap: 6px;
 }
 
-.seat-input-group label {
+.seatInputGroup label {
     color: rgba(255, 255, 255, 0.6);
     font-size: 12px;
     text-transform: uppercase;
@@ -695,7 +686,7 @@
     font-weight: 600;
 }
 
-.seat-input {
+.seatInput {
     padding: 10px 12px;
     background: rgba(255, 255, 255, 0.05);
     border: 1px solid rgba(229, 9, 20, 0.3);
@@ -705,14 +696,14 @@
     transition: all 0.2s ease;
 }
 
-.seat-input:focus {
+.seatInput:focus {
     outline: none;
     border-color: #e50914;
     background: rgba(255, 255, 255, 0.08);
     box-shadow: 0 0 12px rgba(229, 9, 20, 0.3);
 }
 
-.edit-seat-btn {
+.editSeatBtn {
     width: 100%;
     padding: 10px 16px;
     background: rgba(100, 200, 255, 0.15);
@@ -726,18 +717,18 @@
     margin-top: 8px;
 }
 
-.edit-seat-btn:hover {
+.editSeatBtn:hover {
     background: rgba(100, 200, 255, 0.25);
     border-color: #64c8ff;
     box-shadow: 0 0 12px rgba(100, 200, 255, 0.3);
 }
 
-.edit-seat-btn:active {
+.editSeatBtn:active {
     transform: scale(0.98);
 }
 
 /* Seat Selector Styles */
-.seat-selector-container {
+.seatSelectorContainer {
     background: transparent;
     border: none;
     border-radius: 0;
@@ -749,7 +740,7 @@
     min-height: 0;
 }
 
-.seat-selector-header {
+.seatSelectorHeader {
     display: flex;
     justify-content: space-between;
     align-items: center;
@@ -759,13 +750,13 @@
     flex-shrink: 0;
 }
 
-.seat-selector-header h3 {
+.seatSelectorHeader h3 {
     color: white;
     font-size: 16px;
     margin: 0;
 }
 
-.seat-selector-close {
+.seatSelectorClose {
     background: none;
     border: none;
     color: rgba(255, 255, 255, 0.6);
@@ -774,12 +765,12 @@
     transition: color 0.2s ease;
 }
 
-.seat-selector-close:hover {
+.seatSelectorClose:hover {
     color: white;
 }
 
-.seat-selector-loading,
-.seat-selector-error {
+.seatSelectorLoading,
+.seatSelectorError {
     text-align: center;
     color: rgba(255, 255, 255, 0.6);
     padding: 12px;
@@ -790,11 +781,11 @@
     justify-content: center;
 }
 
-.seat-selector-error {
+.seatSelectorError {
     color: #ff6b6b;
 }
 
-.seat-selector-actions {
+.seatSelectorActions {
     display: flex;
     gap: 12px;
     margin-top: auto;
@@ -803,8 +794,8 @@
     padding-top: 12px;
 }
 
-.seat-selector-confirm,
-.seat-selector-cancel {
+.seatSelectorConfirm,
+.seatSelectorCancel {
     padding: 8px 16px;
     border: none;
     border-radius: 6px;
@@ -814,37 +805,37 @@
     transition: all 0.2s ease;
 }
 
-.seat-selector-confirm {
+.seatSelectorConfirm {
     background: rgba(76, 175, 80, 0.2);
     color: #4db854;
     border: 1px solid rgba(76, 175, 80, 0.3);
 }
 
-.seat-selector-confirm:hover:not(:disabled) {
+.seatSelectorConfirm:hover:not(:disabled) {
     background: rgba(76, 175, 80, 0.3);
     border-color: #4db854;
     box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
 }
 
-.seat-selector-confirm:disabled {
+.seatSelectorConfirm:disabled {
     opacity: 0.5;
     cursor: not-allowed;
 }
 
-.seat-selector-cancel {
+.seatSelectorCancel {
     background: rgba(255, 255, 255, 0.1);
     color: rgba(255, 255, 255, 0.7);
     border: 1px solid rgba(255, 255, 255, 0.2);
 }
 
-.seat-selector-cancel:hover {
+.seatSelectorCancel:hover {
     background: rgba(255, 255, 255, 0.15);
     color: white;
     border-color: rgba(255, 255, 255, 0.3);
 }
 
 /* SeatSelection component inside modal styling */
-.modal-body.with-seat-selector .seat-selection {
+.modalBody.withSeatSelector .seatSelection {
     display: flex;
     flex-direction: column;
     gap: 8px;
@@ -852,30 +843,30 @@
     overflow-y: auto;
 }
 
-.modal-body.with-seat-selector .seat-selection__screen {
+.modalBody.withSeatSelector .seatSelectionScreen {
     flex-shrink: 0;
 }
 
-.modal-body.with-seat-selector .seat-selection__hall {
+.modalBody.withSeatSelector .seatSelectionHall {
     flex: 1;
     overflow-y: auto;
     gap: 6px;
 }
 
-.modal-body.with-seat-selector .seat-selection__legend {
+.modalBody.withSeatSelector .seatSelectionLegend {
     flex-shrink: 0;
     font-size: 12px;
 }
 
 /* Edit Button Styles */
-.ticket-actions {
+.ticketActions {
     display: flex;
     gap: 8px;
     justify-content: flex-end;
     align-items: center;
 }
 
-.edit-ticket-btn {
+.editTicketBtn {
     background: rgba(100, 200, 255, 0.15);
     color: #64c8ff;
     border: 1px solid rgba(100, 200, 255, 0.3);
@@ -887,37 +878,35 @@
     font-weight: 500;
 }
 
-.edit-ticket-btn:hover {
+.editTicketBtn:hover {
     background: rgba(100, 200, 255, 0.25);
     border-color: #64c8ff;
     box-shadow: 0 0 8px rgba(100, 200, 255, 0.3);
 }
 
-.edit-ticket-btn:active {
+.editTicketBtn:active {
     transform: scale(0.95);
 }
 
 /* Responsive Modal */
 @media (max-width: 768px) {
-    .modal-content {
+    .modalContent {
         max-width: 95%;
         border-radius: 8px;
     }
 
-    .modal-header,
-    .modal-body,
-    .modal-footer {
+    .modalHeader,
+    .modalBody,
+    .modalFooter {
         padding: 16px;
     }
 
-    .modal-footer {
+    .modalFooter {
         flex-direction: column-reverse;
     }
 
-    .modal-cancel-btn,
-    .modal-save-btn {
+    .modalCancelBtn,
+    .modalSaveBtn {
         width: 100%;
     }
 }
-
-

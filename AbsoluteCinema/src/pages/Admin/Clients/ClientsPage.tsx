@@ -3,13 +3,12 @@ import React from 'react';
 import { getAllUsers, searchUsers, ClientUser } from '@/api/users';
 import { getUserTickets, deleteTicket, updateTicket, getSessionTickets } from '@/api/tickets';
 import { getHallById } from '@/api/halls';
-import { getMovieSessions } from '@/api/sessions';
-import { GetTicketDetailsResponse } from '@/types/ticket';
 import { mapHallDetailsFromApi, Seat, SeatType } from '@/types/hall';
 import { SeatSelection } from '@/components/SeatSelection/SeatSelection';
 import { useToast } from '@/context/ToastContext/ToastContext';
 import { convertIsoToDateTime } from '@/utils/dataTimeConverters';
-import './ClientsPage.css';
+import styles from './ClientsPage.module.css';
+import { GetTicketDetailsResponse } from '@/types/ticket';
 
 export const ClientsPage = () => {
     const { showToast } = useToast();
@@ -139,7 +138,11 @@ export const ClientsPage = () => {
             setHallTypes(mapped.availableSeatTypes);
             
             // Extract occupied seat IDs from tickets (normalize different API shapes)
-            const rawTickets = Array.isArray(ticketsData) ? ticketsData : [];
+            const rawTickets = Array.isArray(ticketsData)
+                ? ticketsData
+                : Array.isArray((ticketsData as any)?.tickets)
+                    ? (ticketsData as any).tickets
+                    : [];
 
             const occupiedSeatIds = rawTickets
                 .map((t: any) => String(t.seat?.id?.id ?? t.seat?.id ?? t.seatId?.id?.id ?? t.seatId ?? ''))
@@ -284,26 +287,26 @@ export const ClientsPage = () => {
     }
 
     return (
-        <div className="clients-page">
-            <header className="clients-header">
+        <div className={styles.clientsPage}>
+            <header className={styles.clientsHeader}>
                 <h1>Clients Management</h1>
-                <div className="clients-search-wrapper">
+                <div className={styles.clientsSearchWrapper}>
                     <input
                         type="text"
                         placeholder="Search by name or email..."
                         value={searchQuery}
                         onChange={(e) => setSearchQuery(e.target.value)}
-                        className="clients-search-input"
+                        className={styles.clientsSearchInput}
                     />
                 </div>
             </header>
 
-            <main className={`clients-list ${loading ? 'loading' : ''}`}>
+            <main className={`${styles.clientsList} ${loading ? styles.loading : ''}`}>
                 {loading ? (
-                    <div className="clients-loading">Loading clients...</div>
+                    <div className={styles.clientsLoading}>Loading clients...</div>
                 ) : clients.length > 0 ? (
                     <>
-                        <table className="clients-table">
+                        <table className={styles.clientsTable}>
                             <thead>
                                 <tr>
                                     <th>Username</th>
@@ -318,44 +321,44 @@ export const ClientsPage = () => {
                                     const isExpanded = expandedUserId === userId;
                                     return (
                                         <React.Fragment key={userId}>
-                                            <tr className={`client-row ${isExpanded ? 'expanded' : ''}`}>
-                                                <td className="client-username">
+                                            <tr className={`${styles.clientRow} ${isExpanded ? styles.expanded : ''}`}>
+                                                <td className={styles.clientUsername}>
                                                     <button
-                                                        className="expand-btn"
+                                                        className={styles.expandBtn}
                                                         onClick={() => handleExpandUser(userId)}
                                                         title={isExpanded ? 'Hide tickets' : 'View tickets'}
                                                     >
                                                         {isExpanded ? '▼' : '▶'} {client.userName || 'N/A'}
                                                     </button>
                                                 </td>
-                                                <td className="client-email">{client.email || 'N/A'}</td>
-                                                <td className="client-tickets">
-                                                    <span className="tickets-badge">
+                                                <td className={styles.clientEmail}>{client.email || 'N/A'}</td>
+                                                <td className={styles.clientTickets}>
+                                                    <span className={styles.ticketsBadge}>
                                                         {client.totalTickets || 0} tickets
                                                     </span>
                                                 </td>
-                                                <td className="client-id" title={userId}>
+                                                <td className={styles.clientId} title={userId}>
                                                     {userId ? userId.substring(0, 12) : 'N/A'}...
                                                 </td>
                                             </tr>
                                             {isExpanded && (
-                                                <tr className="tickets-row">
+                                                <tr className={styles.ticketsRow}>
                                                     <td colSpan={4}>
-                                                        <div className="tickets-details">
+                                                        <div className={styles.ticketsDetails}>
                                                             {loadingTickets ? (
-                                                                <div className="tickets-loading">Loading tickets...</div>
+                                                                <div className={styles.ticketsLoading}>Loading tickets...</div>
                                                             ) : userTickets.length > 0 ? (
-                                                                    <div className="tickets-grid">
-                                                                        <div className="tickets-list">
+                                                                    <div className={styles.ticketsGrid}>
+                                                                        <div className={styles.ticketsList}>
                                                                             {userTickets.map(ticket => (
-                                                                                <div key={ticket.id} className="ticket-item">
-                                                                                    <div className="ticket-movie">
+                                                                                <div key={ticket.id} className={styles.ticketItem}>
+                                                                                    <div className={styles.ticketMovie}>
                                                                                         <strong>{ticket.movie?.name || ticket.session?.movieTitle || 'Movie'}</strong>
-                                                                                        <span className="ticket-status">
+                                                                                        <span className={styles.ticketStatus}>
                                                                                             {ticket.status || 'Active'}
                                                                                         </span>
                                                                                     </div>
-                                                                                    <div className="ticket-info">
+                                                                                    <div className={styles.ticketInfo}>
                                                                                         <span>
                                                                                             🏛️ {ticket.session?.hall?.name || 'N/A'}
                                                                                         </span>
@@ -363,31 +366,31 @@ export const ClientsPage = () => {
                                                                                             📅 {formatSessionDate(ticket.session?.startDateTime || '')}
                                                                                         </span>
                                                                                     </div>
-                                                                                    <div className="ticket-seat">
-                                                                                        <span className="seat-info">
+                                                                                    <div className={styles.ticketSeat}>
+                                                                                        <span className={styles.seatInfo}>
                                                                                             Seat {ticket.seat?.row || 'N/A'}-{ticket.seat?.number || 'N/A'}
                                                                                         </span>
                                                                                         {ticket.seat?.seatType && (
-                                                                                            <span className="seat-type">
+                                                                                            <span className={styles.seatType}>
                                                                                                 {ticket.seat.seatType.name}
                                                                                             </span>
                                                                                         )}
                                                                                     </div>
                                                                                     {ticket.price && (
-                                                                                        <div className="ticket-price">
+                                                                                        <div className={styles.ticketPrice}>
                                                                                             ${ticket.price.toFixed(2)}
                                                                                         </div>
                                                                                     )}
-                                                                                    <div className="ticket-actions">
+                                                                                    <div className={styles.ticketActions}>
                                                                                         <button
-                                                                                            className="edit-ticket-btn"
+                                                                                            className={styles.editTicketBtn}
                                                                                             onClick={() => handleEditTicket(ticket)}
                                                                                             title="Edit ticket"
                                                                                         >
                                                                                             ✎ Edit
                                                                                         </button>
                                                                                         <button
-                                                                                            className="cancel-ticket-btn"
+                                                                                            className={styles.cancelTicketBtn}
                                                                                             onClick={() => handleCancelTicket(ticket.id)}
                                                                                             disabled={deletingTicketId === ticket.id}
                                                                                         >
@@ -399,7 +402,7 @@ export const ClientsPage = () => {
                                                                         </div>
                                                                     </div>
                                                             ) : (
-                                                                <div className="no-tickets">No tickets for this user</div>
+                                                                <div className={styles.noTickets}>No tickets for this user</div>
                                                             )}
                                                         </div>
                                                     </td>
@@ -411,67 +414,67 @@ export const ClientsPage = () => {
                             </tbody>
                         </table>
 
-                        <div className="clients-pagination">
+                        <div className={styles.clientsPagination}>
                             <button
                                 onClick={handleBack}
                                 disabled={currentPageIndex === 0}
-                                className="pagination-btn"
+                                className={styles.paginationBtn}
                             >
                                 ← Previous
                             </button>
-                            <span className="pagination-info">
+                            <span className={styles.paginationInfo}>
                                 Page {currentPageIndex + 1} • {clients.length} clients shown
                             </span>
                             <button
                                 onClick={handleNext}
                                 disabled={!nextCursor}
-                                className="pagination-btn"
+                                className={styles.paginationBtn}
                             >
                                 Next →
                             </button>
                         </div>
                     </>
                 ) : (
-                    <div className="clients-empty">
+                    <div className={styles.clientsEmpty}>
                         <p>No clients found</p>
                     </div>
                 )}
             </main>
 
             {editingTicket && (
-                <div className="modal-overlay">
-                    <div className="modal-content">
-                        <div className="modal-header">
+                <div className={styles.modalOverlay}>
+                    <div className={styles.modalContent}>
+                        <div className={styles.modalHeader}>
                             <h2>Edit Ticket</h2>
                             <button
-                                className="modal-close"
+                                className={styles.modalClose}
                                 onClick={handleCloseEditModal}
                             >
                                 ✕
                             </button>
                         </div>
-                        <div className={`modal-body ${showSeatSelector ? 'with-seat-selector' : ''}`}>
+                        <div className={`${styles.modalBody} ${showSeatSelector ? styles.withSeatSelector : ''}`}>
                             <div>
-                                <div className="modal-field">
+                                <div className={styles.modalField}>
                                     <label>Movie</label>
-                                    <p className="modal-info">{editingTicket.movie?.name || editingTicket.session?.movieTitle || 'N/A'}</p>
+                                    <p className={styles.modalInfo}>{editingTicket.movie?.name || editingTicket.session?.movieTitle || 'N/A'}</p>
                                 </div>
-                                <div className="modal-field">
+                                <div className={styles.modalField}>
                                     <label>Session Time</label>
-                                    <p className="modal-info">{formatSessionDate(editingTicket.session?.startDateTime || '')}</p>
+                                    <p className={styles.modalInfo}>{formatSessionDate(editingTicket.session?.startDateTime || '')}</p>
                                 </div>
-                                <div className="modal-field">
+                                <div className={styles.modalField}>
                                     <label>Price</label>
-                                    <p className="modal-info">${editingTicket.price?.toFixed(2) || 'N/A'}</p>
+                                    <p className={styles.modalInfo}>${editingTicket.price?.toFixed(2) || 'N/A'}</p>
                                 </div>
-                                <div className="modal-field">
+                                <div className={styles.modalField}>
                                     <label>Hall</label>
-                                    <p className="modal-info">{editingTicket.session?.hall?.name || 'N/A'}</p>
+                                    <p className={styles.modalInfo}>{editingTicket.session?.hall?.name || 'N/A'}</p>
                                 </div>
-                                <div className="modal-field">
+                                <div className={styles.modalField}>
                                     <label>Seat</label>
-                                    <div className="seat-edit-group">
-                                        <div className="seat-input-group">
+                                    <div className={styles.seatEditGroup}>
+                                        <div className={styles.seatInputGroup}>
                                             <label htmlFor="seat-row">Row</label>
                                             <input
                                                 id="seat-row"
@@ -479,11 +482,11 @@ export const ClientsPage = () => {
                                                 min="1"
                                                 value={editSeatRow}
                                                 onChange={(e) => setEditSeatRow(e.target.value === '' ? '' : parseInt(e.target.value))}
-                                                className="seat-input"
+                                                className={styles.seatInput}
                                                 placeholder="Row"
                                             />
                                         </div>
-                                        <div className="seat-input-group">
+                                        <div className={styles.seatInputGroup}>
                                             <label htmlFor="seat-number">Number</label>
                                             <input
                                                 id="seat-number"
@@ -491,26 +494,26 @@ export const ClientsPage = () => {
                                                 min="1"
                                                 value={editSeatNumber}
                                                 onChange={(e) => setEditSeatNumber(e.target.value === '' ? '' : parseInt(e.target.value))}
-                                                className="seat-input"
+                                                className={styles.seatInput}
                                                 placeholder="Seat #"
                                             />
                                         </div>
                                     </div>
                                     <button
-                                        className="edit-seat-btn"
+                                        className={styles.editSeatBtn}
                                         onClick={handleEditSeatClick}
                                         title="Select seat from hall grid"
                                     >
                                         🎯 Edit Seat
                                     </button>
                                 </div>
-                                <div className="modal-field">
+                                <div className={styles.modalField}>
                                     <label htmlFor="status-select">Status</label>
                                     <select
                                         id="status-select"
                                         value={editStatus}
                                         onChange={(e) => setEditStatus(e.target.value)}
-                                        className="status-select"
+                                        className={styles.statusSelect}
                                     >
                                         <option value="Pending">Pending</option>
                                         <option value="Confirmed">Confirmed</option>
@@ -521,18 +524,18 @@ export const ClientsPage = () => {
                             </div>
                             
                             {showSeatSelector && (
-                                <div className="seat-selector-container">
-                                    <div className="seat-selector-header">
+                                <div className={styles.seatSelectorContainer}>
+                                    <div className={styles.seatSelectorHeader}>
                                         <h3>Select a Seat</h3>
                                         <button
-                                            className="seat-selector-close"
+                                            className={styles.seatSelectorClose}
                                             onClick={() => setShowSeatSelector(false)}
                                         >
                                             ✕
                                         </button>
                                     </div>
                                     {loadingHall ? (
-                                        <div className="seat-selector-loading">Loading hall layout...</div>
+                                        <div className={styles.seatSelectorLoading}>Loading hall layout...</div>
                                     ) : hallSeats.length > 0 ? (
                                         <>
                                             <SeatSelection
@@ -543,16 +546,16 @@ export const ClientsPage = () => {
                                                 showSummary={false}
                                                 singleSelect={true}
                                             />
-                                            <div className="seat-selector-actions">
+                                            <div className={styles.seatSelectorActions}>
                                                 <button
-                                                    className="seat-selector-confirm"
+                                                    className={styles.seatSelectorConfirm}
                                                     onClick={handleConfirmSeatChange}
                                                     disabled={!selectedNewSeatId}
                                                 >
                                                     ✓ Confirm Seat
                                                 </button>
                                                 <button
-                                                    className="seat-selector-cancel"
+                                                    className={styles.seatSelectorCancel}
                                                     onClick={() => setShowSeatSelector(false)}
                                                 >
                                                     Cancel
@@ -560,20 +563,20 @@ export const ClientsPage = () => {
                                             </div>
                                         </>
                                     ) : (
-                                        <div className="seat-selector-error">Failed to load hall layout</div>
+                                        <div className={styles.seatSelectorError}>Failed to load hall layout</div>
                                     )}
                                 </div>
                             )}
                         </div>
-                        <div className="modal-footer">
+                        <div className={styles.modalFooter}>
                             <button
-                                className="modal-cancel-btn"
+                                className={styles.modalCancelBtn}
                                 onClick={handleCloseEditModal}
                             >
                                 Cancel
                             </button>
                             <button
-                                className="modal-save-btn"
+                                className={styles.modalSaveBtn}
                                 onClick={handleSaveTicket}
                             >
                                 Save Changes

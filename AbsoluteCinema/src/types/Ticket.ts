@@ -1,8 +1,18 @@
 export enum TicketStatus {
-    Pending = 'Pending',
-    Confirmed = 'Confirmed',
-    Cancelled = 'Cancelled',
-    Used = 'Used'
+    Pending = 0,
+    Confirmed = 1,
+    Cancelled = 2
+}
+
+export interface Ticket {
+    id: string;
+    sessionId: string;
+    seatId: string;
+    userId: string;
+    
+    status: TicketStatus; 
+    
+    createdAt?: string; 
 }
 
 export interface SeatForTicket {
