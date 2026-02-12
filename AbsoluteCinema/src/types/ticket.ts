@@ -1,7 +1,7 @@
 export enum TicketStatus {
-    Pending = 0,    // Awaiting payment (yellow)
-    Confirmed = 1,  // Paid (green)
-    Cancelled = 2   // Canceled (red/gray)
+    Pending = 0,
+    Confirmed = 1,
+    Cancelled = 2
 }
 
 export interface Ticket {
@@ -14,3 +14,47 @@ export interface Ticket {
     
     createdAt?: string; 
 }
+
+export interface SeatForTicket {
+    id?: string;
+    row: number;
+    number: number;
+    seatType?: {
+        id: string;
+        name: string;
+    };
+}
+
+export interface HallForTickets {
+    id: string;
+    name: string;
+}
+
+export interface MovieForTicket {
+    id: string;
+    name: string;
+}
+
+export interface SessionForTicket {
+    id: string;
+    startDateTime: string;
+    movieTitle?: string;
+    hall: HallForTickets;
+}
+
+export interface UserShortInfo {
+    id: string;
+    email: string;
+}
+
+export interface TicketDetails {
+    id: string;
+    status: TicketStatus | string;
+    user?: UserShortInfo;
+    session: SessionForTicket;
+    seat: SeatForTicket;
+    price: number;
+    movie?: MovieForTicket;
+}
+
+export interface GetTicketDetailsResponse extends TicketDetails {}

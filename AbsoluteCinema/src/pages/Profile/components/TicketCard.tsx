@@ -1,7 +1,7 @@
 import { useState } from 'react';
-import { GetTicketDetailsResponse, TicketStatus } from '@/types/Ticket';
 import { deleteTicket } from '@/api/tickets';
 import './TicketCard.css';
+import { GetTicketDetailsResponse, TicketStatus } from '@/types/Ticket';
 
 interface TicketCardProps {
     ticket: GetTicketDetailsResponse;
@@ -32,15 +32,13 @@ export const TicketCard = ({ ticket, isActive, onRefresh, hallSeatTypes = {} }: 
         });
     };
 
-    const getStatusColor = (status: string) => {
-        const normalizedStatus = status.toLowerCase();
-        if (normalizedStatus === 'confirmed' || normalizedStatus === TicketStatus.Confirmed.toLowerCase()) {
+    const getStatusColor = (status: string | TicketStatus) => {
+        const normalizedStatus = String(status).toLowerCase();
+        if (normalizedStatus === 'confirmed' || normalizedStatus === String(TicketStatus.Confirmed).toLowerCase()) {
             return 'confirmed';
-        } else if (normalizedStatus === 'pending' || normalizedStatus === TicketStatus.Pending.toLowerCase()) {
+        } else if (normalizedStatus === 'pending' || normalizedStatus === String(TicketStatus.Pending).toLowerCase()) {
             return 'pending';
-        } else if (normalizedStatus === 'used' || normalizedStatus === TicketStatus.Used.toLowerCase()) {
-            return 'used';
-        } else if (normalizedStatus === 'cancelled' || normalizedStatus === TicketStatus.Cancelled.toLowerCase()) {
+        } else if (normalizedStatus === 'cancelled' || normalizedStatus === String(TicketStatus.Cancelled).toLowerCase()) {
             return 'cancelled';
         }
         return 'pending';

@@ -2,11 +2,11 @@ import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { useAuth } from '@/context/AuthContext/AuthContext';
 import { getUserTickets } from '@/api/tickets';
-import { GetTicketDetailsResponse, TicketStatus } from '@/types/Ticket';
 import { getHallById } from '@/api/halls';
 import { mapHallDetailsFromApi, SeatType } from '@/types/hall';
 import { UserInfoCard, ActiveTickets, TicketHistory } from './components';
 import './ProfilePage.css';
+import { GetTicketDetailsResponse, TicketStatus } from '@/types/Ticket';
 
 export const ProfilePage = () => {
     const { user, loading } = useAuth();
@@ -70,7 +70,7 @@ export const ProfilePage = () => {
         const sessionTime = ticket.session?.startDateTime ? new Date(ticket.session.startDateTime) : null;
         if (sessionTime && sessionTime < now) return true;
         // Also include cancelled or used statuses regardless of time
-        return ticket.status === TicketStatus.Cancelled || ticket.status === 'Cancelled' || ticket.status === TicketStatus.Used || ticket.status === 'Used';
+        return ticket.status === TicketStatus.Cancelled || ticket.status === 'Cancelled';
     });
 
     const activeTickets = tickets.filter(ticket => !ticketHistory.includes(ticket));

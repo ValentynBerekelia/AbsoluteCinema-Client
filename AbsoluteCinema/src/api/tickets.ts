@@ -1,5 +1,5 @@
 import axiosInstance from './axiosInstance';
-import { Ticket } from '../types/ticket';
+import { Ticket } from '../types/Ticket';
 import { GetTicketDetailsResponse } from '@/types/Ticket';
 
 export interface CreateTicketPayload {

@@ -1,6 +1,6 @@
-import { GetTicketDetailsResponse } from '@/types/Ticket';
 import { TicketCard } from './TicketCard';
 import './ActiveTickets.css';
+import { GetTicketDetailsResponse } from '@/types/Ticket';
 
 interface ActiveTicketsProps {
     tickets: GetTicketDetailsResponse[];
