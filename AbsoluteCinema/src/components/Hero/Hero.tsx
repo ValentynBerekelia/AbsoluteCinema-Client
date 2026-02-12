@@ -2,9 +2,7 @@ import { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
 import { faAngleLeft, faAngleRight } from '@fortawesome/free-solid-svg-icons'
-import { formatDate } from '@/utils/dataTimeConverters';
 import './Hero.css'
-import { TimeBadge } from '../ui/TimeBadge/TimeBadge';
 import { HeroBannerInfo } from '@/types/Movie';
 
 interface HeroProps {
@@ -24,16 +22,6 @@ const isMovieAvailable = (movie: HeroBannerInfo): boolean => {
         sessionDate.setHours(0, 0, 0, 0);
         return sessionDate >= today && sessionDate <= selectorEndDate;
     });
-};
-
-const getPremiereDate = (movie: HeroBannerInfo): string | undefined => {
-    if (!movie.sessions || movie.sessions.length === 0) return undefined;
-    
-    const sortedSessions = [...movie.sessions].sort((a, b) => 
-        new Date(a.date).getTime() - new Date(b.date).getTime()
-    );
-    
-    return sortedSessions[0]?.date;
 };
 
 export const Hero : React.FC<HeroProps> = ({movies}) => {
@@ -82,7 +70,6 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
                 }}>
                     {visibleMovies.map((movie, idx) => {
                         const movieAvailable = isMovieAvailable(movie);
-                        const premiereDate = getPremiereDate(movie);
                         const upcomingSessions = movie.sessions?.filter(session => {
                             const sessionDate = new Date(session.date);
                             sessionDate.setHours(0, 0, 0, 0);
@@ -90,7 +77,22 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
                             today.setHours(0, 0, 0, 0);
                             const selectorEndDate = new Date(today);
                             selectorEndDate.setDate(selectorEndDate.getDate() + 6);
-                            return sessionDate >= today && sessionDate <= selectorEndDate;
+                            
+                            // Check if session is within the date range
+                            const isInDateRange = sessionDate >= today && sessionDate <= selectorEndDate;
+                            
+                            // Check if session has not ended (date/time has not passed)
+                            if (sessionDate > today) {
+                                // Session is in future
+                                return isInDateRange;
+                            } else if (sessionDate.getTime() === today.getTime()) {
+                                // Session is today - check if time has not passed
+                                const [hours, minutes] = (session.time || '00:00').split(':').map(Number);
+                                const sessionDateTime = new Date();
+                                sessionDateTime.setHours(hours, minutes, 0, 0);
+                                return sessionDateTime > new Date();
+                            }
+                            return false;
                         }) || [];
 
                         const isActive = movie.slideIndex === 0;
@@ -117,19 +119,10 @@ export const Hero : React.FC<HeroProps> = ({movies}) => {
                                     className="hero-movie-poster"
                                     style={{ backgroundImage: `url(${movie.image})` }}
                                 >
-                                    {!movieAvailable && isActive && (
-                                        <div className="hero-coming-soon">
-                                            <div className='coming-soon-label'>Coming Soon</div>
-                                            {premiereDate && (
-                                                <div className='premiere-date'>Premiere: {formatDate(premiereDate)}</div>
-                                            )}
-                                        </div>
-                                    )}
-                                    
                                     {isActive && (
                                         <div className="hero-movie-info">
                                             <h3 className="hero-movie-title">{movie.title}</h3>
-                                            <p className="hero-movie-subtitle">{movie.title} - Malayalam</p>
+                                            <p className="hero-movie-subtitle">{movie.title}</p>
                                             {movieAvailable && upcomingSessions.length > 0 && (
                                                 <div className="hero-movie-timing">
                                                     <div className="hero-timing-label">Today's Timing</div>

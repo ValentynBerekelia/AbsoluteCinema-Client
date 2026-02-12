@@ -4,6 +4,7 @@ import { getMovies } from '@/api/movies';
 import { getMovieSessions } from '@/api/sessions';
 import { getHallById } from '@/api/halls';
 import { createTicket, deleteTicket, getSessionTickets } from '@/api/tickets';
+import { getAllUsers, ClientUser } from '@/api/users';
 import { mapHallDetailsFromApi, Seat, SeatType } from '@/types/hall';
 import { SortOrder } from '@/types/MoviesQueryParameters';
 import { getDynamicSeatColor } from '@/utils/colorGenerator';
@@ -71,6 +72,35 @@ export const ReservationsPage = () => {
     const [commentInput, setCommentInput] = useState('');
     const [isAdminReservation, setIsAdminReservation] = useState(false);
     const [actionLoading, setActionLoading] = useState(false);
+    const [clientUsers, setClientUsers] = useState<ClientUser[]>([]);
+    const [selectedUserId, setSelectedUserId] = useState<string>('');
+    const [userSearch, setUserSearch] = useState<string>('');
+    const [showUserSuggestions, setShowUserSuggestions] = useState<boolean>(false);
+
+    useEffect(() => {
+        const fetchUsers = async () => {
+            try {
+                const data = await getAllUsers(100);
+                setClientUsers(data?.users || []);
+                if (data?.users && data.users.length > 0) {
+                    const userId = data.users[0].userId || data.users[0].id;
+                    setSelectedUserId(userId || '');
+                    const display = `${data.users[0].userName} (${data.users[0].email})`;
+                    setUserSearch(display);
+                }
+            } catch (err) {
+                console.error('Failed to fetch users:', err);
+            }
+        };
+        fetchUsers();
+    }, []);
+
+    useEffect(() => {
+        // when selectedUserId changes (e.g., programmatically), keep the input display in sync
+        if (!selectedUserId) return;
+        const u = clientUsers.find(c => (c.userId || c.id) === selectedUserId);
+        if (u) setUserSearch(`${u.userName} (${u.email})`);
+    }, [selectedUserId, clientUsers]);
 
     useEffect(() => {
         const fetchSessions = async () => {
@@ -177,14 +207,12 @@ export const ReservationsPage = () => {
     const selectedSeat = selectedSeatId ? hallSeats.find(s => s.seatId === selectedSeatId) || null : null;
 
     const handleCreateReservation = async () => {
-        const finalUserId = isAdminReservation ? user?.userId : userIdInput.trim();
+        const finalUserId = selectedUserId;
 
         if (!selectedSession || !selectedSeatId) return;
 
         if (!finalUserId) {
-            showToast('error', isAdminReservation
-                ? 'Could not find your Admin ID. Please re-login.'
-                : 'User ID is required');
+            showToast('error', 'Please select a user');
             return;
         }
 
@@ -315,12 +343,51 @@ export const ReservationsPage = () => {
                                                         <input type="checkbox" id="admin-check" checked={isAdminReservation} onChange={(e) => setIsAdminReservation(e.target.checked)} />
                                                         <label htmlFor="admin-check">Admin Reservation</label>
                                                     </div>
-                                                    {!isAdminReservation && (
-                                                        <div className={styles["input-group"]}>
-                                                            <label>User ID</label>
-                                                            <input type="text" value={userIdInput} onChange={(e) => setUserIdInput(e.target.value)} placeholder="User UUID" />
-                                                        </div>
-                                                    )}
+                                                    <div className={styles["input-group"]}>
+                                                        <label>Select User</label>
+                                                            <div className={styles['user-autocomplete']}>
+                                                                <input
+                                                                    type="text"
+                                                                    placeholder="Search users by name or email..."
+                                                                    value={userSearch}
+                                                                    onChange={(e) => {
+                                                                        setUserSearch(e.target.value);
+                                                                        setShowUserSuggestions(true);
+                                                                    }}
+                                                                    onFocus={() => setShowUserSuggestions(true)}
+                                                                    className={styles['user-search-input']}
+                                                                />
+                                                                {showUserSuggestions && (
+                                                                    <ul className={styles['user-suggestions']}>
+                                                                        {clientUsers
+                                                                            .filter(u => {
+                                                                                const q = userSearch.trim().toLowerCase();
+                                                                                if (!q) return true;
+                                                                                return (u.userName || '').toLowerCase().includes(q) || (u.email || '').toLowerCase().includes(q);
+                                                                            })
+                                                                            .slice(0, 20)
+                                                                            .map(u => {
+                                                                                const userId = u.userId || u.id || '';
+                                                                                const label = `${u.userName} (${u.email})`;
+                                                                                return (
+                                                                                    <li
+                                                                                        key={userId}
+                                                                                        onMouseDown={(ev) => {
+                                                                                            // use onMouseDown to avoid losing focus before click
+                                                                                            ev.preventDefault();
+                                                                                            setSelectedUserId(userId);
+                                                                                            setUserSearch(label);
+                                                                                            setShowUserSuggestions(false);
+                                                                                        }}
+                                                                                    >
+                                                                                        {label}
+                                                                                    </li>
+                                                                                );
+                                                                            })}
+                                                                    </ul>
+                                                                )}
+                                                            </div>
+                                                    </div>
                                                     <div className={styles["input-group"]}>
                                                         <label>Comment</label>
                                                         <textarea value={commentInput} onChange={(e) => setCommentInput(e.target.value)} placeholder="Notes..." />
@@ -328,7 +395,7 @@ export const ReservationsPage = () => {
                                                     <button
                                                         className={styles["action-btn"]}
                                                         onClick={handleCreateReservation}
-                                                        disabled={actionLoading || (!isAdminReservation && !userIdInput.trim())}
+                                                        disabled={actionLoading || !selectedUserId}
                                                     >
                                                         {actionLoading ? 'Processing...' : 'Create reservation'}
                                                     </button>

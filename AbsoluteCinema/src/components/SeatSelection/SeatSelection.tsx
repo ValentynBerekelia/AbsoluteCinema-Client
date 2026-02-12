@@ -11,6 +11,7 @@ interface SeatSelectionProps {
     onSelectionChange: (selectedSeats: string[]) => void;
     prices?: Record<string, number>;
     showSummary?: boolean;
+    singleSelect?: boolean;
 }
 
 export const SeatSelection = ({ 
@@ -19,15 +20,23 @@ export const SeatSelection = ({
     occupiedSeats = [], 
     onSelectionChange,
     prices = {},
-    showSummary = true
+    showSummary = true,
+    singleSelect = false
 }: SeatSelectionProps) => {
     const [selectedSeats, setSelectedSeats] = useState<Set<string>>(new Set());
 
     const handleSeatClick = (seatId: string, isOccupied: boolean) => {
         if (isOccupied || !seatId) return;
-        const newSelection = new Set(selectedSeats);
-        if (newSelection.has(seatId)) newSelection.delete(seatId);
-        else newSelection.add(seatId);
+        const newSelection = new Set<string>();
+        if (singleSelect) {
+            newSelection.add(seatId);
+        } else {
+            // toggle
+            selectedSeats.forEach(s => newSelection.add(s));
+            if (newSelection.has(seatId)) newSelection.delete(seatId);
+            else newSelection.add(seatId);
+        }
+
         setSelectedSeats(newSelection);
         onSelectionChange(Array.from(newSelection));
     };

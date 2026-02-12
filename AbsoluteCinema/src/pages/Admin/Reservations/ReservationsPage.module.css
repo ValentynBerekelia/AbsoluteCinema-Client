@@ -238,7 +238,7 @@
     margin-top: 15px;
 }
 
-.input-group input, .input-group textarea {
+.input-group input, .input-group textarea, .user-select {
     padding: 10px;
     border: 1px solid rgba(200, 220, 255, 0.2);
     border-radius: 6px;
@@ -248,7 +248,49 @@
     transition: all 0.3s ease;
 }
 
-.input-group input:focus, .input-group textarea:focus {
+.user-autocomplete {
+    position: relative;
+}
+
+.user-search-input {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid rgba(200, 220, 255, 0.2);
+    border-radius: 6px;
+    background: rgba(6, 12, 34, 0.92);
+    color: var(--text);
+    box-shadow: 0 0 15px rgba(139, 154, 196, 0.15);
+}
+
+.user-suggestions {
+    position: absolute;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    max-height: 220px;
+    overflow-y: auto;
+    background: rgba(10, 15, 35, 0.98);
+    border: 1px solid rgba(200, 220, 255, 0.08);
+    border-radius: 8px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.6);
+    z-index: 50;
+    list-style: none;
+    margin: 0;
+    padding: 8px 0;
+}
+
+.user-suggestions li {
+    padding: 8px 12px;
+    cursor: pointer;
+    color: var(--text);
+    font-size: 14px;
+}
+
+.user-suggestions li:hover {
+    background: rgba(200, 220, 255, 0.03);
+}
+
+.input-group input:focus, .input-group textarea:focus, .user-select:focus {
     outline: none;
     border-color: rgba(200, 220, 255, 0.4);
     box-shadow: 0 0 30px rgba(139, 154, 196, 0.35);

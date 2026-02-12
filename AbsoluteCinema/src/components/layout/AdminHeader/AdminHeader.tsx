@@ -2,13 +2,14 @@ import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faArrowRightFromBracket } from '@fortawesome/free-solid-svg-icons';
 import './AdminHeader.css'
 import { useNavigate } from 'react-router-dom';
+import { useAuth } from '@/context/AuthContext/AuthContext';
 
 export const AdminHeader = () => {
     const navigate = useNavigate();
+    const { logoutUser } = useAuth();
 
     const handleLogOut = () => {
-        console.log("Logging out...");
-
+        logoutUser();
         navigate('/');
     };
 
@@ -22,7 +23,7 @@ export const AdminHeader = () => {
             <div className='admin-user-profile'>
                 <span className='admin-name'>Admin</span>
                 <button className='admin-logout-btn' title='Logout' onClick={handleLogOut}>
-                    <FontAwesomeIcon icon={faArrowRightFromBracket}/>
+                    <FontAwesomeIcon icon={faArrowRightFromBracket} />
                 </button>
             </div>
         </header>

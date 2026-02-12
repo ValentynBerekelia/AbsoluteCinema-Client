@@ -1,0 +1,923 @@
+.clients-page {
+    padding: 24px;
+    background: linear-gradient(135deg, rgba(10, 15, 35, 0.95) 0%, rgba(20, 25, 50, 0.95) 100%);
+    border-radius: 8px;
+    min-height: 100%;
+}
+
+.clients-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 20px;
+    margin-bottom: 32px;
+    flex-wrap: wrap;
+}
+
+.clients-header h1 {
+    color: white;
+    font-size: 28px;
+    font-weight: 700;
+    margin: 0;
+}
+
+.clients-search-wrapper {
+    flex: 1;
+    min-width: 250px;
+}
+
+.clients-search-input {
+    width: 100%;
+    padding: 10px 16px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    transition: all 0.3s ease;
+}
+
+.clients-search-input::placeholder {
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.clients-search-input:focus {
+    outline: none;
+    border-color: #e50914;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.3);
+}
+
+.clients-list {
+    background: rgba(255, 255, 255, 0.02);
+    border: 1px solid rgba(255, 255, 255, 0.1);
+    border-radius: 8px;
+    overflow: hidden;
+    transition: background 0.3s ease;
+}
+
+.clients-list.loading {
+    opacity: 0.6;
+    pointer-events: none;
+}
+
+.clients-loading,
+.clients-empty {
+    padding: 48px 24px;
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+}
+
+.clients-loading {
+    font-size: 16px;
+}
+
+.clients-empty p {
+    margin: 0;
+    font-size: 18px;
+    color: rgba(255, 255, 255, 0.5);
+}
+
+.clients-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.clients-table thead {
+    background: rgba(255, 255, 255, 0.05);
+    border-bottom: 2px solid rgba(229, 9, 20, 0.3);
+}
+
+.clients-table thead th {
+    padding: 16px;
+    text-align: left;
+    color: white;
+    font-weight: 600;
+    font-size: 14px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+}
+
+.client-row {
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    transition: background 0.2s ease;
+}
+
+.client-row:hover {
+    background: rgba(229, 9, 20, 0.1);
+}
+
+.clients-table tbody td {
+    padding: 14px 16px;
+    color: rgba(255, 255, 255, 0.9);
+    font-size: 14px;
+}
+
+.client-username {
+    font-weight: 600;
+    color: white;
+}
+
+.expand-btn {
+    background: none;
+    border: none;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    font-size: 14px;
+    padding: 0;
+    transition: color 0.2s ease;
+}
+
+.expand-btn:hover {
+    color: #e50914;
+}
+
+.client-row.expanded {
+    background: rgba(229, 9, 20, 0.05);
+}
+
+.tickets-row {
+    background: rgba(255, 255, 255, 0.02);
+    width: 100%;
+}
+
+.tickets-row td {
+    padding: 0;
+    width: 100%;
+}
+
+.tickets-details {
+    padding: 20px 0;
+    background: rgba(10, 15, 35, 0.6);
+    border-top: 1px solid rgba(229, 9, 20, 0.2);
+    width: 100%;
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+}
+
+.tickets-loading,
+.no-tickets {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.5);
+    padding: 20px;
+}
+
+.tickets-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 16px;
+}
+
+.tickets-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    padding: 20px 0 20px 0;
+    box-sizing: border-box;
+}
+
+.ticket-item {
+    display: grid;
+    /* use a more even distribution and allow the card to span the full container */
+    grid-template-columns: 2fr 1fr 1fr 1fr auto;
+    gap: 16px;
+    align-items: center;
+    padding: 16px 20px;
+    margin: 0;
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.05) 0%, rgba(255, 255, 255, 0.02) 100%);
+    border: 1px solid rgba(229, 9, 20, 0.2);
+    border-radius: 8px;
+    animation: slideIn 0.3s ease;
+    transition: all 0.2s ease;
+    width: 100%;
+    max-width: none;
+    box-sizing: border-box;
+}
+
+.ticket-item:hover {
+    background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.04) 100%);
+    border-color: rgba(229, 9, 20, 0.4);
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.15);
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-5px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+.ticket-movie {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+}
+
+.ticket-movie strong {
+    color: white;
+    font-size: 14px;
+}
+
+.ticket-status {
+    display: inline-block;
+    padding: 2px 8px;
+    background: rgba(76, 175, 80, 0.2);
+    color: #4db854;
+    border-radius: 3px;
+    font-size: 11px;
+    font-weight: 600;
+    text-transform: uppercase;
+}
+
+.ticket-info {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.ticket-info span {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.ticket-seat {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    font-size: 13px;
+}
+
+.seat-info {
+    color: white;
+    font-weight: 600;
+}
+
+.seat-type {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+}
+
+.ticket-price {
+    font-weight: 700;
+    color: #4db854;
+    font-size: 16px;
+}
+
+.cancel-ticket-btn {
+    padding: 6px 12px;
+    background: rgba(229, 9, 20, 0.2);
+    border: 1px solid rgba(229, 9, 20, 0.4);
+    color: #ff6b6b;
+    border-radius: 4px;
+    font-weight: 600;
+    font-size: 13px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    white-space: nowrap;
+}
+
+.cancel-ticket-btn:hover:not(:disabled) {
+    background: rgba(229, 9, 20, 0.3);
+    border-color: #e50914;
+    color: #ff8a8a;
+}
+
+.cancel-ticket-btn:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.client-email {
+    color: rgba(255, 255, 255, 0.7);
+}
+
+.client-tickets {
+    min-width: 150px;
+}
+
+.tickets-badge {
+    display: inline-block;
+    padding: 6px 12px;
+    background: rgba(138, 155, 255, 0.15);
+    color: #8a9bff;
+    border: 1px solid rgba(138, 155, 255, 0.3);
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.client-id {
+    color: rgba(255, 255, 255, 0.5);
+    font-family: monospace;
+    font-size: 12px;
+}
+
+.clients-pagination {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 20px;
+    padding: 20px;
+    border-top: 1px solid rgba(255, 255, 255, 0.05);
+    background: rgba(255, 255, 255, 0.01);
+}
+
+.pagination-btn {
+    padding: 8px 16px;
+    background: rgba(229, 9, 20, 0.1);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    color: #ff6b6b;
+    border-radius: 4px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    font-size: 14px;
+}
+
+.pagination-btn:hover:not(:disabled) {
+    background: rgba(229, 9, 20, 0.2);
+    border-color: #e50914;
+    color: #ff8a8a;
+}
+
+.pagination-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.pagination-info {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 14px;
+    min-width: 200px;
+    text-align: center;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .clients-page {
+        padding: 16px;
+    }
+
+    .clients-header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .clients-header h1 {
+        font-size: 24px;
+    }
+
+    .clients-search-wrapper {
+        min-width: 100%;
+    }
+
+    .clients-table thead {
+        display: none;
+    }
+
+    .client-row {
+        display: block;
+        margin-bottom: 12px;
+        background: rgba(255, 255, 255, 0.02);
+        border: 1px solid rgba(255, 255, 255, 0.1);
+        border-radius: 6px;
+        padding: 12px;
+    }
+
+    .client-row:hover {
+        background: rgba(229, 9, 20, 0.15);
+    }
+
+    .clients-table tbody td {
+        display: block;
+        padding: 8px 0;
+        text-align: right;
+    }
+
+    .clients-table tbody td::before {
+        content: attr(data-label);
+        float: left;
+        font-weight: 600;
+        color: white;
+    }
+
+    .client-username::before { content: 'Username: '; }
+    .client-email::before { content: 'Email: '; }
+    .client-tickets::before { content: 'Total Tickets: '; }
+    .client-id::before { content: 'ID: '; }
+
+    .ticket-item {
+        display: flex;
+        flex-direction: column;
+        gap: 12px;
+        align-items: stretch;
+    }
+
+    .ticket-movie {
+        justify-content: space-between;
+    }
+
+    .ticket-actions {
+        flex-direction: column;
+    }
+
+    .ticket-actions button {
+        width: 100%;
+    }
+
+    .clients-pagination {
+        flex-direction: column;
+        gap: 12px;
+    }
+
+    .pagination-info {
+        min-width: 100%;
+    }
+}
+
+/* Edit Modal Styles */
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background: rgba(0, 0, 0, 0.7);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
+    animation: fadeIn 0.2s ease;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+.modal-content {
+    background: linear-gradient(135deg, rgba(20, 25, 50, 0.98) 0%, rgba(15, 20, 40, 0.98) 100%);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    border-radius: 12px;
+    padding: 0;
+    max-width: 1400px;
+    width: 98%;
+    max-height: 90vh;
+    overflow: hidden;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.5), 0 0 20px rgba(229, 9, 20, 0.2);
+    animation: slideUp 0.3s ease;
+    display: flex;
+    flex-direction: column;
+}
+
+@keyframes slideUp {
+    from {
+        transform: translateY(30px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 24px;
+    border-bottom: 1px solid rgba(229, 9, 20, 0.2);
+}
+
+.modal-header h2 {
+    color: white;
+    font-size: 20px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.modal-close {
+    background: none;
+    border: none;
+    color: white;
+    font-size: 24px;
+    cursor: pointer;
+    padding: 0;
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 4px;
+    transition: all 0.2s ease;
+}
+
+.modal-close:hover {
+    background: rgba(229, 9, 20, 0.2);
+    color: #e50914;
+}
+
+.modal-body {
+    padding: 24px;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    position: relative;
+    flex: 1;
+    overflow-y: auto;
+    min-height: 0;
+}
+
+.modal-body > div:first-child {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+.modal-body.with-seat-selector {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 0;
+    padding: 0;
+    overflow: hidden;
+    align-items: stretch;
+    min-height: 0;
+}
+
+.modal-body.with-seat-selector > div:first-child {
+    padding: 24px;
+    padding-right: 12px;
+    grid-column: 1;
+    grid-row: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    overflow-y: auto;
+    box-sizing: border-box;
+    min-height: 0;
+}
+
+.modal-body.with-seat-selector .seat-selector-container {
+    padding: 24px;
+    padding-left: 12px;
+    grid-column: 2;
+    grid-row: 1;
+    border-left: 1px solid rgba(229, 9, 20, 0.2);
+    overflow-y: auto;
+    overflow-x: hidden;
+    box-sizing: border-box;
+    min-height: 0;
+}
+
+.modal-field {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.modal-field label {
+    color: rgba(255, 255, 255, 0.7);
+    font-size: 13px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.modal-info {
+    color: white;
+    font-size: 15px;
+    margin: 0;
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.status-select {
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.status-select:focus {
+    outline: none;
+    border-color: #e50914;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.3);
+}
+
+.status-select option {
+    background: #0a0f23;
+    color: white;
+    padding: 8px;
+}
+
+.modal-footer {
+    display: flex;
+    gap: 12px;
+    padding: 24px;
+    border-top: 1px solid rgba(229, 9, 20, 0.2);
+    justify-content: flex-end;
+    flex-shrink: 0;
+}
+
+.modal-cancel-btn,
+.modal-save-btn {
+    padding: 10px 20px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.modal-cancel-btn {
+    background: rgba(255, 255, 255, 0.1);
+    color: white;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.modal-cancel-btn:hover {
+    background: rgba(255, 255, 255, 0.15);
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+.modal-save-btn {
+    background: #e50914;
+    color: white;
+    border: 1px solid #e50914;
+}
+
+.modal-save-btn:hover {
+    background: #c2070f;
+    border-color: #c2070f;
+    box-shadow: 0 4px 12px rgba(229, 9, 20, 0.4);
+}
+
+/* Seat Edit Styles */
+.seat-edit-group {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+
+.seat-input-group {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.seat-input-group label {
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 12px;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    font-weight: 600;
+}
+
+.seat-input {
+    padding: 10px 12px;
+    background: rgba(255, 255, 255, 0.05);
+    border: 1px solid rgba(229, 9, 20, 0.3);
+    border-radius: 6px;
+    color: white;
+    font-size: 14px;
+    transition: all 0.2s ease;
+}
+
+.seat-input:focus {
+    outline: none;
+    border-color: #e50914;
+    background: rgba(255, 255, 255, 0.08);
+    box-shadow: 0 0 12px rgba(229, 9, 20, 0.3);
+}
+
+.edit-seat-btn {
+    width: 100%;
+    padding: 10px 16px;
+    background: rgba(100, 200, 255, 0.15);
+    color: #64c8ff;
+    border: 1px solid rgba(100, 200, 255, 0.3);
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-top: 8px;
+}
+
+.edit-seat-btn:hover {
+    background: rgba(100, 200, 255, 0.25);
+    border-color: #64c8ff;
+    box-shadow: 0 0 12px rgba(100, 200, 255, 0.3);
+}
+
+.edit-seat-btn:active {
+    transform: scale(0.98);
+}
+
+/* Seat Selector Styles */
+.seat-selector-container {
+    background: transparent;
+    border: none;
+    border-radius: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 0;
+    overflow: hidden;
+    min-height: 0;
+}
+
+.seat-selector-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 12px;
+    padding-bottom: 12px;
+    border-bottom: 1px solid rgba(100, 200, 255, 0.2);
+    flex-shrink: 0;
+}
+
+.seat-selector-header h3 {
+    color: white;
+    font-size: 16px;
+    margin: 0;
+}
+
+.seat-selector-close {
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.6);
+    font-size: 20px;
+    cursor: pointer;
+    transition: color 0.2s ease;
+}
+
+.seat-selector-close:hover {
+    color: white;
+}
+
+.seat-selector-loading,
+.seat-selector-error {
+    text-align: center;
+    color: rgba(255, 255, 255, 0.6);
+    padding: 12px;
+    font-size: 14px;
+    flex: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.seat-selector-error {
+    color: #ff6b6b;
+}
+
+.seat-selector-actions {
+    display: flex;
+    gap: 12px;
+    margin-top: auto;
+    justify-content: flex-end;
+    flex-shrink: 0;
+    padding-top: 12px;
+}
+
+.seat-selector-confirm,
+.seat-selector-cancel {
+    padding: 8px 16px;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s ease;
+}
+
+.seat-selector-confirm {
+    background: rgba(76, 175, 80, 0.2);
+    color: #4db854;
+    border: 1px solid rgba(76, 175, 80, 0.3);
+}
+
+.seat-selector-confirm:hover:not(:disabled) {
+    background: rgba(76, 175, 80, 0.3);
+    border-color: #4db854;
+    box-shadow: 0 0 8px rgba(76, 175, 80, 0.3);
+}
+
+.seat-selector-confirm:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.seat-selector-cancel {
+    background: rgba(255, 255, 255, 0.1);
+    color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.seat-selector-cancel:hover {
+    background: rgba(255, 255, 255, 0.15);
+    color: white;
+    border-color: rgba(255, 255, 255, 0.3);
+}
+
+/* SeatSelection component inside modal styling */
+.modal-body.with-seat-selector .seat-selection {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1;
+    overflow-y: auto;
+}
+
+.modal-body.with-seat-selector .seat-selection__screen {
+    flex-shrink: 0;
+}
+
+.modal-body.with-seat-selector .seat-selection__hall {
+    flex: 1;
+    overflow-y: auto;
+    gap: 6px;
+}
+
+.modal-body.with-seat-selector .seat-selection__legend {
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+/* Edit Button Styles */
+.ticket-actions {
+    display: flex;
+    gap: 8px;
+    justify-content: flex-end;
+    align-items: center;
+}
+
+.edit-ticket-btn {
+    background: rgba(100, 200, 255, 0.15);
+    color: #64c8ff;
+    border: 1px solid rgba(100, 200, 255, 0.3);
+    padding: 6px 12px;
+    border-radius: 4px;
+    font-size: 12px;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+}
+
+.edit-ticket-btn:hover {
+    background: rgba(100, 200, 255, 0.25);
+    border-color: #64c8ff;
+    box-shadow: 0 0 8px rgba(100, 200, 255, 0.3);
+}
+
+.edit-ticket-btn:active {
+    transform: scale(0.95);
+}
+
+/* Responsive Modal */
+@media (max-width: 768px) {
+    .modal-content {
+        max-width: 95%;
+        border-radius: 8px;
+    }
+
+    .modal-header,
+    .modal-body,
+    .modal-footer {
+        padding: 16px;
+    }
+
+    .modal-footer {
+        flex-direction: column-reverse;
+    }
+
+    .modal-cancel-btn,
+    .modal-save-btn {
+        width: 100%;
+    }
+}
+
+

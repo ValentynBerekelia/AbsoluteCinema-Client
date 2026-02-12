@@ -10,7 +10,7 @@ export const AdminSidebar = () => {
                 <button className='admin-nav-btn' onClick={() => navigate('/admin/genres')}>Genres</button>
                 <button className='admin-nav-btn' onClick={() => navigate('/admin/persons')}>Persons</button>
                 <button className='admin-nav-btn' onClick={() => navigate('/admin/halls')}>Halls</button>
-                <button className='admin-nav-btn'>Clients</button>
+                <button className='admin-nav-btn' onClick={() => navigate('/admin/clients')}>Clients</button>
                 <button className='admin-nav-btn' onClick={() => navigate('/admin/reservations')}>Current reservations</button>
                 <button className='admin-nav-btn' onClick={() => navigate('/admin/statistics')}>Statistics</button>
             </nav>

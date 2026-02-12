@@ -46,6 +46,7 @@ export const BookingPage = () => {
     const [error, setError] = useState<string | null>(null);
     const [bookingInProgress, setBookingInProgress] = useState(false);
     const [userId, setUserId] = useState<string>('');
+    const [isAdmin, setIsAdmin] = useState(false);
 
     useEffect(() => {
         const fetchSessionAndHall = async () => {
@@ -134,6 +135,10 @@ export const BookingPage = () => {
             try {
                 const userData = await getMe();
                 setUserId(userData.userId);
+                
+                // Check if user is admin
+                const userIsAdmin = userData.roles?.includes('Admin');
+                setIsAdmin(userIsAdmin || false);
             } catch (err) {
                 console.error('Failed to fetch user data:', err);
             }
@@ -157,6 +162,7 @@ export const BookingPage = () => {
         try {
             setBookingInProgress(true);
 
+            // Always use the current user id for booking from Booking page
             const result = await createBooking({
                 sessionId,
                 seatIds: selectedSeats,
@@ -265,6 +271,9 @@ export const BookingPage = () => {
                 <div className="booking-page__layout">
                     <aside className="booking-page__sidebar">
                         <h3 className="sidebar-title">Ticket details</h3>
+                        
+                        {/* Removed admin user selection — booking always uses current user */}
+                        
                         <div className="sidebar-block">
                             <div className="sidebar-row">
                                 <span>Movie</span>
