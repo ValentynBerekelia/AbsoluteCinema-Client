@@ -6,7 +6,7 @@ import { getHallById } from '@/api/halls';
 import { mapHallDetailsFromApi, SeatType } from '@/types/hall';
 import { UserInfoCard, ActiveTickets, TicketHistory } from './components';
 import './ProfilePage.css';
-import { GetTicketDetailsResponse, TicketStatus } from '@/types/Ticket';
+import { GetTicketDetailsResponse, TicketStatus } from '@/types/ticket';
 
 export const ProfilePage = () => {
     const { user, loading } = useAuth();

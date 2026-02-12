@@ -1,4 +1,4 @@
-import { GetTicketDetailsResponse } from '@/types/Ticket';
+import { GetTicketDetailsResponse } from '@/types/ticket';
 import { TicketCard } from './TicketCard';
 import './TicketHistory.css';
 

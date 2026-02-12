@@ -1,6 +1,6 @@
 import { useState } from 'react';
-import { GetTicketDetailsResponse, TicketStatus } from '@/types/Ticket';
-import { deleteTicket } from '@/api/tickets';
+import { GetTicketDetailsResponse, TicketStatus } from '@/types/ticket';
+import { cancelTicket, confirmTicket } from '@/api/tickets';
 import './TicketCard.css';
 import { convertIsoToDateTime } from '@/utils/dataTimeConverters';
 
@@ -13,6 +13,7 @@ interface TicketCardProps {
 
 export const TicketCard = ({ ticket, isActive, onRefresh, hallSeatTypes = {} }: TicketCardProps) => {
     const [isDeleting, setIsDeleting] = useState(false);
+    const [isConfirming, setIsConfirming] = useState(false);
 
     const formatDate = (dateString: string) => {
         const date = new Date(dateString);
@@ -50,7 +51,7 @@ export const TicketCard = ({ ticket, isActive, onRefresh, hallSeatTypes = {} }: 
 
         try {
             setIsDeleting(true);
-            await deleteTicket(ticket.id);
+            await cancelTicket(ticket.id as string);
             onRefresh();
         } catch (error) {
             console.error('Failed to cancel ticket:', error);
@@ -60,7 +61,22 @@ export const TicketCard = ({ ticket, isActive, onRefresh, hallSeatTypes = {} }: 
         }
     };
 
+    const handleConfirmTicket = async () => {
+        try {
+            setIsConfirming(true);
+            await confirmTicket(ticket.id as string);
+            onRefresh();
+        } catch (error) {
+            console.error('Failed to confirm ticket:', error);
+            alert('Failed to confirm ticket');
+        } finally {
+            setIsConfirming(false);
+        }
+    };
+
     const isPast = ticket.session?.startDateTime ? new Date(ticket.session.startDateTime) < new Date() : false;
+    const isPending = String(ticket.status).toLowerCase() === 'pending';
+    const showButtons = isActive && !isPast && isPending;
 
     return (
         <div className={`ticket-card ${getStatusColor(ticket.status)} ${isPast ? 'past' : ''}`}>
@@ -70,15 +86,25 @@ export const TicketCard = ({ ticket, isActive, onRefresh, hallSeatTypes = {} }: 
                         {ticket.status}
                     </span>
                 </div>
-                {isActive && !isPast && (
-                    <button
-                        className="cancel-button"
-                        onClick={handleCancelTicket}
-                        disabled={isDeleting}
-                        title="Cancel this ticket"
-                    >
-                        ✕
-                    </button>
+                {showButtons && (
+                    <div className="ticket-actions">
+                        <button
+                            className="confirm-button"
+                            onClick={handleConfirmTicket}
+                            disabled={isConfirming}
+                            title="Confirm this ticket"
+                        >
+                            ✓
+                        </button>
+                        <button
+                            className="cancel-button"
+                            onClick={handleCancelTicket}
+                            disabled={isDeleting}
+                            title="Cancel this ticket"
+                        >
+                            ✕
+                        </button>
+                    </div>
                 )}
             </div>
 

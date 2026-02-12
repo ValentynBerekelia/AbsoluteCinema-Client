@@ -1,6 +1,6 @@
 import axiosInstance from './axiosInstance';
-import { Ticket } from '../types/Ticket';
-import { GetTicketDetailsResponse } from '@/types/Ticket';
+import { Ticket } from '@/types/ticket';
+import { GetTicketDetailsResponse } from '@/types/ticket';
 
 export interface CreateTicketPayload {
     sessionId: string;

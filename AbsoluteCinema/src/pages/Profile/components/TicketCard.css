@@ -127,6 +127,39 @@
     cursor: not-allowed;
 }
 
+.ticket-actions {
+    display: flex;
+    gap: 8px;
+    align-items: center;
+    flex-shrink: 0;
+}
+
+.confirm-button {
+    background: rgba(40, 167, 69, 0.2);
+    border: 1px solid #28a745;
+    color: #28a745;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    transition: all 0.3s ease;
+    flex-shrink: 0;
+}
+
+.confirm-button:hover:not(:disabled) {
+    background: rgba(40, 167, 69, 0.3);
+    transform: scale(1.1);
+}
+
+.confirm-button:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
 .ticket-content {
     display: flex;
     flex-direction: column;

@@ -4,7 +4,7 @@ import { getAllUsers, searchUsers, ClientUser } from '@/api/users';
 import { getUserTickets, deleteTicket, updateTicket, getSessionTickets } from '@/api/tickets';
 import { getHallById } from '@/api/halls';
 import { getMovieSessions } from '@/api/sessions';
-import { GetTicketDetailsResponse } from '@/types/Ticket';
+import { GetTicketDetailsResponse } from '@/types/ticket';
 import { mapHallDetailsFromApi, Seat, SeatType } from '@/types/hall';
 import { SeatSelection } from '@/components/SeatSelection/SeatSelection';
 import { useToast } from '@/context/ToastContext/ToastContext';
@@ -121,7 +121,7 @@ export const ClientsPage = () => {
 
     const handleEditTicket = (ticket: GetTicketDetailsResponse) => {
         setEditingTicket({ ...ticket });
-        setEditStatus(ticket.status);
+        setEditStatus(String(ticket.status));
         setEditSeatRow(ticket.seat?.row || '');
         setEditSeatNumber(ticket.seat?.number || '');
     };
@@ -139,11 +139,7 @@ export const ClientsPage = () => {
             setHallTypes(mapped.availableSeatTypes);
             
             // Extract occupied seat IDs from tickets (normalize different API shapes)
-            const rawTickets = Array.isArray(ticketsData)
-                ? ticketsData
-                : Array.isArray(ticketsData?.tickets)
-                    ? ticketsData.tickets
-                    : [];
+            const rawTickets = Array.isArray(ticketsData) ? ticketsData : [];
 
             const occupiedSeatIds = rawTickets
                 .map((t: any) => String(t.seat?.id?.id ?? t.seat?.id ?? t.seatId?.id?.id ?? t.seatId ?? ''))
